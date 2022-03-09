@@ -1,13 +1,19 @@
 import * as React from 'react';
-
-import Login from '../src/pages/login/login';
+import Login from '../src/pages/login/index';
+import Home from '../src/pages/home/home';
+import Admin from "../src/pages/admin/admin";
+import { Switch, Route, Redirect } from "react-router-dom";
 // import './App.less'
 export default class App extends React.Component {
-
 	render() {
 		return (
 			<div className="todo-container">
-				<Login />
+				{/* 只匹配其中一个 */}
+				<Switch>
+					<Route path="/login" component={Login}></Route>
+					<Route path="/home/admin" component={Admin}></Route>
+					<Redirect to="/login" />
+				</Switch>
 			</div>
 		)
 	}
