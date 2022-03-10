@@ -2,12 +2,13 @@ import React, { Component } from "react";
 import { Form, Input, Button, message } from "antd";
 import { Redirect, Route } from "react-router-dom";
 import { connect } from "react-redux";
+import Admin from "../admin/admin";
 import { login } from "../../redux/action";
-import "./index.less";
+import './index.less';
 
 export default class Login extends Component<any, any>{
     onFinish = (values) => {
-        <Redirect to="/home" />;
+        this.props.history.replace("/home/admin");
         // const { username, password } = values;
         // try {
         //     //调用异步请求，
@@ -65,10 +66,8 @@ export default class Login extends Component<any, any>{
         //     return <Redirect to="/home" />;
         // }
         const errorMsg = null;
-        // 
-
         return (
-            <div className="login">
+            <div className="login-container">
                 <header className="login-header">
                     <img src={require('../../assets/images/index.png')} alt="logo" />
                     <div>进销存管理系统</div>
