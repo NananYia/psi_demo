@@ -67,16 +67,19 @@ export default class Login extends Component<any, any>{
         // }
         const errorMsg = null;
         return (
-            <div className="login-container">
-                <header className="login-header">
-                    <img src={require('../../assets/images/index.png')} alt="logo" />
-                    <div>进销存管理系统</div>
+            <div className="login-container" >
+                <header className="login-left">
+                    <div className="left-name">
+                        <img src={require('../../assets/images/icon.png')} alt="logo" />
+                        <div className="name">Nanan</div>
+                    </div>
+                    <div className="left-title">基于Java的进销存管理系统</div>
                 </header>
                 <section className="login-content">
                     <div className={errorMsg ? "error-msg show" : "error-msg"}>
                         {errorMsg}
                     </div>
-                    <div>用户登录</div>
+                    <div className="content-title">用户登录</div>
                     <Form name="basic"
                         labelCol={{ span: 8 }}
                         wrapperCol={{ span: 16 }}
@@ -87,14 +90,14 @@ export default class Login extends Component<any, any>{
                         className="login-form"
                     >
                         {/* // 声明式验证：直接使用别人定义好的验证规则进行验证 */}
-                        <Form.Item label="账号" name="username" rules={judjevalue[0]} >
-                            <Input />
+                        <Form.Item label="" name="username" rules={judjevalue[0]} >
+                            <Input placeholder="Name"/>
                         </Form.Item>
 
-                        <Form.Item label="密码" name="password"
+                        <Form.Item label="" name="password"
                             rules={judjevalue[1]}
                         >
-                            <Input.Password />
+                            <Input.Password  placeholder="Password"/>
                         </Form.Item>
 
                         <Form.Item wrapperCol={{ offset: 8, span: 16, }} >

@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 import { Layout } from "antd";
 
-// import LeftNav from "../../components/left-nav";
+// import LeftNav from "../left-nav";
+import SubMenuTheme from "../menu";
 // import Header from "../../components/header";
 import Home from "../home/home";
 // import Category from "../category/category";
@@ -28,6 +29,7 @@ export default class admin extends Component {
     return (
       <Layout style={{ minHeight: "100%" }}>
         <Sider>
+          {/* {<SubMenuTheme/>} */}
           {/* <LeftNav /> */}
         </Sider>
         <Layout>
