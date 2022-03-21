@@ -9,6 +9,7 @@
 import { message } from "antd";
 import axios from "axios";
 export default function ajax(url, data = {}, type = "GET") {
+  url=`http://localhost:3001/jshERP-boot${url}`;
   return new Promise((resolve, reject) => {
     let promise;
     // 1、执行异步ajax请求

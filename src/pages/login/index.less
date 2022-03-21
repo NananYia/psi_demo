@@ -73,10 +73,12 @@
                 transform: translateY(0);
             }
         }
+
         .ant-row {
             justify-content: center;
-            .ant-col-offset-8{
-                margin-left:0px;
+
+            .ant-col-offset-8 {
+                margin-left: 0px;
             }
         }
 
@@ -93,6 +95,43 @@
 
             .login-form-button {
                 width: 100%;
+            }
+        }
+
+        .center {
+            margin-bottom: 0px;
+            .ant-form-item-control-input-content {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+            }
+
+            .rememberMe {
+                // left: 24px;
+                // top: 0px;
+                width: 50%;
+                height: 22px;
+                color: rgba(0, 0, 0, 0.65);
+                font-size: 14px;
+                line-height: 22px;
+
+                .ant-checkbox-wrapper {
+                    margin-right: 5px;
+                }
+
+                .ant-form-item-control-input-content {
+                    display: flex;
+                    flex-direction: row;
+                    justify-content:flex-start;
+                }
+            }
+
+            .register {
+                width: 50%;
+                height: 22px;
+                color: rgba(25, 137, 250, 1);
+                font-size: 14px;
+                line-height: 22px;
             }
         }
     }
