@@ -1,4 +1,5 @@
 import { axios } from '../utils/request'
+import ajax from './ajax';
 
 const api = {
   user: '/api/user',
@@ -11,12 +12,13 @@ const api = {
 export default api
 
 //post
-export function postAction(url,parameter) {
-  return axios({
-    url: url,
-    method:'post' ,
-    data: parameter
-  })
+export function postAction(url, parameter) {
+  return ajax(url,parameter,"post")
+  // return axios({
+  //   url: url,
+  //   method:'post' ,
+  //   data: parameter
+  // })
 }
 
 //post method= {post | put}
@@ -38,12 +40,13 @@ export function putAction(url,parameter) {
 }
 
 //get
-export function getAction(url,parameter) {
-  return axios({
-    url: url,
-    method: 'get',
-    params: parameter
-  })
+export function getAction(url, parameter) {
+  return ajax(url,parameter,"GET")
+  // return axios({
+  //   url: url,
+  //   method: 'get',
+  //   params: parameter
+  // })
 }
 
 //deleteAction
@@ -58,7 +61,7 @@ export function deleteAction(url,parameter) {
 export function getUserList(parameter) {
   return axios({
     url: api.user,
-    method: 'get',
+    method: 'GET',
     params: parameter
   })
 }
@@ -66,7 +69,7 @@ export function getUserList(parameter) {
 export function getRoleList(parameter) {
   return axios({
     url: api.role,
-    method: 'get',
+    method: 'GET',
     params: parameter
   })
 }
@@ -74,7 +77,7 @@ export function getRoleList(parameter) {
 export function getServiceList(parameter) {
   return axios({
     url: api.service,
-    method: 'get',
+    method: 'GET',
     params: parameter
   })
 }
@@ -82,7 +85,7 @@ export function getServiceList(parameter) {
 export function getPermissions(parameter) {
   return axios({
     url: api.permissionNoPager,
-    method: 'get',
+    method: 'GET',
     params: parameter
   })
 }
@@ -107,7 +110,7 @@ export function downFile(url,parameter){
   return axios({
     url: url,
     params: parameter,
-    method:'get' ,
+    method:'GET' ,
     responseType: 'blob'
   })
 }

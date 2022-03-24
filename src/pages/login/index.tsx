@@ -2,8 +2,9 @@ import React, { Component } from "react";
 import { observable } from 'mobx'
 import { observer } from 'mobx-react'
 import store from "store";
-import { Form, Input, Button, message, Checkbox } from "antd";
-import { Toast } from 'antd-mobile';
+import { Form, Input, Button, message, Checkbox, Tabs, Tooltip } from "antd";
+import { SmileOutlined } from '@ant-design/icons';
+import { Icon, Toast } from 'antd-mobile';
 import md5 from "md5"
 import { Redirect, Route } from "react-router-dom";
 import { connect } from "react-redux";
@@ -13,6 +14,9 @@ import { LoginIn, Logout } from "../../store/modules/user";
 import NoticeAlert from "../../components/NoticeAlert/index";
 import './index.less';
 import Link from "antd/lib/typography/Link";
+import Register from "../register";
+
+const { TabPane } = Tabs;
 @observer
 export default class Login extends Component<any, any>{
     @observable
@@ -20,7 +24,9 @@ export default class Login extends Component<any, any>{
     @observable
     private loginBtn: boolean;
     @observable
-    private rememberchecked: boolean=false;
+    private rememberchecked: boolean = false;
+    @observable
+    private requestCodeSuccess: boolean = false;
 
     constructor(props) {
         super(props);
@@ -46,25 +52,25 @@ export default class Login extends Component<any, any>{
         }
     };
     departConfirm(res, loginName) {
-        if (res.code == 200) {
+        if (res.code === 200) {
             const err={message:""};
-            if (res.data.msgTip == 'user can login') {
+            if (res.data.msgTip === 'user can login') {
                 store.set('winBtnStrList', res.data.userBtn, 7 * 24 * 60 * 60 * 1000);
                 store.set('roleType', res.data.roleType, 7 * 24 * 60 * 60 * 1000);
                 this.loginSuccess(res,loginName)
-            } else if (res.data.msgTip == 'user is not exist') {
+            } else if (res.data.msgTip === 'user is not exist') {
                 err.message = '用户不存在';
                 this.requestFailed(err)
                 Logout();
-            } else if (res.data.msgTip == 'user password error') {
+            } else if (res.data.msgTip === 'user password error') {
                 err.message = '用户密码不正确';
                 this.requestFailed(err)
                 Logout();
-            } else if (res.data.msgTip == 'user is black') {
+            } else if (res.data.msgTip === 'user is black') {
                 err.message = '用户被禁用';
                 this.requestFailed(err)
                 Logout();
-            } else if (res.data.msgTip == 'tenant is black') {
+            } else if (res.data.msgTip === 'tenant is black') {
                 if (loginName === 'jsh') {
                     err.message = 'jsh用户已停用，请注册账户进行体验！';
                 } else {
@@ -72,11 +78,11 @@ export default class Login extends Component<any, any>{
                 }
                 this.requestFailed(err)
                 Logout();
-            } else if (res.data.msgTip == 'tenant is expire') {
+            } else if (res.data.msgTip === 'tenant is expire') {
                 err.message = '用户所属的账户已过期';
                 this.requestFailed(err)
                 Logout();
-            } else if (res.data.msgTip == 'access service error') {
+            } else if (res.data.msgTip === 'access service error') {
                 err.message = '查询服务异常';
                 this.requestFailed(err)
                 Logout();
@@ -94,8 +100,7 @@ export default class Login extends Component<any, any>{
                 message="登录失败"
                 description={((err.response || {}).data || {}).message || err.message || "请求出现错误，请稍后再试"}
             />
-        )
-        //     duration: 4,持续时间
+        )        //     duration: 4,持续时间
     };
     loginSuccess(res, loginName) {
         // this.$router.push({ path: "/dashboard/analysis" })
@@ -163,31 +168,17 @@ export default class Login extends Component<any, any>{
             return Promise.resolve("通过"); //验证通过
         }
     };
+    validatesurePwd(rule, value) {
+        if (!value) {
+            return Promise.reject("密码必须输入");
+        } else if (value.surepassword! === value.password ) {
+            return Promise.reject("两次密码不一致哦，请确认");
+        } else {
+            return Promise.resolve("通过"); //验证通过
+        }
+    }
+
     render() {
-        const judjevalue = [
-            [{
-                required: true,
-                whitespace: true,
-                message: "用户名必须输入",
-            },
-            {
-                min: 4,
-                message: "用户名至少4位",
-            },
-            {
-                max: 12,
-                message: "用户名最多12位",
-            },
-            {
-                pattern: /^[a-zA-Z0-9_]+$/,
-                message: "用户名必须是英文、数字或下划线组成",
-            },],
-            [{
-                required: true,
-                // message: "请输入密码",
-                validator: this.validatePwd,
-            },]
-        ];
         // 如果用户已经登陆, 自动跳转到管理界面
         // const user = this.props.user;
         // if (user && user._id) {
@@ -207,42 +198,52 @@ export default class Login extends Component<any, any>{
                     <div className={errorMsg ? "error-msg show" : "error-msg"}>
                         {errorMsg}
                     </div>
-                    <div className="content-title">用户登录</div>
-                    <Form name="basic"
-                        labelCol={{ span: 8 }}
-                        wrapperCol={{ span: 16 }}
-                        initialValues={{ remember: true }}
-                        onFinish={this.onFinish}
-                        // onFinishFailed={this.onFinishFailed}
-                        autoComplete="off"
-                        className="login-form"
-                    >
-                        {/* // 声明式验证：直接使用别人定义好的验证规则进行验证 */}
-                        <Form.Item label="" name="username" rules={judjevalue[0]} >
-                            <Input placeholder="Name" />
-                        </Form.Item>
-
-                        <Form.Item label="" name="password" rules={judjevalue[1]} >
-                            <Input.Password placeholder="Password" />
-                        </Form.Item>
-                        <Form.Item className="center">
-                            <Form.Item label="" name="rememberMe" className="rememberMe">
-                                <Checkbox value={true} onChange={() => { this.rememberchecked = !this.rememberchecked }} />
-                                自动登录
-                            </Form.Item>
-                            <Form.Item label="" name="rememberMe" className="register">
-                                <Link ellipsis={true} />
-                                注册账户
-                            </Form.Item>
-                        </Form.Item>
-                        <Form.Item wrapperCol={{ offset: 8, span: 16, }} >
-                            <Button type="primary" htmlType="submit" className="login-form-button" >
-                                登录
-                            </Button>
-                        </Form.Item>
-                    </Form>
+                    <Tabs defaultActiveKey="1"  className="content-title">
+                        <TabPane tab="用户登录" key="1" >
+                            {this.renderloginItem()}
+                        </TabPane>
+                        <TabPane tab="注册账户" key="2">
+                            {this.rendersignItem()}
+                        </TabPane>
+                    </Tabs>
                 </section>
             </div>
+        )
+    }
+    renderloginItem() { 
+        return (
+            <Form name="basic"
+                labelCol={{ span: 8 }}
+                wrapperCol={{ span: 16 }}
+                initialValues={{ remember: true }}
+                onFinish={this.onFinish}
+                autoComplete="off"
+                className="login-form"
+            >
+                <Form.Item label="" name="username" >
+                    <Input placeholder="Name" />
+                </Form.Item>
+
+                <Form.Item label="" name="password" >
+                    <Input.Password placeholder="Password" />
+                </Form.Item>
+                <Form.Item className="center" name="">
+                    <Form.Item label="" name="rememberMe" className="rememberMe">
+                        <Checkbox onChange={() => { this.rememberchecked = !this.rememberchecked }} />
+                        自动登录
+                    </Form.Item>
+                </Form.Item>
+                <Form.Item wrapperCol={{ offset: 8, span: 16, }} name="">
+                    <Button type="primary" htmlType="submit" className="login-form-button" >
+                        登录
+                    </Button>
+                </Form.Item>
+            </Form>
+        )
+    }
+    rendersignItem() {
+        return (
+            <Register />
         )
     }
 }

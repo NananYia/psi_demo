@@ -38,6 +38,19 @@
         }
     }
 
+    .ant-tabs-nav::before {
+        border-bottom: 0px !important;
+    }
+
+    .ant-tabs-nav-wrap {
+        // display: flex;
+        padding-left: 16%;
+
+        #rc-tabs-0-tab-2 {
+            padding-bottom: 3px;
+        }
+    }
+
     .login-content {
         position: relative;
         width: 400px;
@@ -49,8 +62,7 @@
 
         .content-title {
             text-align: center;
-            color: #409EFF;
-            font-size: 18px;
+            font-size: 20px;
             padding-bottom: 10px;
         }
 
@@ -92,7 +104,7 @@
         .login-form {
             // display: flex;
             // flex-direction: column;
-
+            height: 280px;
             .login-form-button {
                 width: 100%;
             }
@@ -100,6 +112,7 @@
 
         .center {
             margin-bottom: 0px;
+
             .ant-form-item-control-input-content {
                 display: flex;
                 flex-direction: row;
@@ -122,7 +135,7 @@
                 .ant-form-item-control-input-content {
                     display: flex;
                     flex-direction: row;
-                    justify-content:flex-start;
+                    justify-content: flex-start;
                 }
             }
 
@@ -133,6 +146,19 @@
                 font-size: 14px;
                 line-height: 22px;
             }
+        }
+    }
+
+    .ant-input:placeholder-shown,
+    .ant-form-item-control-input,
+    .ant-input-affix-wrapper,
+    .ant-input {
+        border-radius: 4px;
+    }
+
+    .ant-input-password {
+        .ant-input {
+            border-radius: 0px;
         }
     }
 }
