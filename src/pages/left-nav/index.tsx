@@ -6,18 +6,12 @@ import { makeObservable, observable } from 'mobx'
 import { Menu } from "antd";
 import { menuList } from "../../config/menuConfig";
 import { connect } from "react-redux";
-// import store from "@src/store";
 // import { setHeadTitle } from "../../redux/action";
 import { GetPermissionList } from "../../store/modules/user"
 import {
-	MenuUnfoldOutlined,
-	MenuFoldOutlined,
-	UserOutlined,
-	VideoCameraOutlined,
-	UploadOutlined,
-	FileOutlined,
+	MenuUnfoldOutlined, MenuFoldOutlined, UserOutlined, VideoCameraOutlined,
+	UploadOutlined, FileOutlined, AppstoreOutlined, MailOutlined, SettingOutlined
 } from '@ant-design/icons';
-import { AppstoreOutlined, MailOutlined, SettingOutlined } from '@ant-design/icons';
 // import { generateIndexRouter } from "src/utils/util";
 
 const { SubMenu } = Menu;
@@ -105,8 +99,6 @@ export default class LeftNav extends Component {
 	getMenuList = async () => {
 		try {
 			const result: any = await GetPermissionList();
-			console.log("result", result);
-
 			const menuData = result;
 			if (menuData === null || menuData === "" || menuData === undefined) {
 				return;
