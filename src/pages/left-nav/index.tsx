@@ -4,21 +4,21 @@ import { Link, withRouter } from "react-router-dom";
 import { observer } from 'mobx-react'
 import { makeObservable, observable } from 'mobx'
 import { Menu } from "antd";
-
 import { menuList } from "../../config/menuConfig";
 import { connect } from "react-redux";
 // import store from "@src/store";
 // import { setHeadTitle } from "../../redux/action";
-import {GetPermissionList} from "../../store/modules/user"
+import { GetPermissionList } from "../../store/modules/user"
 import {
-    MenuUnfoldOutlined,
-    MenuFoldOutlined,
-    UserOutlined,
-    VideoCameraOutlined,
-    UploadOutlined,
-    FileOutlined,
+	MenuUnfoldOutlined,
+	MenuFoldOutlined,
+	UserOutlined,
+	VideoCameraOutlined,
+	UploadOutlined,
+	FileOutlined,
 } from '@ant-design/icons';
-// import { generateIndexRouter } from "@src/utils/util";
+import { AppstoreOutlined, MailOutlined, SettingOutlined } from '@ant-design/icons';
+// import { generateIndexRouter } from "src/utils/util";
 
 const { SubMenu } = Menu;
 // 左侧导航的组件
@@ -27,13 +27,13 @@ export default class LeftNav extends Component {
 	@observable
 	private menuNodes: any;
 	@observable
-    private openKey: any;
-    
-    constructor(props) { 
-        super(props);
-        makeObservable(this);
-        this.getMenuList();
-    }
+	private openKey: any;
+
+	constructor(props) {
+		super(props);
+		makeObservable(this);
+		this.getMenuList();
+	}
 
 	// 判断当前登录用户对item是否有权限
 	// hasAutu = (item) => {
@@ -102,72 +102,68 @@ export default class LeftNav extends Component {
 	// 		}
 	// 	});
 	// };
-    getMenuList = async () => {
-        try {
-            const result = await GetPermissionList;
-            console.log(result);
-            
-            const menuData = result;
-                // if (menuData === null || menuData === "" || menuData === undefined) {
-                //     return;
-                // }
-                // let constRoutes = [];
-                // constRoutes = generateIndexRouter(menuData);
-                // // 添加主界面路由
-                // store.dispatch('UpdateAppRouter', { constRoutes }).then(() => {
-                //     // 根据roles权限生成可访问的路由表
-                //     // 动态添加可访问路由表
-                //     router.addRoutes(store.getters.addRouters)
-                //     const redirect = decodeURIComponent(from.query.redirect || to.path)
-                //     // next({ path: redirect })
-                // })
-            
-        } catch (error) { 
-            // store.dispatch('Logout').then(() => {
-                // next({ path: '/user/login' })
-            // })
-        }
-    }
+	getMenuList = async () => {
+		try {
+			const result: any = await GetPermissionList();
+			console.log("result", result);
+
+			const menuData = result;
+			if (menuData === null || menuData === "" || menuData === undefined) {
+				return;
+			}
+			let constRoutes = [];
+			// constRoutes = generateIndexRouter(menuData);
+			// // 添加主界面路由
+			// store.dispatch('UpdateAppRouter', { constRoutes }).then(() => {
+			//     // 根据roles权限生成可访问的路由表
+			//     // 动态添加可访问路由表
+			//     router.addRoutes(store.getters.addRouters)
+			//     const redirect = decodeURIComponent(from.query.redirect || to.path)
+			//     // next({ path: redirect })
+			// })
+
+		} catch (error) {
+			// store.dispatch('Logout').then(() => {
+			// next({ path: '/user/login' })
+			// })
+		}
+	}
 
 	render() {
-		// 得到当前请求的路由路径
-		// let path = this.props.location.pathname;
-		// if (path.indexOf("/product") === 0) {
-		// 	// 当前请求的是商品或其子路由界面
-		// 	path = "/product";
-		// }
 		// 得到需要打开菜单项的key
 		const openKey = this.openKey || 1;
 		return (
 			<div className="left-nav">
-				<Link to="/" className="left-nav-header">
-                    {/* <img src={require('../../assets/images/icon.png')} alt="logo" /> */}
-					<h1>ERP</h1>
+				<Link to="/home" className="left-nav-header">
+					{/* <img src={require('../../assets/images/icon.png')} alt="logo" /> */}
+					<h1>Nanan ERP</h1>
 				</Link>
 				<Menu
 					mode="inline"
-                    theme="light"
+					theme="light"
 					// selectedKeys={[path]}
-					defaultOpenKeys={[openKey]}
+					// defaultOpenKeys={[openKey]}
+					defaultSelectedKeys={['1']}
+					defaultOpenKeys={['sub1']}
 				>
-                    {/* {this.menuNodes} */}
-                    <Menu.Item key="1" icon={<UserOutlined />}>
-                        nav 1
-                    </Menu.Item>
-                    <SubMenu key="sub1" icon={<UserOutlined />} title="User">
-                        <Menu.Item key="3">Tom</Menu.Item>
-                        <Menu.Item key="4">Bill</Menu.Item>
-                        <Menu.Item key="5">Alex</Menu.Item>
-                    </SubMenu>
-                    <Menu.Item key="9" icon={<FileOutlined />}>
-                        Files
-                    </Menu.Item>
+					{/* {this.menuNodes} */}
+					<SubMenu key="sub1" icon={<MailOutlined />} title="Navigation One">
+						<Menu.Item key="1">Option 1</Menu.Item>
+						<Menu.Item key="2">Option 2</Menu.Item>
+						<Menu.Item key="3">Option 3</Menu.Item>
+					</SubMenu>
+					<SubMenu key="sub2" icon={<AppstoreOutlined />} title="Navigation Two">
+						<Menu.Item key="5">Option 5</Menu.Item>
+						<Menu.Item key="6">Option 6</Menu.Item>
+					</SubMenu>
+					<SubMenu key="sub4" icon={<SettingOutlined />} title="Navigation Three">
+						<Menu.Item key="9">Option 9</Menu.Item>
+						<Menu.Item key="10">Option 10</Menu.Item>
+						<Menu.Item key="11">Option 11</Menu.Item>
+						<Menu.Item key="12">Option 12</Menu.Item>
+					</SubMenu>
 				</Menu>
 			</div>
 		);
 	}
 }
-
-// export default connect((state) => ({ user: state.user }), { setHeadTitle })(
-// 	withRouter(LeftNav)
-// );

@@ -12,7 +12,7 @@ import {axios} from "../utils/request";
  */
 export const login = (parameter) => {
   return axios({
-    url: '/api/user/login',
+    url: '/user/login',
     method: 'post',
     data: parameter
   })

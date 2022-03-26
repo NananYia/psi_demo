@@ -14,7 +14,7 @@ type ResultDataType = apiKeyDataType[apiKeyType];
  * @type {*|string}
  */
 // let apiBaseUrl = window._CONFIG['/jshERP-boot'] || "/jshERP-boot";
-let apiBaseUrl = "http://localhost:9999/jshERP-boot";
+let apiBaseUrl = "http://localhost:3000/jshERP-boot";
 // 创建 axios 实例
 interface NewAxiosInstance extends AxiosInstance {
 	/* 
@@ -28,7 +28,7 @@ interface NewAxiosInstance extends AxiosInstance {
 }
 
 const service: NewAxiosInstance = axios.create({
-	baseURL: "/",
+	baseURL: apiBaseUrl,
 	timeout: 90000, // 请求超时时间
 	withCredentials: true, // 跨域携带cookie
 	xsrfCookieName: 'xsrf-token' //当创建实例的时候配置默认配置
@@ -107,13 +107,13 @@ service.interceptors.request.use(response => {
 	if (token) {
 		response.headers['X-Access-Token'] = token // 让每个请求携带自定义 token 请根据实际情况自行修改
 	}
-	if (response.method && QS_METHOD.includes(response.method)) {// 这里只处理post请求，根据自己情况修改
-		response.data = qs.stringify(response.data);
-	} else if (response.method && GET_METHOD.includes(response.method)) {//设置GET的请求参数
-		response.params = qs.parse(response.data);
-		response.data = undefined;
-	}
-	response.headers['Content-Type'] = 'application/json;charset=UTF-8'
+	// if (response.method && QS_METHOD.includes(response.method)) {// 这里只处理post请求，根据自己情况修改
+	// 	response.data = qs.stringify(response.data);
+	// } else if (response.method && GET_METHOD.includes(response.method)) {//设置GET的请求参数
+	// 	response.params = qs.parse(response.data);
+	// 	response.data = undefined;
+	// }
+	response.headers['Access-Control-Allow-Origin'] = '*';
 	// 每次请求带上时间戳 防刷处理
 	// if (config.method === 'get' || config.method === 'delete') {
 	// 	config.params = {
@@ -148,4 +148,4 @@ service.interceptors.response.use((response) => {
 // 	}
 // }
 
-export {service as axios}
+export { service as axios }
