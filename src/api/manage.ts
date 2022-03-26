@@ -1,28 +1,28 @@
-import { axios } from '../utils/request'
-import ajax from './ajax';
+import {axios} from '../utils/request'
 
 const api = {
   user: '/api/user',
   role: '/api/role',
-  service: '/api/service',
+  axios: '/api/axios',
   permission: '/api/permission',
   permissionNoPager: '/api/permission/no-pager'
 }
 
 export default api
 
+
+
 //post
-export function postAction(url, parameter) {
-  return ajax(url,parameter,"post")
-  // return axios({
-  //   url: url,
-  //   method:'post' ,
-  //   data: parameter
-  // })
+export function postAction(url, parameter?) {
+  return axios({
+    url: url,
+    method:'post' ,
+    data: parameter
+  })
 }
 
 //post method= {post | put}
-export function httpAction(url,parameter,method) {
+export function httpAction(url, parameter?, method?) {
   return axios({
     url: url,
     method:method ,
@@ -40,17 +40,16 @@ export function putAction(url,parameter) {
 }
 
 //get
-export function getAction(url, parameter) {
-  return ajax(url,parameter,"GET")
-  // return axios({
-  //   url: url,
-  //   method: 'get',
-  //   params: parameter
-  // })
+export function getAction(url, parameter?) {
+  return axios({
+    url: url,
+    method: 'get',
+    params: parameter
+  })
 }
 
 //deleteAction
-export function deleteAction(url,parameter) {
+export function deleteAction(url, parameter?) {
   return axios({
     url: url,
     method: 'delete',
@@ -58,7 +57,7 @@ export function deleteAction(url,parameter) {
   })
 }
 
-export function getUserList(parameter) {
+export function getUserList(parameter?) {
   return axios({
     url: api.user,
     method: 'GET',
@@ -66,7 +65,7 @@ export function getUserList(parameter) {
   })
 }
 
-export function getRoleList(parameter) {
+export function getRoleList(parameter?) {
   return axios({
     url: api.role,
     method: 'GET',
@@ -74,15 +73,15 @@ export function getRoleList(parameter) {
   })
 }
 
-export function getServiceList(parameter) {
+export function getaxiosList(parameter?) {
   return axios({
-    url: api.service,
+    url: api.axios,
     method: 'GET',
     params: parameter
   })
 }
 
-export function getPermissions(parameter) {
+export function getPermissions(parameter?) {
   return axios({
     url: api.permissionNoPager,
     method: 'GET',
@@ -92,9 +91,9 @@ export function getPermissions(parameter) {
 
 // id == 0 add     post
 // id != 0 update  put
-export function saveService(parameter) {
+export function saveaxios(parameter?) {
   return axios({
-    url: api.service,
+    url: api.axios,
     method: parameter.id == 0 ? 'post' : 'put',
     data: parameter
   })
@@ -106,7 +105,7 @@ export function saveService(parameter) {
  * @param parameter
  * @returns {*}
  */
-export function downFile(url,parameter){
+export function downFile(url, parameter?){
   return axios({
     url: url,
     params: parameter,
@@ -122,27 +121,27 @@ export function downFile(url,parameter){
  * @param parameter
  * @returns {*}
  */
-export function downloadFile(url, fileName, parameter) {
-  return downFile(url, parameter).then((data) => {
-    if (!data || data.size === 0) {
-      // Vue.prototype['$message'].warning('文件下载失败')
-      return
-    }
-    if (typeof window.navigator.msSaveBlob !== 'undefined') {
-      window.navigator.msSaveBlob(new Blob([data]), fileName)
-    } else {
-      let url = window.URL.createObjectURL(new Blob([data]))
-      let link = document.createElement('a')
-      link.style.display = 'none'
-      link.href = url
-      link.setAttribute('download', fileName)
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link) //下载完成移除元素
-      window.URL.revokeObjectURL(url) //释放掉blob对象
-    }
-  })
-}
+// export function downloadFile(url, fileName, parameter) {
+//   return downFile(url, parameter).then((data) => {
+//     if (!data || data.size === 0) {
+//       // Vue.prototype['$message'].warning('文件下载失败')
+//       return
+//     }
+//     if (typeof window.navigator.msSaveBlob !== 'undefined') {
+//       window.navigator.msSaveBlob(new Blob([data]), fileName)
+//     } else {
+//       let url = window.URL.createObjectURL(new Blob([data]))
+//       let link = document.createElement('a')
+//       link.style.display = 'none'
+//       link.href = url
+//       link.setAttribute('download', fileName)
+//       document.body.appendChild(link)
+//       link.click()
+//       document.body.removeChild(link) //下载完成移除元素
+//       window.URL.revokeObjectURL(url) //释放掉blob对象
+//     }
+//   })
+// }
 
 /**
  * 文件上传 用于富文本上传图片
@@ -173,7 +172,7 @@ export function getFileAccessHttpUrl(avatar,subStr) {
     return avatar;
   }else{
     if(avatar &&　avatar.length>0 && avatar.indexOf('[')==-1){
-      return window._CONFIG['http://localhost:3001/jshERP-boot'] + "/" + avatar;
+      return 'http://localhost:3001/jshERP-boot'+ "/" + avatar;
     }
   }
 }

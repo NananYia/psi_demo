@@ -5,7 +5,6 @@ import { Form, Input, Button } from "antd";
 import { SmileOutlined } from '@ant-design/icons';
 import md5 from "md5"
 import { postAction, getAction } from '../../api/manage'
-import NoticeAlert from "../../components/NoticeAlert/index";
 import './index.less';
 
 @observer
@@ -27,16 +26,16 @@ export default class Register extends Component<any, any>{
         this.handleChangeCheckCode();
     }
 
-    handleChangeCheckCode = async () => {
+    handleChangeCheckCode = async() => {
         var currdatetime = new Date().getTime();
         try {
-            const result = await getAction(`/user/randomImage/${currdatetime}`);
+            const result: any= await getAction(`/user/randomImage/${currdatetime}`);
             if (result.code == 200) {
                 this.randCode = result.data.codeNum;
                 this.randCodeImage = result.data.base64;
                 this.requestCodeSuccess = true;
             } else {
-                <NoticeAlert alertType="error" description={result.data} />
+                // <NoticeAlert alertType="error" description={result.data} />
                 this.requestCodeSuccess = false;
             }
         } catch (error) {
@@ -52,17 +51,20 @@ export default class Register extends Component<any, any>{
             };
             try {
                 const result = await postAction("/user/registerUser", register);
-                if (result.code === 200) {
-                    // setTimeout(function () {
-                    //     this.formRef.resetFields();
-                    // }, 2000);
-                    return <NoticeAlert alertType="success" message="提示" description={"注册成功， 请使用该账户登录!"} />
+                if (result.status === 200) {
+                    setTimeout(function () {
+                        //this.formRef.resetFields();//表单重置操作
+                    }, 2000);
+                    return
+                    // <NoticeAlert alertType="success" message="提示" description={"注册成功， 请使用该账户登录!"} />
                 }
             } catch (error) {
-                return <NoticeAlert alertType="error" message="提示" description={error || "注册失败"} />
+                return
+                // <NoticeAlert alertType="error" message="提示" description={error || "注册失败"} />
             }
         } else {
-            return <NoticeAlert alertType="error" message="提示" description="验证码错误" />
+            return
+            // <NoticeAlert alertType="error" message="提示" description="验证码错误" />
         }
     }
     // 对密码进行自定义验证
@@ -137,7 +139,6 @@ export default class Register extends Component<any, any>{
                         <Input placeholder="inputCode" prefix={<SmileOutlined style={{ color: 'rgba(0,0,0,.25)' }} />} />
                     </Form.Item>
                     <Form.Item className="inputCode-right">
-                        {/* <img src={this.randCodeImage} onClick={() => this.handleChangeCheckCode()} /> */}
                     {this.requestCodeSuccess ?
                         <img src={this.randCodeImage }onClick={this.handleChangeCheckCode} />
                         :

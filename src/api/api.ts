@@ -16,7 +16,9 @@ const registerUser = (params)=>postAction("/user/registerUser",params);
 const addUser = (params)=>postAction("/user/addUser",params);
 const editUser = (params)=>putAction("/user/updateUser",params);
 const getUserList = (params)=>getAction("/user/getUserList",params);
-const queryPermissionsByUser = (params)=>postAction("/function/findMenuByPNumber",params);
+const queryPermissionsByUser = (params) => {
+  return postAction("/function/findMenuByPNumber",params);
+}
 //机构管理
 const queryOrganizationTreeList = (params)=>getAction("/organization/getOrganizationTree",params);
 const queryOrganizationById = (params)=>getAction("/organization/findById",params);
@@ -104,7 +106,31 @@ const findStockByDepotAndBarCode = (params)=>getAction("/depotItem/findStockByDe
 const getBatchNumberList = (params)=>getAction("/depotItem/getBatchNumberList",params);
 const findFinancialDetailByNumber = (params)=>getAction("/accountHead/getDetailByNumber",params);
 
-export {
+const apiList = {
+  'getData': '/getData',
+  'othersData': '/othersData'
+}
+export type apiKeyType = keyof typeof apiList;
+/**
+ * @description: 接口对应的数据返回值类型
+ * @param {*} 无参数
+ * @return {*} 无返回值
+ */
+export interface apiKeyDataType {
+  'getData': {
+    code: number;
+    data: {
+      name: string;
+      age: number;
+      work: string[]
+    }
+  },
+  'othersData': {
+    code: number;
+    data: string[]
+  }
+}
+export default {
   getBuyAndSaleStatistics,
   buyOrSalePrice,
   checkTenant,

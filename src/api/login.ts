@@ -1,6 +1,5 @@
 import api from './index'
-import * as axios from "../../src/utils/request";
-import ajax from './ajax';
+import {axios} from "../utils/request";
 
 /**
  * login func
@@ -12,17 +11,16 @@ import ajax from './ajax';
  * }
  */
 export const login = (parameter) => {
-  return ajax('/user/login',parameter,"post")
-  // return ajax({
-  //   url: '/user/login',
-  //   method: 'post',
-  //   data: parameter
-  // })
+  return axios({
+    url: '/api/user/login',
+    method: 'post',
+    data: parameter
+  })
 }
 
 export const logout=()=>{
   return axios({
     url: '/user/logout',
-    method: 'get'
-  })
+    method: 'get'}
+  )
 }

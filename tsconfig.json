@@ -26,7 +26,7 @@
     "skipLibCheck": true,
     "strict": false,
     "forceConsistentCasingInFileNames": true, // 如果为true, 当更改文件名大小写时会报错
-    "isolatedModules": false
+    "isolatedModules": false,
   },
   "include": ["src"]
 }

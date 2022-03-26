@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { observable } from 'mobx'
 import { observer } from 'mobx-react'
 import store from "store";
-import { Form, Input, Button, message, Checkbox, Tabs, Tooltip } from "antd";
+import { Form, Input, Button, message, Checkbox, Tabs, Tooltip, Alert } from "antd";
 import { SmileOutlined } from '@ant-design/icons';
 import { Icon, Toast } from 'antd-mobile';
 import md5 from "md5"
@@ -11,7 +11,7 @@ import { connect } from "react-redux";
 import Admin from "../admin/admin";
 import { putAction, postAction, getAction } from '../../api/manage'
 import { LoginIn, Logout } from "../../store/modules/user";
-import NoticeAlert from "../../components/NoticeAlert/index";
+import { showTip }  from "../../components/NoticeAlert/index";
 import './index.less';
 import Link from "antd/lib/typography/Link";
 import Register from "../register";
@@ -25,8 +25,6 @@ export default class Login extends Component<any, any>{
     private loginBtn: boolean;
     @observable
     private rememberchecked: boolean = false;
-    @observable
-    private requestCodeSuccess: boolean = false;
 
     constructor(props) {
         super(props);
@@ -44,7 +42,7 @@ export default class Login extends Component<any, any>{
                 const result = await LoginIn(param);
                 this.departConfirm(result, username)
             } catch (error) {
-                // this.requestFailed(error);
+                this.requestFailed(error);
                 console.log("请求出错", error);
             }
         } else { 
@@ -65,7 +63,7 @@ export default class Login extends Component<any, any>{
             } else if (res.data.msgTip === 'user password error') {
                 err.message = '用户密码不正确';
                 this.requestFailed(err)
-                Logout();
+                // Logout();
             } else if (res.data.msgTip === 'user is black') {
                 err.message = '用户被禁用';
                 this.requestFailed(err)
@@ -94,22 +92,14 @@ export default class Login extends Component<any, any>{
     };
     requestFailed(err) {
         this.loginBtn = false;
-        return (
-            <NoticeAlert
-                alertType="warning"
-                message="登录失败"
-                description={((err.response || {}).data || {}).message || err.message || "请求出现错误，请稍后再试"}
-            />
-        )        //     duration: 4,持续时间
+        showTip({ type: "warning", msg: ((err.response || {}).data || {}).message || err.message || "请求出现错误，请稍后再试" , duration: 1500 });
+        return
     };
     loginSuccess(res, loginName) {
         // this.$router.push({ path: "/dashboard/analysis" })
         this.props.history.replace("/home/admin");//登录成功跳转
-        <NoticeAlert
-            alertType="success"
-            message="欢迎"
-            description={`${loginName}，欢迎回来`}
-        />
+        // this.props.history.replace("/dashboard/analysis");//登录成功跳转
+        showTip({ type: "success", msg: `${loginName}，欢迎回来` , duration: 1500 });
         if (res.data && res.data.user) {
             if (res.data.user.loginName === 'admin') {
                 let desc = 'admin只是平台运维用户，真正的管理员是账户，admin不能编辑任何业务数据，只能配置平台菜单和创建账户';

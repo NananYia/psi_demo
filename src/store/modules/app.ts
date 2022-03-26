@@ -10,7 +10,7 @@ import {
   DEFAULT_FIXED_HEADER_HIDDEN,
   DEFAULT_CONTENT_WIDTH_TYPE,
   DEFAULT_MULTI_PAGE
-} from "@/store/mutation-types"
+} from "../mutation-types"
 
 const app = {
   state: {
