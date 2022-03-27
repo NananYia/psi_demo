@@ -98,7 +98,7 @@ export default class Login extends Component<any, any>{
         return
     };
     loginSuccess = async (res, loginName) => {
-        this.props.history.replace("/home/admin");//登录成功跳转
+        this.props.history.replace("/home");//登录成功跳转
         // this.props.history.replace("/dashboard/analysis");//登录成功跳转
         notification.success({ message: '欢迎', description: `${loginName}，欢迎回来`, duration: 1500 });
         if (res.data && res.data.user) {

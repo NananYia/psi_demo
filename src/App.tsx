@@ -17,7 +17,7 @@ export default class App extends React.Component {
 				{/* 只匹配其中一个 */}
 				<Switch>
 					<Route path="/login" component={Login}></Route>
-					<Route path="/home/admin" component={Admin}></Route>
+					<Route path="/home" component={Admin}></Route>
 					<Redirect to="/login" />
 				</Switch>
 			</div>

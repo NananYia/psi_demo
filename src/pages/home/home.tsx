@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Card, Statistic, DatePicker, Timeline } from "antd";
+import { HashRouter, Switch, NavLink, Route, Redirect } from 'react-router-dom';
 import moment from "moment";
 import {
 	QuestionCircleOutlined,
@@ -9,6 +10,7 @@ import {
 } from "@ant-design/icons";
 import Line from "./line";
 import Bar from "./bar";
+import VendorList from "../ststem/vendor";
 import "./home.less";
 
 const dateFormat = "YYYY/MM/DD";
@@ -22,12 +24,12 @@ export default class Home extends Component {
 	handleChange = (isVisited) => {
 		return () => this.setState({ isVisited });
 	};
-
+	
 	render() {
 		const { isVisited } = this.state;
 		return (
 			<div className="home">
-				
+				home
 			</div>
 		);
 	}
