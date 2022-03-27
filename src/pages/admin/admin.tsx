@@ -13,6 +13,8 @@ import LeftNav from "../left-nav";
 // import NotFound from "../../not-found/not-found";
 import VendorList from "../ststem/vendor";
 import CustomerList from "../ststem/customer";
+import { Header } from "antd/lib/layout/layout";
+import { MenuUnfoldOutlined, MenuFoldOutlined, } from '@ant-design/icons';
 import './admin.less';
 
 const { Footer, Sider, Content } = Layout;
@@ -32,22 +34,21 @@ export default class admin extends Component<any, any>{
 	};
 
 	render() {
-		// const user = this.props.user;
-		// 如果内存没有存储user ==> 当前没有登陆
-		// if (!user || !user._id) {
-		//   // 自动跳转到登陆(在render()中)
-		//   return <Redirect to="/login" />;
-		// }
 		return (
 			<Layout style={{ minHeight: "100%" }} >
-				<Sider collapsible collapsed={this.collapsed} onCollapse={()=>this.onCollapse()} theme="light">
+				<Sider trigger={null}  collapsible collapsed={this.collapsed} theme="light">
 					<LeftNav/>
 				</Sider>
 				<Layout>
-					{/* <Header>Header</Header> */}
+					<Header className="site-layout-background" style={{ padding: 0 }}>
+						{React.createElement(this.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
+							className: 'trigger',
+							onClick: () => this.onCollapse(),
+						})}
+					</Header>
 					<Content style={{ margin: 20, backgroundColor: "#fff" }} className="panel">
 							<Switch>
-								<Route path="/home/system/home" component={Home} />
+								<Route path="/home" component={Home} />
 								<Route path="/home/system/vendor" component={VendorList} />
 								<Route path="/home/system/customer" component={CustomerList} />
 								{/* <Route path="/charts/bar" component={Bar} />

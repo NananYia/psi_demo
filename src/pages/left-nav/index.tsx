@@ -18,8 +18,6 @@ export default class LeftNav extends Component <any,any>{
 	@observable
 	private constRoutes: any;
 
-	// onClickMenuItem: (value: any, isAdd: boolean) => {};
-
 	constructor(props) {
 		super(props);
 		makeObservable(this);
