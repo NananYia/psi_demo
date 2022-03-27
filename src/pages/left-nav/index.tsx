@@ -3,17 +3,13 @@ import "./index.less";
 import { Link, withRouter } from "react-router-dom";
 import { observer } from 'mobx-react'
 import { makeObservable, observable } from 'mobx'
-import { Menu } from "antd";
+import { Menu, Spin } from "antd";
 import { menuList } from "../../config/menuConfig";
 import { connect } from "react-redux";
 // import { setHeadTitle } from "../../redux/action";
 import { GetPermissionList } from "../../store/modules/user"
-import {
-	MenuUnfoldOutlined, MenuFoldOutlined, UserOutlined, VideoCameraOutlined,
-	UploadOutlined, FileOutlined, AppstoreOutlined, MailOutlined, SettingOutlined
-} from '@ant-design/icons';
-// import { generateIndexRouter } from "src/utils/util";
-
+import { generateIndexRouter } from "../../utils/util";
+import {HomeIcons} from "../../components/HomeIcons";
 const { SubMenu } = Menu;
 // 左侧导航的组件
 @observer
@@ -22,6 +18,11 @@ export default class LeftNav extends Component {
 	private menuNodes: any;
 	@observable
 	private openKey: any;
+	@observable
+	private constRoutes: any;
+
+	// @action
+		
 
 	constructor(props) {
 		super(props);
@@ -98,32 +99,40 @@ export default class LeftNav extends Component {
 	// };
 	getMenuList = async () => {
 		try {
-			const result: any = await GetPermissionList();
-			const menuData = result;
+			const menuData: any = await GetPermissionList();
 			if (menuData === null || menuData === "" || menuData === undefined) {
 				return;
 			}
-			let constRoutes = [];
-			// constRoutes = generateIndexRouter(menuData);
-			// // 添加主界面路由
-			// store.dispatch('UpdateAppRouter', { constRoutes }).then(() => {
-			//     // 根据roles权限生成可访问的路由表
-			//     // 动态添加可访问路由表
-			//     router.addRoutes(store.getters.addRouters)
-			//     const redirect = decodeURIComponent(from.query.redirect || to.path)
-			//     // next({ path: redirect })
-			// })
-
+			const result = generateIndexRouter(menuData);
+			return this.constRoutes = result;
 		} catch (error) {
-			// store.dispatch('Logout').then(() => {
-			// next({ path: '/user/login' })
-			// })
+			console.log(error);
 		}
+	}
+	renderMenuItem=()=> { 
+		return (
+			this.constRoutes.map((item, index) => { 
+				if (index === 0) {
+					return <Menu.Item icon={HomeIcons(item.meta.icon)} key={index}> {item.name}</Menu.Item>
+				} else {
+					return (
+						<SubMenu key={index} icon={HomeIcons(item.meta.icon)} title={item.name}>
+							{item?.children && item.children.length > 0 ? 
+								item.children.map((item,index) => {
+									return <Menu.Item icon={HomeIcons(item.meta.icon)} key={item.meta.id}>{item.name}</Menu.Item>
+								})
+								: null
+							}
+						</SubMenu>
+					) 
+				}
+			}) 
+		)
 	}
 
 	render() {
 		// 得到需要打开菜单项的key
-		const openKey = this.openKey || 1;
+		// const openKey = this.openKey || 1;
 		return (
 			<div className="left-nav">
 				<Link to="/home" className="left-nav-header">
@@ -135,25 +144,12 @@ export default class LeftNav extends Component {
 					theme="light"
 					// selectedKeys={[path]}
 					// defaultOpenKeys={[openKey]}
-					defaultSelectedKeys={['1']}
-					defaultOpenKeys={['sub1']}
+					// defaultSelectedKeys={['1']}
+					// defaultOpenKeys={['sub1']}
 				>
-					{/* {this.menuNodes} */}
-					<SubMenu key="sub1" icon={<MailOutlined />} title="Navigation One">
-						<Menu.Item key="1">Option 1</Menu.Item>
-						<Menu.Item key="2">Option 2</Menu.Item>
-						<Menu.Item key="3">Option 3</Menu.Item>
-					</SubMenu>
-					<SubMenu key="sub2" icon={<AppstoreOutlined />} title="Navigation Two">
-						<Menu.Item key="5">Option 5</Menu.Item>
-						<Menu.Item key="6">Option 6</Menu.Item>
-					</SubMenu>
-					<SubMenu key="sub4" icon={<SettingOutlined />} title="Navigation Three">
-						<Menu.Item key="9">Option 9</Menu.Item>
-						<Menu.Item key="10">Option 10</Menu.Item>
-						<Menu.Item key="11">Option 11</Menu.Item>
-						<Menu.Item key="12">Option 12</Menu.Item>
-					</SubMenu>
+					{this.constRoutes ? this.renderMenuItem():
+						<div className="homespin"><Spin></Spin></div>
+					}
 				</Menu>
 			</div>
 		);

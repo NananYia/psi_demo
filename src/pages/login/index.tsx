@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { observable } from 'mobx'
 import { observer } from 'mobx-react'
 import store from "store";
-import { Form, Input, Button, message, Checkbox, Tabs, Tooltip, Alert, notification } from "antd";
+import { Form, Input, Button, message, Checkbox, Tabs, Tooltip, Alert, notification, Spin } from "antd";
 import { SmileOutlined } from '@ant-design/icons';
 import { Icon, Toast } from 'antd-mobile';
 import md5 from "md5"
@@ -24,9 +24,12 @@ export default class Login extends Component<any, any>{
     private loginBtn: boolean;
     @observable
     private rememberchecked: boolean = false;
+    @observable
+    private Loading: boolean;
 
     constructor(props) {
         super(props);
+        this.Loading = true;
     }
 
     onFinish = async (values) => {
@@ -171,8 +174,10 @@ export default class Login extends Component<any, any>{
         //     return <Redirect to="/home" />;
         // }
         const errorMsg = null;
+        this.Loading= false;
         return (
             <div className="login-container" >
+                <Spin spinning={this.Loading} tip="加载中......" size="large"></Spin>
                 <header className="login-left">
                     <div className="left-name">
                         {/* <img src={require('../../assets/images/icon.png')} alt="logo" /> */}

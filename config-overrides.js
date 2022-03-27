@@ -14,12 +14,4 @@ module.exports = override(
       }
     }
   })
-    // addLessLoader({
-    //     lessOptions: {
-    //         strictMath: true,
-    //         noIeCompat: true,
-    //         javascriptEnabled: true,
-    //         modifyVars: { '@primary-color': 'red' }//配置主题色
-    //     }
-    // })
 );

@@ -84,17 +84,17 @@ export function formatDate(value, fmt) {
 // 生成首页路由
 export function generateIndexRouter(data) {
   let indexRouter = generateChildRouters(data)
-  indexRouter.splice(0,0, {
-    path: '/',
-    name: '首页',
-    // component: () => import('../pages/home'),
-    meta: {
-      title: '首页',
-      icon: 'icon-present',
-      url: '/dashboard/analysis'
-    },
-    redirect: '/dashboard/analysis'
-  })
+  // indexRouter.splice(0,0, {
+  //   path: '/',
+  //   name: '首页',
+  //   // component: () => import('../pages/home'),
+  //   meta: {
+  //     title: '首页',
+  //     icon: 'icon-present',
+  //     url: '/dashboard/analysis'
+  //   },
+  //   redirect: '/dashboard/analysis'
+  // })
   return indexRouter;
 }
 
