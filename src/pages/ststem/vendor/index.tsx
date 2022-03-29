@@ -3,12 +3,12 @@ import "./index.less";
 import { observer } from 'mobx-react'
 import { makeObservable, observable } from 'mobx'
 import { notification } from "antd";
-import EditableTable from "../../../components/TableModel";
+import VendorTable from "./VendorTable";
 import SearchForm from "../../../components/SearchForm";
 import { filterObj } from "src/utils/util";
 import MySpin from "src/components/Spin";
 import { getAction, postAction } from "src/api/manage";
-import ModalForm from './VendorModal';
+import VendorModalForm from './VendorModal';
 import api from "../../../api/api";
 
 const FormitemValue = [
@@ -30,7 +30,7 @@ const columns =[
     { title: '期初应付', dataIndex: 'beginNeedPay', width: 80, align: "center" },
     { title: '期末应付', dataIndex: 'allNeedPay', width: 80, align: "center" },
     { title: '税率(%)', dataIndex: 'taxRate', width: 80, align: "center" },
-    { title: '状态', dataIndex: 'enabled', width: 70, align: "center", scopedSlots: { customRender: 'customRenderFlag' } },
+    // { title: '状态', dataIndex: 'enabled', width: 70, align: "center", scopedSlots: { customRender: 'customRenderFlag' } ,},
     // { title: '操作', dataIndex: 'action', width: 200, align: "center", scopedSlots: { customRender: 'action' }, },
 ]
 @observer
@@ -152,9 +152,23 @@ export default class VendorList extends Component<any,any> {
         }
         this.loading = true;
     }
-    getModalValue(value?) {
-        // this.modalValue = value;
-        this.addVendorList(value);
+    editVendorList = async (value?) => {
+        let params = {
+            ...value,
+            type: '供应商',
+        };
+        try {
+            const result: any = await api.editSupplier(params);
+            if (result.code === 200) {
+                this.getVendorList()
+            }
+            if (result.code === 510) {
+                notification.warning(result.data)
+            }
+        } catch (error) {
+            console.log(error);
+        }
+        
     }
     render() {
         return (
@@ -165,12 +179,13 @@ export default class VendorList extends Component<any,any> {
                 />
                 {this.loading ?
                     <div className="search-result-list">
-                        <ModalForm buttonlabel="新建" title="新建供应商" getModalValue={this.getModalValue.bind(this)} />
-                        <EditableTable
+                        <VendorModalForm buttonlabel="新建" title="新建供应商" getModalValue={this.addVendorList.bind(this)} />
+                        <VendorTable
                             columns={columns}
                             dataSource={this.dataSource}
                             // loading={this.loading}
                             rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+                            getExitValue={this.editVendorList.bind(this)}
                         />
                     </div>
                     : <MySpin />}

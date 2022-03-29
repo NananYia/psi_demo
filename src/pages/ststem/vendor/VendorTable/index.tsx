@@ -1,15 +1,17 @@
 import React from 'react';
 import { observer } from 'mobx-react'
 import { makeObservable, observable } from 'mobx'
-import { Table, Input, Button, Popconfirm, Form, FormInstance, InputRef, Radio } from 'antd';
+import { Table, Input, Button, Popconfirm, Form, FormInstance, InputRef, Radio, Tag } from 'antd';
 import './index.less';
-interface EditableTableProps { 
+import VendorModalForm from '../VendorModal';
+interface VendorTableProps { 
     columns: any;
     dataSource: any;
     rowSelection: any;
+    getExitValue: (value: any) => {}
 }
 @observer
-export default class EditableTable extends React.Component<EditableTableProps, any>{
+export default class VendorTable extends React.Component<VendorTableProps, any>{
     @observable
     private columns:any;
     @observable
@@ -20,37 +22,28 @@ export default class EditableTable extends React.Component<EditableTableProps, a
         super(props);
         makeObservable(this);
         this.dataSource = props.dataSource;
-        // this.dataSource = [
-        //     { key: '0', name: 'Edward King 0', age: '32', address: 'London, Park Lane no. 0', },
-        //     { key: '1', name: 'Edward King 1', age: '32', address: 'London, Park Lane no. 1', },
-        // ];
         this.columns = [
             ...props.columns,
+            {
+                title: '状态', dataIndex: 'enabled', width: 70, align: "center", scopedSlots: { customRender: 'customRenderFlag' },
+                render: (enabled) => 
+                    <Tag className="tag-style" color={enabled ? 'green' : 'geekblue'}>{enabled ? '启用' : '禁用'}</Tag>
+            },
             {
                 title: '操作', dataIndex: 'action',
                 render: (_, record:{ key: React.Key }) =>
                     this.dataSource.length >= 1 ? (
-                        <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDelete(record.key)}>
-                            <a>Delete</a>
-                        </Popconfirm>
+                        <div>
+                            <VendorModalForm buttonlabel="编辑" title="编辑" getModalValue={this.props.getExitValue} initialValues={record} inTable/>
+                            <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDelete(record.key)}><a>删除</a></Popconfirm>
+                        </div>
                     ) : null,
             },
         ];
     }
     handleDelete = (key) => {
-        const dataSource = [...this.dataSource];
-        this.dataSource=dataSource.filter((item) => item.key !== key)
-    };
-    handleAdd = () => {
-        const count = this.dataSource.length;
-        const newData = {
-            key: count,
-            name: `Edward King ${count}`,
-            age: '32',
-            address: `London, Park Lane no. ${count}`,
-        };
-        this.dataSource.push({ ...newData });
-        
+        const newdataSource = [...this.dataSource];
+        this.dataSource=newdataSource.filter((item) => item.key !== key)
     };
     handleSave = (row) => {
         const newData = [...this.dataSource];
