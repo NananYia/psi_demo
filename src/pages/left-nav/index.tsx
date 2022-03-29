@@ -3,11 +3,12 @@ import "./index.less";
 import { Link } from "react-router-dom";
 import { observer } from 'mobx-react'
 import { makeObservable, observable } from 'mobx'
-import { Menu, Spin, Tabs } from "antd";
+import { Menu, Tabs } from "antd";
 import { GetPermissionList } from "../../store/modules/user"
 import { generateIndexRouter } from "../../utils/util";
 import { HomeIcons } from "../../components/HomeIcons";
 import MyNavLink from '../../components/MyNavLink'
+import MySpin from "src/components/Spin";
 const { SubMenu } = Menu;
 const { TabPane } = Tabs;
 // 左侧导航的组件
@@ -73,7 +74,7 @@ export default class LeftNav extends Component <any,any>{
 					// defaultOpenKeys={['sub1']}
 				>
 					{this.constRoutes ? this.renderMenuItem():
-						<div className="homespin"><Spin></Spin></div>
+						<MySpin/>
 					}
 				</Menu>
 			</div>

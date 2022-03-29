@@ -36,8 +36,8 @@ export default class admin extends Component<any, any>{
 	render() {
 		return (
 			<Layout style={{ minHeight: "100%" }} >
-				<Sider trigger={null}  collapsible collapsed={this.collapsed} theme="light">
-					<LeftNav/>
+				<Sider trigger={null} collapsible collapsed={this.collapsed} theme="light">
+					<LeftNav />
 				</Sider>
 				<Layout>
 					<Header className="site-layout-background" style={{ padding: 0 }}>
@@ -47,15 +47,16 @@ export default class admin extends Component<any, any>{
 						})}
 					</Header>
 					<Content style={{ margin: 20, backgroundColor: "#fff" }} className="panel">
-							<Switch>
-								<Route path="/home" component={Home} />
-								<Route path="/home/system/vendor" component={VendorList} />
-								<Route path="/home/system/customer" component={CustomerList} />
-								{/* <Route path="/charts/bar" component={Bar} />
+						<Switch>
+							<Route path="/home/system/home" component={Home} />
+							<Route path="/home/system/vendor" component={VendorList} />
+							<Route path="/home/system/customer" component={CustomerList} />
+							{/* <Route path="/charts/bar" component={Bar} />
 								<Route path="/charts/pie" component={Pie} />
 								<Route path="/charts/line" component={Line} /> */}
-								{/* <Route component={NotFound} /> */}
-							</Switch>
+							{/* <Route component={NotFound} /> */}
+							<Redirect to="/home/system/home" />
+						</Switch>
 						{/* </div> */}
 					</Content>
 					<Footer style={{ textAlign: "center", color: "#ccc" }}>
