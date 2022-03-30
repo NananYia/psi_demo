@@ -2,23 +2,18 @@ import React from 'react';
 import { observer } from 'mobx-react'
 import { makeObservable, observable } from 'mobx'
 import { Button, message } from 'antd';
-import ProForm, {
-    ModalForm,
-    ProFormText,
-    ProFormDateRangePicker,
-    ProFormSelect,
-} from '@ant-design/pro-form';
-import { PlusOutlined } from '@ant-design/icons';
+import ProForm, { ModalForm, ProFormText, ProFormDateRangePicker, ProFormSelect,} from '@ant-design/pro-form';
 import api from "../../../../api/api";
-
 import './index.less'
-interface ModalFormButtonProps {
+
+interface ModalFormProps {
     buttonlabel: string;
     title: string;
-    getModalValue: (value: any) => {}
+    getModalValue?: (value: any) => {}
+    initialValues?: any;
 }
 @observer
-export default class ModalFormButton extends React.Component<ModalFormButtonProps, any>{
+export default class VendorModalForminTable extends React.Component<ModalFormProps, any>{
     @observable
     private model = { id: "" };
 
@@ -26,7 +21,7 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
         super(props);
         makeObservable(this);
     }
-
+    /**确认后加载状态 */
     waitTime = (time: number = 100) => {
         return new Promise((resolve) => {
             setTimeout(() => {
@@ -57,23 +52,23 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
 
     render() {
         return (
-            <div className="ModalFormButton-container">
+            <div className={"ModalForminTable-container"}>
                 <ModalForm<{ name: string; company: string; }>
                     title={this.props.title}
-                    trigger={
-                        <Button type="primary">
-                            <PlusOutlined /> {this.props.buttonlabel}
-                        </Button>
-                    }
+                    trigger={<a>编辑</a> }
                     autoFocusFirstInput
                     modalProps={{ onCancel: () => console.log('run'), }}
-                    onFinish={async (values) => {
-                        await this.waitTime(1000);
-                        this.props.getModalValue(values)
-                        console.log(values);
-                        message.success('提交成功');
-                        return true;
-                    }}
+                    onFinish={
+                        async (values) => {
+                            await this.waitTime(1000);
+                            const { id, tenantId, enabled } = this.props.initialValues;
+                            this.props.getModalValue({ ...values, id: id, tenantId: tenantId, enabled: enabled })
+                            console.log(values);
+                            message.success('提交成功');
+                            return true;
+                        }
+                    }
+                    initialValues={this.props.initialValues}
                 >
                     <ProFormText width="md" name="supplier" label="供应商名称" tooltip="最长为 24 位" placeholder="请输入名称"
                         rules={[

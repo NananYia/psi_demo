@@ -2,13 +2,14 @@ import React from 'react';
 import { observer } from 'mobx-react'
 import { makeObservable, observable } from 'mobx'
 import { Table, Input, Button, Popconfirm, Form, FormInstance, InputRef, Radio, Tag } from 'antd';
+import VendorModalForminTable from '../VendorModalinTable';
 import './index.less';
-import VendorModalForm from '../VendorModal';
 interface VendorTableProps { 
     columns: any;
     dataSource: any;
     rowSelection: any;
     getExitValue: (value: any) => {}
+    getdeleteValue: (value: any) => {}
 }
 @observer
 export default class VendorTable extends React.Component<VendorTableProps, any>{
@@ -34,17 +35,13 @@ export default class VendorTable extends React.Component<VendorTableProps, any>{
                 render: (_, record:{ key: React.Key }) =>
                     this.dataSource.length >= 1 ? (
                         <div>
-                            <VendorModalForm buttonlabel="编辑" title="编辑" getModalValue={this.props.getExitValue} initialValues={record} inTable/>
-                            <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDelete(record.key)}><a>删除</a></Popconfirm>
+                            <VendorModalForminTable buttonlabel="编辑" title="编辑" getModalValue={this.props.getExitValue} initialValues={record}/>
+                            <Popconfirm title="Sure to delete?" onConfirm={()=>this.props.getdeleteValue(record)}><a>删除</a></Popconfirm>
                         </div>
                     ) : null,
             },
         ];
     }
-    handleDelete = (key) => {
-        const newdataSource = [...this.dataSource];
-        this.dataSource=newdataSource.filter((item) => item.key !== key)
-    };
     handleSave = (row) => {
         const newData = [...this.dataSource];
         const index = newData.findIndex((item) => row.key === item.key);

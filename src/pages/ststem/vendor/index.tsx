@@ -7,7 +7,7 @@ import VendorTable from "./VendorTable";
 import SearchForm from "../../../components/SearchForm";
 import { filterObj } from "src/utils/util";
 import MySpin from "src/components/Spin";
-import { getAction, postAction } from "src/api/manage";
+import { deleteAction, getAction, postAction } from "src/api/manage";
 import VendorModalForm from './VendorModal';
 import api from "../../../api/api";
 
@@ -111,23 +111,6 @@ export default class VendorList extends Component<any,any> {
             console.log(error);
         }
     }
-    addVendorList = async (value?) => {
-        let params = {
-            supplier: value.supplier,
-            type: '供应商',
-        };
-        try {
-            const result: any = await api.addSupplier(params);
-            if (result.code === 200) {
-                this.getVendorList()
-            }
-            if (result.code === 510) {
-                notification.warning(result.data)
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    }
     getVendorList = async (arg?) => { 
         if (arg === 1) {
             this.ipagination.current = 1;
@@ -152,11 +135,25 @@ export default class VendorList extends Component<any,any> {
         }
         this.loading = true;
     }
-    editVendorList = async (value?) => {
+    addVendorList = async (value?) => {
         let params = {
-            ...value,
+            supplier: value.supplier,
             type: '供应商',
         };
+        try {
+            const result: any = await api.addSupplier(params);
+            if (result.code === 200) {
+                this.getVendorList()
+            }
+            if (result.code === 510) {
+                notification.warning(result.data)
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    editVendorList = async (value?) => {
+        let params = { ...value, type: '供应商',};
         try {
             const result: any = await api.editSupplier(params);
             if (result.code === 200) {
@@ -168,8 +165,20 @@ export default class VendorList extends Component<any,any> {
         } catch (error) {
             console.log(error);
         }
-        
     }
+    deleteVendorList = async (values?) => {
+        try {
+            const result: any = await deleteAction("/supplier/delete?" + "id="+ values.id, null);
+            if (result.code === 200) {
+                this.getVendorList()
+            }
+            if (result.code === 510) {
+                notification.warning(result.data.message)
+            }
+        } catch (error) {
+            console.log(error);
+        }
+     }
     render() {
         return (
             <div className="vendor-container">
@@ -186,6 +195,7 @@ export default class VendorList extends Component<any,any> {
                             // loading={this.loading}
                             rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
                             getExitValue={this.editVendorList.bind(this)}
+                            getdeleteValue={ this.deleteVendorList.bind(this)}
                         />
                     </div>
                     : <MySpin />}
