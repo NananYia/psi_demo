@@ -2,7 +2,7 @@ import React from 'react';
 import { observer } from 'mobx-react'
 import { makeObservable, observable } from 'mobx'
 import { Table, Input, Button, Popconfirm, Form, FormInstance, InputRef, Radio, Tag } from 'antd';
-import VendorModalForminTable from '../VendorModalinTable';
+import VendorModalForminTable from '../MaterialModalinTable';
 import './index.less';
 interface VendorTableProps { 
     columns: any;
@@ -12,7 +12,7 @@ interface VendorTableProps {
     getdeleteValue: (value: any) => {}
 }
 @observer
-export default class VendorTable extends React.Component<VendorTableProps, any>{
+export default class MaterialTable extends React.Component<VendorTableProps, any>{
     @observable
     private columns:any;
     @observable
@@ -31,7 +31,16 @@ export default class VendorTable extends React.Component<VendorTableProps, any>{
                     <Tag className="tag-style" color={enabled ? 'green' : 'geekblue'}>{enabled ? '启用' : '禁用'}</Tag>
             },
             {
-                title: '操作', dataIndex: 'action',
+                title: '序列号', dataIndex: 'enableSerialNumber', width: 80, align: "center", scopedSlots: { customRender: 'customRenderFlag' },
+                render: (enableSerialNumber) =>
+                    <Tag className="tag-style" color={enableSerialNumber === 1 ? 'green' : 'geekblue'}>{enableSerialNumber===1 ? '有' : '无'}</Tag>
+            }, {
+                title: '批号', dataIndex: 'enableBatchNumber', width: 70, align: "center", scopedSlots: { customRender: 'customRenderFlag' },
+                render: (enableBatchNumber) =>
+                    <Tag className="tag-style" color={enableBatchNumber===1 ? 'green' : 'geekblue'}>{enableBatchNumber===1 ? '启用' : '禁用'}</Tag>
+            },
+            {
+                title: '操作', dataIndex: 'action', fixed: 'right',
                 render: (_, record:{ key: React.Key }) =>
                     this.dataSource.length >= 1 ? (
                         <div>
@@ -42,13 +51,6 @@ export default class VendorTable extends React.Component<VendorTableProps, any>{
             },
         ];
     }
-    handleSave = (row) => {
-        const newData = [...this.dataSource];
-        const index = newData.findIndex((item) => row.key === item.key);
-        const item = newData[index];
-        newData.splice(index, 1, { ...item, ...row });
-        this.dataSource = newData;
-    };
     onSelectChange = selectedRowKeys => {
         console.log('selectedRowKeys changed: ', selectedRowKeys);
         this.selectedRowKeys = selectedRowKeys
@@ -56,28 +58,15 @@ export default class VendorTable extends React.Component<VendorTableProps, any>{
     render() {
         const selectedRowKeys = this.selectedRowKeys;
         const rowSelection = { selectedRowKeys, onChange: this.onSelectChange };
-        const columns = this.columns.map((col) => {
-            if (!col.editable) { return col; }
-            return {
-                ...col,
-                onCell: (record) => ({
-                    record,
-                    editable: col.editable,
-                    dataIndex: col.dataIndex,
-                    title: col.title,
-                    handleSave: this.handleSave,
-                }),
-            };
-        });
         return (
-            <div className="EditableTable-container">
+            <div className="MaterialTable-container">
                 <Table
                     rowSelection={rowSelection }
                     bordered
                     dataSource={this.dataSource}
-                    columns={columns}
-                    pagination={{ pageSize: 50 }}
-                    scroll={{ y: 350 }}
+                    columns={this.columns}
+                    // pagination={{ pageSize: 50}}
+                    scroll={{ x: 1500, y: 300 }} 
                 />
             </div>
         );

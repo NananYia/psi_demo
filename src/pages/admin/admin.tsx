@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { makeObservable, observable } from 'mobx'
 import { Redirect, Route, Switch } from "react-router-dom";
 import { observer } from 'mobx-react'
+import { MenuUnfoldOutlined, MenuFoldOutlined, } from '@ant-design/icons';
 import { Layout, Menu } from "antd";
 // import Header from "../../components/header";
 import Home from "../home/home";
@@ -14,7 +15,7 @@ import LeftNav from "../left-nav";
 import VendorList from "../ststem/vendor";
 import CustomerList from "../ststem/customer";
 import { Header } from "antd/lib/layout/layout";
-import { MenuUnfoldOutlined, MenuFoldOutlined, } from '@ant-design/icons';
+import MaterialList from "../material/material";
 import './admin.less';
 
 const { Footer, Sider, Content } = Layout;
@@ -51,6 +52,7 @@ export default class admin extends Component<any, any>{
 							<Route path="/home/system/home" component={Home} />
 							<Route path="/home/system/vendor" component={VendorList} />
 							<Route path="/home/system/customer" component={CustomerList} />
+							<Route path="/home/material/material" component={MaterialList} />
 							{/* <Route path="/charts/bar" component={Bar} />
 								<Route path="/charts/pie" component={Pie} />
 								<Route path="/charts/line" component={Line} /> */}

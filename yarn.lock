@@ -21,7 +21,7 @@
   resolved "https://registry-npm.rd.chanjet.com/@ant-design/icons-svg/download/@ant-design/icons-svg-4.2.1.tgz#8630da8eb4471a4aabdaed7d1ff6a97dcb2cf05a"
   integrity sha1-hjDajrRHGkqr2u19H/apfcss8Fo=
 
-"@ant-design/icons@^4.2.1", "@ant-design/icons@^4.3.0", "@ant-design/icons@^4.7.0":
+"@ant-design/icons@^4.1.0", "@ant-design/icons@^4.2.1", "@ant-design/icons@^4.3.0", "@ant-design/icons@^4.7.0":
   version "4.7.0"
   resolved "https://registry-npm.rd.chanjet.com/@ant-design/icons/download/@ant-design/icons-4.7.0.tgz#8c3cbe0a556ba92af5dc7d1e70c0b25b5179af0f"
   integrity sha1-jDy+ClVrqSr13H0ecMCyW1F5rw8=
@@ -31,6 +31,18 @@
     "@babel/runtime" "^7.11.2"
     classnames "^2.2.6"
     rc-util "^5.9.4"
+
+"@ant-design/pro-card@^1.18.26":
+  version "1.18.26"
+  resolved "https://registry-npm.rd.chanjet.com/@ant-design/pro-card/download/@ant-design/pro-card-1.18.26.tgz#32ed4c5a4d9c506f98cf9b1097e8e97c3586d64e"
+  integrity sha1-Mu1MWk2cUG+Yz5sQl+jpfDWG1k4=
+  dependencies:
+    "@ant-design/icons" "^4.2.1"
+    "@ant-design/pro-utils" "1.33.0"
+    "@babel/runtime" "^7.16.3"
+    classnames "^2.2.6"
+    omit.js "^2.0.2"
+    rc-util "^5.4.0"
 
 "@ant-design/pro-field@1.31.11":
   version "1.31.11"
@@ -49,7 +61,7 @@
     react-color "2.19.3"
     swr "1.1.0"
 
-"@ant-design/pro-form@^1.52.14":
+"@ant-design/pro-form@1.52.14", "@ant-design/pro-form@^1.52.14":
   version "1.52.14"
   resolved "https://registry-npm.rd.chanjet.com/@ant-design/pro-form/download/@ant-design/pro-form-1.52.14.tgz#a0965f7fdb82f0108aab0a3d104db1c685a06fee"
   integrity sha1-oJZff9uC8BCKqwo9EE2xxoWgb+4=
@@ -75,6 +87,26 @@
     "@babel/runtime" "^7.16.3"
     rc-util "^5.0.1"
     swr "1.1.0"
+
+"@ant-design/pro-table@^2.62.8":
+  version "2.62.8"
+  resolved "https://registry-npm.rd.chanjet.com/@ant-design/pro-table/download/@ant-design/pro-table-2.62.8.tgz#3e089c9af9736c559d7a5183823ad19f713b41bc"
+  integrity sha1-PgicmvlzbFWdelGDgjrRn3E7Qbw=
+  dependencies:
+    "@ant-design/icons" "^4.1.0"
+    "@ant-design/pro-field" "1.31.11"
+    "@ant-design/pro-form" "1.52.14"
+    "@ant-design/pro-provider" "1.5.6"
+    "@ant-design/pro-utils" "1.33.0"
+    "@babel/runtime" "^7.16.3"
+    classnames "^2.2.6"
+    moment "^2.24.0"
+    omit.js "^2.0.2"
+    rc-util "^5.0.1"
+    react-sortable-hoc "^2.0.0"
+    unstated-next "^1.1.0"
+    use-json-comparison "^1.0.5"
+    use-media-antd-query "^1.1.0"
 
 "@ant-design/pro-utils@1.33.0":
   version "1.33.0"
@@ -10495,6 +10527,11 @@ unquote@~1.1.1:
   resolved "https://registry-npm.rd.chanjet.com/unquote/download/unquote-1.1.1.tgz#8fded7324ec6e88a0ff8b905e7c098cdc086d544"
   integrity sha1-j97XMk7G6IoP+LkF58CYzcCG1UQ=
 
+unstated-next@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry-npm.rd.chanjet.com/unstated-next/download/unstated-next-1.1.0.tgz#7bb4911a12fdf3cc8ad3eb11a0b315e4a8685ea8"
+  integrity sha1-e7SRGhL988yK0+sRoLMV5KhoXqg=
+
 upath@^1.2.0:
   version "1.2.0"
   resolved "https://registry-npm.rd.chanjet.com/upath/download/upath-1.2.0.tgz#8f66dbcd55a883acdae4408af8b035a5044c1894"
@@ -10512,7 +10549,7 @@ use-json-comparison@^1.0.5:
   resolved "https://registry-npm.rd.chanjet.com/use-json-comparison/download/use-json-comparison-1.0.6.tgz#a012bbc258ce745db1f56745dc653f575226cb21"
   integrity sha1-oBK7wljOdF2x9WdF3GU/V1ImyyE=
 
-use-media-antd-query@^1.0.6:
+use-media-antd-query@^1.0.6, use-media-antd-query@^1.1.0:
   version "1.1.0"
   resolved "https://registry-npm.rd.chanjet.com/use-media-antd-query/download/use-media-antd-query-1.1.0.tgz#f083ad7e292c1c0261b6bbfaac0edc3e0920d85d"
   integrity sha1-8IOtfiksHAJhtrv6rA7cPgkg2F0=

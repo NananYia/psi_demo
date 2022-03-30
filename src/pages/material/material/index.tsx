@@ -3,38 +3,48 @@ import "./index.less";
 import { observer } from 'mobx-react'
 import { makeObservable, observable } from 'mobx'
 import { notification } from "antd";
-import VendorTable from "./VendorTable";
 import SearchForm from "../../../components/SearchForm";
 import { filterObj } from "src/utils/util";
 import MySpin from "src/components/Spin";
 import { deleteAction, getAction, postAction } from "src/api/manage";
-import VendorModalForm from './VendorModal';
+import MaterialTable from "./MaterialTable";
+import MaterialModalForm from './MaterialModal';
 import api from "../../../api/api";
 
 const FormitemValue = [
-    { queryParam:"supplier", text: "名称", placeholder: "请输入名称查询" },
-    { queryParam: "telephone", text: "手机号码", placeholder: "请输入手机号码查询" },
-    { queryParam: "phonenum", text: "联系电话", placeholder: "请输入联系电话查询" },
+    { queryParam: "categoryId", text: "类别", placeholder: "请选择类别" },
+    { queryParam: "barCode", text: "条码", placeholder: "请输入条码查询" },
+    { queryParam: "name", text: "名称", placeholder: "请输入名称查询" },
 ]
 const columns =[
-    // { title: '#', dataIndex: '', key: 'rowIndex', width: 60, align: "center",
-    //     customRender: function (t, r, index) {
-    //         return parseInt(index) + 1;
-    //     }
-    // },
-    { title: '名称', dataIndex: 'supplier', width: 100 },
-    { title: '联系人', dataIndex: 'contacts', width: 100, align: "center" },
-    { title: '手机号码', dataIndex: 'telephone', width: 100, align: "center" },
-    { title: '联系电话', dataIndex: 'phoneNum', width: 100, align: "center" },
-    { title: '电子邮箱', dataIndex: 'email', width: 150, align: "center" },
-    { title: '期初应付', dataIndex: 'beginNeedPay', width: 80, align: "center" },
-    { title: '期末应付', dataIndex: 'allNeedPay', width: 80, align: "center" },
-    { title: '税率(%)', dataIndex: 'taxRate', width: 80, align: "center" },
-    // { title: '状态', dataIndex: 'enabled', width: 70, align: "center", scopedSlots: { customRender: 'customRenderFlag' } ,},
-    // { title: '操作', dataIndex: 'action', width: 200, align: "center", scopedSlots: { customRender: 'action' }, },
+    { title: '条码', dataIndex: 'mBarCode', width: '8%', fixed: 'left' },
+    { title: '名称', dataIndex: 'name', width: '6%', ellipsis: true, fixed: 'left'},
+    { title: '规格', dataIndex: 'standard', width: '5%', ellipsis: true },
+    { title: '型号', dataIndex: 'model', width: '5%', ellipsis: true },
+    { title: '颜色', dataIndex: 'color', width: '5%', ellipsis: true },
+    { title: '类别', dataIndex: 'categoryName', width: '5%', ellipsis: true },
+    { title: '扩展信息', dataIndex: 'materialOther', width: '6%', ellipsis: true },
+    { title: '单位', dataIndex: 'unit', width: '5%', ellipsis: true,
+        customRender: function (t, r, index) {
+            if (r) {
+                let name = t ? t : r.unitName
+                if (r.sku) {
+                    return name + '[SKU]';
+                } else {
+                    return name;
+                }
+            }
+        }
+    },
+    { title: '保质期', dataIndex: 'expiryNum', width: '5%' },
+    { title: '库存', dataIndex: 'stock', width: '5%' },
+    { title: '采购价', dataIndex: 'purchaseDecimal', width: '5%' },
+    { title: '零售价', dataIndex: 'commodityDecimal', width: '5%' },
+    { title: '销售价', dataIndex: 'wholesaleDecimal', width: '5%' },
+    { title: '最低售价', dataIndex: 'lowDecimal', width: '6%' },
 ]
 @observer
-export default class VendorList extends Component<any,any> {
+export default class MaterialList extends Component<any,any> {
     @observable private queryParam: any = {};
     @observable private searchqueryParam: any = {};
     @observable private loading: boolean=false;
@@ -64,7 +74,7 @@ export default class VendorList extends Component<any,any> {
     constructor(props) {
         super(props);
         makeObservable(this);
-        this.getSearchVendorList();
+        this.getSearchMaterialList();
     }
     getSearchQueryParams(values) {
         this.searchqueryParam = {
@@ -93,11 +103,11 @@ export default class VendorList extends Component<any,any> {
         });
         return str+",action";
     }
-    getSearchVendorList = async (values?) => {
+    getSearchMaterialList = async (values?) => {
         var params = this.getSearchQueryParams(values);//查询参数
         this.loading = false;
         try {
-            const result: any = await getAction("/supplier/list", params);
+            const result: any = await getAction("/material/list", params);
             if (result.code === 200) {
                 this.dataSource = result.data.rows;
                 this.ipagination.total = result.data.total;
@@ -111,7 +121,7 @@ export default class VendorList extends Component<any,any> {
             console.log(error);
         }
     }
-    getVendorList = async (arg?) => { 
+    getMaterialList = async (arg?) => { 
         if (arg === 1) {
             this.ipagination.current = 1;
         }
@@ -120,7 +130,7 @@ export default class VendorList extends Component<any,any> {
         param.currentPage = this.ipagination.current;
         param.pageSize = this.ipagination.pageSize - 1;
         this.loading = false;
-        const result: any = await getAction("/supplier/list", param)
+        const result: any = await getAction("/material/list", param)
         if (result.code === 200) {
             this.dataSource = result.data.rows;
             this.ipagination.total = result.data.total;
@@ -135,7 +145,7 @@ export default class VendorList extends Component<any,any> {
         }
         this.loading = true;
     }
-    addVendorList = async (value?) => {
+    addMaterialList = async (value?) => {
         let params = {
             supplier: value.supplier,
             type: '供应商',
@@ -143,7 +153,7 @@ export default class VendorList extends Component<any,any> {
         try {
             const result: any = await api.addSupplier(params);
             if (result.code === 200) {
-                this.getVendorList()
+                this.getMaterialList()
             }
             if (result.code === 510) {
                 notification.warning(result.data)
@@ -152,12 +162,12 @@ export default class VendorList extends Component<any,any> {
             console.log(error);
         }
     }
-    editVendorList = async (value?) => {
+    editMaterialList = async (value?) => {
         let params = { ...value, type: '供应商',};
         try {
             const result: any = await api.editSupplier(params);
             if (result.code === 200) {
-                this.getVendorList()
+                this.getMaterialList()
             }
             if (result.code === 510) {
                 notification.warning(result.data)
@@ -166,11 +176,11 @@ export default class VendorList extends Component<any,any> {
             console.log(error);
         }
     }
-    deleteVendorList = async (values?) => {
+    deleteMaterialList = async (values?) => {
         try {
-            const result: any = await deleteAction("/supplier/delete?" + "id="+ values.id, null);
+            const result: any = await deleteAction("/material/delete?" + "id="+ values.id, null);
             if (result.code === 200) {
-                this.getVendorList()
+                this.getMaterialList()
             }
             if (result.code === 510) {
                 notification.warning(result.data.message)
@@ -181,21 +191,21 @@ export default class VendorList extends Component<any,any> {
      }
     render() {
         return (
-            <div className="vendor-container">
+            <div className="Material-container">
                 <SearchForm
                     FormitemValue={FormitemValue}
-                    getSearchList={this.getSearchVendorList.bind(this)}
+                    getSearchList={this.getSearchMaterialList.bind(this)}
                 />
                 {this.loading ?
                     <div className="search-result-list">
-                        <VendorModalForm buttonlabel="新建" title="新建供应商" getModalValue={this.addVendorList.bind(this)} />
-                        <VendorTable
+                        <MaterialModalForm buttonlabel="新建" title="新增商品" getModalValue={this.addMaterialList.bind(this)} />
+                        <MaterialTable
                             columns={columns}
                             dataSource={this.dataSource}
                             // loading={this.loading}
                             rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
-                            getExitValue={this.editVendorList.bind(this)}
-                            getdeleteValue={ this.deleteVendorList.bind(this)}
+                            getExitValue={this.editMaterialList.bind(this)}
+                            getdeleteValue={ this.deleteMaterialList.bind(this)}
                         />
                     </div>
                     : <MySpin />}
