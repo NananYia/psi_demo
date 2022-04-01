@@ -2,7 +2,7 @@ import React from 'react';
 import { observer } from 'mobx-react'
 import { makeObservable, observable } from 'mobx'
 import { Table, Input, Button, Popconfirm, Form, FormInstance, InputRef, Radio, Tag } from 'antd';
-import VendorModalForminTable from '../MaterialModalinTable';
+import MaterialModalForm from '../MaterialModal';
 import './index.less';
 interface VendorTableProps { 
     columns: any;
@@ -40,11 +40,11 @@ export default class MaterialTable extends React.Component<VendorTableProps, any
                     <Tag className="tag-style" color={enableBatchNumber===1 ? 'green' : 'geekblue'}>{enableBatchNumber===1 ? '启用' : '禁用'}</Tag>
             },
             {
-                title: '操作', dataIndex: 'action', fixed: 'right',
+                title: '操作', dataIndex: 'action', width: 100, fixed: 'right',
                 render: (_, record:{ key: React.Key }) =>
                     this.dataSource.length >= 1 ? (
                         <div>
-                            <VendorModalForminTable buttonlabel="编辑" title="编辑" getModalValue={this.props.getExitValue} initialValues={record}/>
+                            <MaterialModalForm buttonlabel="编辑" title="编辑" getModalValue={this.props.getExitValue} initialValues={record}/>
                             <Popconfirm title="Sure to delete?" onConfirm={()=>this.props.getdeleteValue(record)}><a>删除</a></Popconfirm>
                         </div>
                     ) : null,

@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import "./index.less";
 import { observer } from 'mobx-react'
 import { makeObservable, observable } from 'mobx'
 import { notification } from "antd";
@@ -10,6 +9,7 @@ import MySpin from "src/components/Spin";
 import { deleteAction, getAction, postAction } from "src/api/manage";
 import VendorModalForm from './VendorModal';
 import api from "../../../api/api";
+import "./index.less";
 
 const FormitemValue = [
     { queryParam:"supplier", text: "名称", placeholder: "请输入名称查询" },
@@ -182,6 +182,7 @@ export default class VendorList extends Component<any,any> {
     render() {
         return (
             <div className="vendor-container">
+                <div className="title">供应商信息</div>
                 <SearchForm
                     FormitemValue={FormitemValue}
                     getSearchList={this.getSearchVendorList.bind(this)}
