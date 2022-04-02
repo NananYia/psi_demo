@@ -55,7 +55,7 @@ export const LoginIn = async (userInfo) => {
 };
 // 登出
 export const Logout = (state?) => {
-	let logoutToken = state.token;
+	// let logoutToken = state.token;
 	store.set('SET_TOKEN', '')
 	store.set('SET_PERMISSIONLIST', [])
 	store.remove(USER_ID)

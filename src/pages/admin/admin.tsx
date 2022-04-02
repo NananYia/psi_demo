@@ -4,6 +4,7 @@ import { Redirect, Route, Switch } from "react-router-dom";
 import { observer } from 'mobx-react'
 import { MenuUnfoldOutlined, MenuFoldOutlined,LoginOutlined } from '@ant-design/icons';
 import { Layout, Menu } from "antd";
+import store from "store";
 // import Header from "../../components/header";
 import Home from "../home/home";
 import Bar from "../charts/bar";
@@ -18,6 +19,8 @@ import { Header } from "antd/lib/layout/layout";
 import MaterialList from "../material/material";
 import './admin.less';
 import ChangepwdModal from "./change-password";
+import { USER_INFO } from "../../store/mutation-types";
+import LoginOutText from "./login-out";
 
 const { Footer, Sider, Content } = Layout;
 // 后台管理的路由组件
@@ -43,13 +46,17 @@ export default class admin extends Component<any, any>{
 				</Sider>
 				<Layout>
 					<Header className="site-layout-background" style={{ padding: 0 }}>
-						{React.createElement(this.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
+						{/* {React.createElement(this.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
 							className: 'trigger',
 							onClick: () => this.onCollapse(),
-						})}
+						})} */}
+						<div onClick={() => this.onCollapse()}>
+							{this.collapsed ? <MenuUnfoldOutlined style={{ color: '#ffffff' }} /> : <MenuFoldOutlined style={{ color: '#ffffff' }}/>}
+						</div>
 						<div className="headertitle-container">
-							<ChangepwdModal/>
-							<div><LoginOutlined />退出登录</div>
+							<div className="welcome-content">欢迎您，{store.get(USER_INFO).username}</div>
+							<ChangepwdModal />
+							<LoginOutText/>
 						</div>
 					</Header>
 					<Content style={{ margin: 20, backgroundColor: "#fff" }} className="panel">
