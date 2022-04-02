@@ -23,7 +23,7 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
     @observable
     private model = { id: "" };
     @observable
-    private editabledata = {};
+    private editabledata:any = {};
     @observable
     private editrowdata:any = {};
 
@@ -89,19 +89,32 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                             unit: values.unit,
                             unitId: values.unitId || "",
                             color: values?.color || "",
-                            weight: values.unitId  || "",
+                            weight: values.weight  || "",
                             expiryNum: values?.expiryNum || null,
                             meList: [
                                 {
-                                    id: this.editrowdata?.id || null,
-                                    barCode: this.editrowdata?.mBarCode || "",
+                                    id: this.editabledata?.id || null,
+                                    barCode: this.editabledata?.mBarCode || "",
                                     commodityUnit: values.unit || "",
                                     sku: "",
-                                    purchaseDecimal: this.editrowdata?.purchase ||"",
-                                    commodityDecimal: this.editrowdata?.commodity ||"",
-                                    wholesaleDecimal: this.editrowdata?.wholesale ||"",
-                                    lowDecimal: this.editrowdata?.low || ""
+                                    purchaseDecimal: this.editabledata?.purchase ||"",
+                                    commodityDecimal: this.editabledata?.commodity ||"",
+                                    wholesaleDecimal: this.editabledata.wholesale ||"",
+                                    lowDecimal: this.editabledata?.low || ""
                                 }
+                                // this.editabledata.map((item) => { 
+                                //     return {
+                                //         id:  item?.id || null,
+                                //         barCode:  item?.mBarCode || "",
+                                //         commodityUnit: values.unit || "",
+                                //         sku: "",
+                                //         purchaseDecimal:  item?.purchase ||"",
+                                //         commodityDecimal:  item?.commodity ||"",
+                                //         wholesaleDecimal:  item.wholesale ||"",
+                                //         lowDecimal: item?.low || ""
+                                //     }
+                                // })
+                                
                             ],
                             stock: [],
                             sortList: [],
@@ -141,7 +154,7 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                         <ProFormSelect width="xs" name="enableBatchNumber" label="有无批号"  options={[{ value: '1', label: '有', }, { value: '2', label: '无', }]}/>
                     </ProForm.Group>
                     <ProForm.Group>
-                        <MaterialEditableTable getEditableValue={this.getEditableTabl.bind(this)} initialValues={initialValues}/>
+                        <MaterialEditableTable getEditableValue={this.getEditableTabl.bind(this)}/>
                     </ProForm.Group>
                 </ModalForm>
             </div >
