@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { makeObservable, observable } from 'mobx'
 import { Redirect, Route, Switch } from "react-router-dom";
 import { observer } from 'mobx-react'
-import { MenuUnfoldOutlined, MenuFoldOutlined, } from '@ant-design/icons';
+import { MenuUnfoldOutlined, MenuFoldOutlined,LoginOutlined } from '@ant-design/icons';
 import { Layout, Menu } from "antd";
 // import Header from "../../components/header";
 import Home from "../home/home";
@@ -17,6 +17,7 @@ import CustomerList from "../ststem/customer";
 import { Header } from "antd/lib/layout/layout";
 import MaterialList from "../material/material";
 import './admin.less';
+import ChangepwdModal from "./change-password";
 
 const { Footer, Sider, Content } = Layout;
 // 后台管理的路由组件
@@ -46,6 +47,10 @@ export default class admin extends Component<any, any>{
 							className: 'trigger',
 							onClick: () => this.onCollapse(),
 						})}
+						<div className="headertitle-container">
+							<ChangepwdModal/>
+							<div><LoginOutlined />退出登录</div>
+						</div>
 					</Header>
 					<Content style={{ margin: 20, backgroundColor: "#fff" }} className="panel">
 						<Switch>

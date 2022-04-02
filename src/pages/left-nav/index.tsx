@@ -9,6 +9,8 @@ import { generateIndexRouter } from "../../utils/util";
 import { HomeIcons } from "../../components/HomeIcons";
 import MyNavLink from '../../components/MyNavLink'
 import MySpin from "src/components/Spin";
+import { allneed_menu_meta, purchase_menu_meta } from "./menData";
+import { getSomeValue } from "../../utils/getSomeValueArray";
 const { SubMenu } = Menu;
 const { TabPane } = Tabs;
 // 左侧导航的组件
@@ -37,26 +39,30 @@ export default class LeftNav extends Component <any,any>{
 		}
 	}
 
-	renderMenuItem=()=> { 
+	renderMenuItem = () => { 
+		const findconstRoutes = getSomeValue(this.constRoutes, allneed_menu_meta, 'name') as any;
 		return (
-			this.constRoutes.map((item, index) => { 
+			findconstRoutes.map((item, index) => { 
 				if (index === 0) {
 					return <Menu.Item icon={HomeIcons(item.meta.icon)} key={index}> {item.name}</Menu.Item>
 				} else {
 					return (
 						<SubMenu key={index} icon={HomeIcons(item.meta.icon)} title={item.name}>
-							{item?.children && item.children.length > 0 ? 
-								item.children.map((item,index) => {
-									return <Menu.Item icon={HomeIcons(item.meta.icon)} key={item.meta.id}>
-										<MyNavLink toPage={`/home${item.meta.url}`}>{item.name}</MyNavLink>
-									</Menu.Item>
+							{item?.children && item.children.length > 0 ?
+								item.children.map((item, index) => {
+									if (index < 5) { 
+										return <Menu.Item icon={HomeIcons(item.meta.icon)} key={item.meta.id}>
+											<MyNavLink toPage={`/home${item.meta.url}`}>{item.name}</MyNavLink>
+										</Menu.Item>
+									}else return null;
 								})
 								: null
 							}
 						</SubMenu>
-					) 
+					)
 				}
 			}) 
+			
 		)
 	}
 
