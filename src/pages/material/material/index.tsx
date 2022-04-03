@@ -12,7 +12,7 @@ import api from "../../../api/api";
 import "./index.less";
 
 const FormitemValue = [
-    { queryParam: "categoryId", text: "类别", placeholder: "请选择类别" },
+    // { queryParam: "categoryId", text: "类别", placeholder: "请选择类别" },
     { queryParam: "barCode", text: "条码", placeholder: "请输入条码查询" },
     { queryParam: "name", text: "名称", placeholder: "请输入名称查询" },
 ]

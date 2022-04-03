@@ -31,7 +31,6 @@ const validateBarCode = async (value: any, callback: any) => {
 }
 
 type DataSourceType = {
-    // id: React.Key;
     mBarCode?: React.Key;
     unit?: string;
     purchase?: string;
