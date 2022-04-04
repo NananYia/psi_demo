@@ -49,13 +49,23 @@ export default class LeftNav extends Component <any,any>{
 					return (
 						<SubMenu key={index} icon={HomeIcons(item.meta.icon)} title={item.name}>
 							{item?.children && item.children.length > 0 ?
-								item.children.map((item, index) => {
-									if (index < 2) { 
-										return <Menu.Item icon={HomeIcons(item.meta.icon)} key={item.meta.id}>
-											<MyNavLink toPage={`/home${item.meta.url}`}>{item.name}</MyNavLink>
-										</Menu.Item>
-									}else return null;
-								})
+								item.name === "基本资料"
+									? item.children.map((item, index) => {
+												if (index < 4) {
+													return <Menu.Item icon={HomeIcons(item.meta.icon)} key={item.meta.id}>
+														<MyNavLink toPage={`/home${item.meta.url}`}>{item.name}</MyNavLink>
+													</Menu.Item>
+												} else return null;
+											})
+									:
+									item.children.map((item, index) => {
+										if (index < 2) {
+											return <Menu.Item icon={HomeIcons(item.meta.icon)} key={item.meta.id}>
+												<MyNavLink toPage={`/home${item.meta.url}`}>{item.name}</MyNavLink>
+											</Menu.Item>
+										} else return null;
+									})
+								
 								: null
 							}
 						</SubMenu>
