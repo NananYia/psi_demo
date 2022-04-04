@@ -19,7 +19,8 @@ import DepotList from "../ststem/depot"
 import { Header } from "antd/lib/layout/layout";
 import MaterialList from "../material/material";
 import MaterialCategoryList from "../material/material_category";
-import PurchaseOrderList from "../bill/purchase-order";
+import PurchaseOrderList from "../bill/purchase_order";
+import PurchaseInList from "../bill/purchase_in";
 import SaleOrderList from "../bill/sale_order";
 import OtherInList from "../bill/other_in";
 import OtherOutList from "../bill/other_out";
@@ -67,6 +68,8 @@ export default class admin extends Component<any, any>{
 
 							{/* 采购订单 */}
 							<Route path="/home/bill/purchase_order" component={PurchaseOrderList} />
+							{/* 采购入库 */}
+							<Route path="/home/bill/purchase_in" component={PurchaseInList} />
 
 							{/* 销售订单 */}
 							<Route path="/home/bill/sale_order" component={SaleOrderList} />

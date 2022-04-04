@@ -49,6 +49,9 @@ type DataSourceType = {
 };
 
 const PurchaseOrderEditableTable = (props) => {
+    // id: element.id || "",
+    // depotId: element.depotId || "",
+    // orderNum: element.orderNum || 0,
     const { getEditableValue, initialValues } = props;
     const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
     const [dataSource, setDataSource] = useState<DataSourceType[]>([]);

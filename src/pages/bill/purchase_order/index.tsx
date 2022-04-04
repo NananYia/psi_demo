@@ -7,8 +7,8 @@ import { filterObj } from "src/utils/util";
 import store from "store";
 import MySpin from "src/components/Spin";
 import { deleteAction, getAction, httpAction, postAction, putAction } from "src/api/manage";
-import SaleOrderTable from "./OtherOutTable";
-import SaleOrderModalForm from './OtherOutModal';
+import PurchaseOrderTable from "./PurchaseOrderTable";
+import PurchaseOrderModalForm from './PurchaseOrderModal';
 import { CheckOutlined, StopOutlined } from '@ant-design/icons';
 import { LoginOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import api from "../../../api/api";
@@ -18,14 +18,12 @@ const FormitemValue = [
     { queryParam: "number", text: "单据编号", placeholder: "请输入单据编号" },
     { queryParam: "materialParam", text: "商品信息", placeholder: "请输入条码、名称、规格、型号" },
     { queryParam: "createTimeRange", text: "单据日期"},
-    { queryParam: "organId", text: "选择客户", placeholder: "选择客户" },
-    { queryParam: "depotId", text: "仓库名称", placeholder: "请选择仓库" },
-    { queryParam: "creator", text: "选操作员", placeholder: "选择操作员" },
-    { queryParam: "linkNumber", text: "关联单据", placeholder: "请输入关联单据" },
+    { queryParam: "organId", text: "供应商", placeholder: "选择供应商" },
+    { queryParam: "creator", text: "操作员", placeholder: "选择操作员" },
 ]
 const columns =[
-    { title: '客户', dataIndex: 'organName', width: '10%', ellipsis: true},
-    { title: '单据编号', dataIndex: 'number', width: '13%', ellipsis: true,
+    { title: '供应商', dataIndex: 'organName', width: '10%', ellipsis: true},
+    { title: '单据编号', dataIndex: 'number', width: '10%', ellipsis: true,
         customRender: function (text, record, index) {
             if (record.linkNumber) {
                 return text + "[转]";
@@ -43,10 +41,20 @@ const columns =[
     },
     { title: '单据日期', dataIndex: 'operTimeStr', width: '10%' },
     { title: '操作员', dataIndex: 'userName', width: '10%', ellipsis: true },
-    { title: '金额合计', dataIndex: 'totalPrice', width: '8%' },
+    { title: '金额合计', dataIndex: 'totalPrice', width: '10%' },
+    {
+        title: '含税合计', dataIndex: 'totalTaxLastMoney', width: '10%',
+        customRender: function (text, record, index) {
+            if (record.discountLastMoney) {
+                return (record.discountMoney + record.discountLastMoney).toFixed(2);
+            } else {
+                return record.totalPrice;
+            }
+        }
+    }
 ]
 @observer
-export default class OtherInList extends Component<any,any> {
+export default class PurchaseOrderList extends Component<any,any> {
     @observable private queryParam: any = {};
     @observable private searchqueryParam: any = {};
     @observable private loading: boolean=false;
@@ -86,13 +94,12 @@ export default class OtherInList extends Component<any,any> {
         this.searchqueryParam = {
             number: values?.number ||"",
             materialParam: values?.materialParam ||"",
-            type: "出库",
-            subType: "其它",
+            type: "其它",
+            subType: "采购订单",
             roleType: store.get('roleType'),
             organId: values?.organId ||"",
             depotId: values?.depotId ||"",
-            creator: values?.creator || "",
-            linkNumber: ""
+            creator: values?.creator ||""
         }
         //获取查询条件
         let searchObj = { search: "", }
@@ -158,11 +165,11 @@ export default class OtherInList extends Component<any,any> {
     }
     /** 整理成formData */
     classifyIntoFormData=(allValues)=> {
-        let totalPrice = 0
-        let billMain = Object.assign({}, allValues.formValue)
-        let detailArr = allValues.tablesValue[0].values
-        billMain.type = '其它'
-        billMain.subType = '销售订单'
+        let totalPrice = 0;
+        let billMain = Object.assign({}, allValues.info);
+        let detailArr = allValues.rows;
+        billMain.type = '其它';
+        billMain.subType = '采购订单';
         billMain.defaultNumber = billMain.number
         for (let item of detailArr) {
             item.depotId = '' //订单不需要仓库
@@ -175,7 +182,7 @@ export default class OtherInList extends Component<any,any> {
             billMain.fileName = ''
         }
         if (this.model.id) {
-            billMain.id = this.model.id
+            billMain.id = allValues.id
         }
         return {
             info: JSON.stringify(billMain),
@@ -227,6 +234,7 @@ export default class OtherInList extends Component<any,any> {
             onOk: () => this.auditOrder(status)
         });
     }
+    /** */
     auditOrder = async(audit?) => { 
         try {
             const result: any = await postAction("/depotHead/batchSetStatus", {status:audit, ids: this.auditData});
@@ -242,18 +250,18 @@ export default class OtherInList extends Component<any,any> {
     }
     render() {
         return (
-            <div className="SaleOrder-container">
-                <div className="title">其他出库单</div>
+            <div className="PurchaseOrder-container">
+                <div className="title">采购订单</div>
                 <SearchForm
                     FormitemValue={FormitemValue}
                     getSearchList={this.getSearchList.bind(this)}
                 />
                 {this.loading ?
                     <div className="search-result-list">
-                        <SaleOrderModalForm buttonlabel="新建" title="新增其他出库单" getModalValue={this.addList.bind(this)} />
+                        <PurchaseOrderModalForm buttonlabel="新建" title="新增采购单" getModalValue={this.addList.bind(this)} />
                         <Button icon={<CheckOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(1)} > 审核 </Button>
                         <Button icon={<StopOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(0)} > 反审核 </Button>
-                        <SaleOrderTable
+                        <PurchaseOrderTable
                             columns={columns}
                             dataSource={this.dataSource}
                             // loading={this.loading}

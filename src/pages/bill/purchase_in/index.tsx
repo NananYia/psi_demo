@@ -165,11 +165,11 @@ export default class PurchaseOrderList extends Component<any,any> {
     }
     /** 整理成formData */
     classifyIntoFormData=(allValues)=> {
-        let totalPrice = 0
-        let billMain = Object.assign({}, allValues.formValue)
-        let detailArr = allValues.tablesValue[0].values
-        billMain.type = '其它'
-        billMain.subType = '采购订单'
+        let totalPrice = 0;
+        let billMain = Object.assign({}, allValues.info);
+        let detailArr = allValues.rows;
+        billMain.type = '其它';
+        billMain.subType = '采购订单';
         billMain.defaultNumber = billMain.number
         for (let item of detailArr) {
             item.depotId = '' //订单不需要仓库
@@ -182,7 +182,7 @@ export default class PurchaseOrderList extends Component<any,any> {
             billMain.fileName = ''
         }
         if (this.model.id) {
-            billMain.id = this.model.id
+            billMain.id = allValues.id
         }
         return {
             info: JSON.stringify(billMain),

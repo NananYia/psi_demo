@@ -25,7 +25,7 @@ interface ModalFormButtonProps {
 @observer
 export default class ModalFormButton extends React.Component<ModalFormButtonProps, any>{
     @observable private model = { id: "" };
-    @observable private editabledata:any = {};
+    @observable private editabledata:any = [];
     @observable private editrowdata: any = {};
     @observable private TreeValue: any;
     @observable private supplierData: any=[];
@@ -77,8 +77,33 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
         }
     }
     /**拿到子表格信息 */
-    getEditableTabl = (id?,data?, row?) => { 
-        this.editabledata = data;
+    getEditableTabl = (id?, data?, row?) => { 
+        for (let index = 0; index < data.length; index++) {
+            const element = data[index];
+            const datatype = {
+                id: element.id || "",
+                depotId: element.depotId || "",
+                name: element.name || "",
+                standard: element.standard || "",
+                model: element.model || "",
+                color: element.color || "",
+                materialOther: element.materialOther || "",
+                stock: element.stock || 0,
+                unit: element.unit || "",
+                sku: element.sku || "",
+                operNumber: element.operNumber || 0,
+                unitPrice: element.unitPrice || 0,
+                allPrice: element.allPrice || 0,
+                taxRate: element.taxRate || 0,
+                taxMoney: element.taxMoney || 0,
+                taxLastMoney: element.taxLastMoney || 0,
+                remark: element.remark || "",
+                orderNum: element.orderNum || 0,
+                barCode: element.barCode ||"",
+            }
+            this.editabledata.push(datatype);
+        }
+        
         this.editrowdata = row;
         return true
     }
@@ -107,29 +132,22 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                     onFinish={async (values) => {
                         await this.waitTime(1000);
                         const allValues = {
-                            name: values.name,
-                            standard: values.standard,
-                            model: values.model || "",
-                            unit: values.unit,
-                            unitId: values.unitId || "",
-                            color: values?.color || "",
-                            weight: values.weight  || "",
-                            expiryNum: values?.expiryNum || null,
-                            meList: [
-                                {
-                                    id: this.editabledata?.id || null,
-                                    barCode: this.editabledata?.mBarCode || "",
-                                    commodityUnit: values.unit || "",
-                                    sku: "",
-                                    purchaseDecimal: this.editabledata?.purchase ||"",
-                                    commodityDecimal: this.editabledata?.commodity ||"",
-                                    wholesaleDecimal: this.editabledata.wholesale ||"",
-                                    lowDecimal: this.editabledata?.low || ""
-                                }
-                            ],
-                            stock: [],
-                            sortList: [],
-                            imgName: values?.imgName || ""
+                            info: {
+                                organId: values.organId,
+                                operTime: values.operTime,
+                                number: values.number || "",
+                                discount: values.discount || 0,
+                                discountMoney: values.unitId || 0,
+                                discountLastMoney: values?.discountLastMoney || 0,
+                                // type: "其它",
+                                // subType: "采购订单",
+                                // defaultNumber: this.number,
+                                // totalPrice: values?.totalPrice || 0,
+                                // fileName: values?.fileName || "",
+                            },
+                            rows: {
+                                ...this.editabledata
+                            },
                         }
                         if (initialValues) {
                             this.props.getModalValue({ ...allValues, id: values.id})
