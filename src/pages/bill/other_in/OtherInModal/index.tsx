@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react'
 import { makeObservable, observable } from 'mobx'
-import { Button, Cascader, DatePicker, Input, message, notification, Table, TimePicker, TreeSelect } from 'antd';
+import { Button, Cascader, DatePicker, Input, message, notification, Table, TimePicker, TreeSelect, Upload } from 'antd';
 import addInitUtil from "../../mixins/addInit"
 import ProForm, {
     ModalForm,
@@ -10,10 +10,11 @@ import ProForm, {
     ProFormSelect,
     ProFormDateTimePicker,
     ProFormTextArea,
+    ProFormUploadButton,
 } from '@ant-design/pro-form';
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined, UploadOutlined } from '@ant-design/icons';
 import api from "../../../../api/api";
-import PurchaseOrderEditableTable from '../PurchaseOrderEditableTable';
+import PurchaseOrderEditableTable from '../OtherInEditableTable';
 import './index.less'
 import { getAction } from '../../../../api/manage';
 interface ModalFormButtonProps {
@@ -32,7 +33,7 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
     @observable private number: string;//单据编号
     @observable private timeopen: boolean = false;
 
-    private prefixNo = 'CGDD';
+    private prefixNo = 'QTRK';
 
     constructor(props) {
         super(props);
@@ -61,17 +62,16 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
         }
     }
     /**拿到供应商列表 */
-    getSupplierName = async () => { 
+    getSupplierName = async () => {
         try {
             const result: any = await api.findBySelectSup({});
-            result.map((item) => { 
+            result.map((item) => {
                 const dataitem = {
                     value: item.supplier,
                     id: item.id
                 }
                 return this.supplierData.push(dataitem)
             })
-            // this.supplierData = result;
         } catch (error) {
             console.log(error);
         }
@@ -93,6 +93,7 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
 
     render() {
         const { initialValues } = this.props;
+
         return (
             <div className={initialValues ?"ModalFormaText-container":"ModalFormButton-container"}>
                 <ModalForm
@@ -146,16 +147,15 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                     <ProForm.Group>
                         <ProFormSelect width="sm" name="organId" label="供应商" placeholder="请选择供应商" options={this.supplierData}/>
                         <ProFormDateTimePicker name="operTime" label="单据日期"/>
-                        <ProFormText initialValue={this.number} width="sm" name="number" label="单据编号" readonly tooltip="单据编号自动生成、自动累加、开头是单据类型的首字母缩写，累加的规则是每次打开页面会自动占用一个新的编号"/>
+                        <ProFormText initialValue={this.number} width="sm" name="number" label="单据编号" readonly tooltip="单据编号自动生成、自动累加、开头是单据类型的首字母缩写，累加的规则是每次打开页面会自动占用一个新的编号" />
+                        {/* <ProFormSelect width="sm" name="organId" label="销售人员" placeholder="请选择销售人员" options={this.customerData} /> */}
                     </ProForm.Group>
                     <ProForm.Group>
-                        <PurchaseOrderEditableTable getEditableValue={this.getEditableTabl.bind(this)}/>
+                        <PurchaseOrderEditableTable getEditableValue={this.getEditableTabl.bind(this)} />
                     </ProForm.Group>
                     <ProForm.Group>
-                        <ProFormTextArea width="sm" name="remark" label="备注" placeholder="请输入备注" style={{height:32}}/>
-                        <ProFormText width="sm" name="discount" label="优惠率" placeholder="请输入优惠率(%)" />
-                        <ProFormText width="sm" name="discountMoney" label="付款优惠" placeholder="请输入付款优惠" />
-                        <ProFormText width="sm" name="discountLastMoney" label="优惠后金额" placeholder="请输入优惠后金额" />
+                        <ProFormTextArea width="sm" name="remark" label="备注" placeholder="请输入备注" style={{ height: 32 }} />
+                        <ProFormUploadButton name="upload" label="附件📎" style={{paddingTop:40}}/>
                     </ProForm.Group>
                 </ModalForm>
             </div >

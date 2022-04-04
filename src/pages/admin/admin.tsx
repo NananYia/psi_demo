@@ -21,6 +21,7 @@ import MaterialList from "../material/material";
 import MaterialCategoryList from "../material/material_category";
 import PurchaseOrderList from "../bill/purchase-order";
 import SaleOrderList from "../bill/sale_order";
+import OtherInList from "../bill/other_in";
 import './admin.less';
 import ChangepwdModal from "./change-password";
 import { USER_INFO } from "../../store/mutation-types";
@@ -68,6 +69,9 @@ export default class admin extends Component<any, any>{
 
 							{/* 销售订单 */}
 							<Route path="/home/bill/sale_order" component={SaleOrderList} />
+
+							{/* 销售订单 */}
+							<Route path="/home/bill/other_in" component={OtherInList} />
 
 							{/* 商品信息 */}
 							<Route path="/home/material/material" component={MaterialList} />
