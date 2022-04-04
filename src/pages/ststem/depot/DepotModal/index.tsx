@@ -1,16 +1,18 @@
 import React from 'react';
 import { observer } from 'mobx-react'
 import { makeObservable, observable } from 'mobx'
-import { Button, message, TreeSelect } from 'antd';
+import { Button, message, Select, TreeSelect } from 'antd';
 import ProForm, {
     ModalForm,
+    ProFormSelect,
     ProFormText,
     ProFormTextArea,
 } from '@ant-design/pro-form';
 import { PlusOutlined } from '@ant-design/icons';
 import api from "../../../../api/api";
+import './index.less';
 
-import './index.less'
+const { Option } = Select;
 interface ModalFormButtonProps {
     buttonlabel: string;
     title: string;
@@ -23,11 +25,12 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
     @observable
     private TreeValue: any;
     @observable
-    private loadTreeData: any;
+    private loadTreeData: any = [];
 
     constructor(props) {
         super(props);
         makeObservable(this);
+        this.getUserList()
     }
 
     waitTime = (time: number = 100) => {
@@ -57,8 +60,12 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
     /**负责人列表 */
     getUserList = async () => {
         const result: any = await api.getUserList({})
-        if (result ) {
-            this.loadTreeData = result;
+        if (result) {
+            for (let index = 0; index < result.length; index++) {
+                const element = result[index];
+                this.loadTreeData.push({ label: element.userName,value: element.id});
+            }
+           
         } 
     }
     onChange = value => {
@@ -84,7 +91,7 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                         message.success('提交成功');
                         return true;
                     }}
-                    width={1050}
+                    width={750}
                 >
                     <ProForm.Group>
                         <ProFormText width="md" name="name" label="仓库名称" tooltip="最长为 24 位" placeholder="请输入仓库名称"
@@ -93,26 +100,24 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                                 { validator: (rule, value, callback) => { this.validateSupplierName(value, callback); } }
                             ]}
                         />
+                    </ProForm.Group>
+                    {/* <div className="TreeSelect-title" style={{ paddingBottom: 10 }}>负责人</div> */}
+                    <ProForm.Group>
                         <ProFormText width="md" name="address" label="仓库地址" placeholder="请输入仓库地址" />
+                        <ProFormSelect width="md" name="principal" label="负责人" options={this.loadTreeData} placeholder="请输入负责人" />
                     </ProForm.Group>
-                    {/* <ProForm.Group > */}
-                    <div className="TreeSelect-title">负责人</div>
-                    <TreeSelect
-                        style={{ width: 330, paddingBottom: 20 }}
-                        value={this.TreeValue}
-                        dropdownStyle={{ maxHeight: 200, overflow: 'auto' }}
-                        treeData={this.loadTreeData}
-                        placeholder="请选择负责人"
-                        treeDefaultExpandAll
-                        onChange={this.onChange}
-                    />
+                    {/* <Select style={{ width: 328, paddingBottom: 20 }}>
+                        {this.loadTreeData && this.loadTreeData.map((item, index) => { 
+                            return <Option value={item.id} key={index}>{item.userName}</Option>
+                        })} */}
+                    {/* </Select> */}
                     <ProForm.Group>
-                        <ProFormText width="md" name="warehousing" label="仓库名称" tooltip="最长为 24 位" placeholder="请输入仓储费(元/天/KG)" />
-                        <ProFormText width="md" name="truckage" label="仓库地址" placeholder="请输入搬运费(元)" />
+                        <ProFormText width="md" name="warehousing" label="仓储费" placeholder="请输入仓储费(元/天/KG)" />
+                        <ProFormText width="md" name="truckage" label="搬运费" placeholder="请输入搬运费(元)" />
                     </ProForm.Group>
                     <ProForm.Group>
-                        <ProFormText width="md" name="sort" label="排序" placeholder="请输入排序" />
                         <ProFormTextArea width="md" name="remark" label="备注" placeholder="请输入备注" />
+                        <ProFormText width="md" name="sort" label="排序" placeholder="请输入排序" />
                     </ProForm.Group>
                 </ModalForm>
             </div >

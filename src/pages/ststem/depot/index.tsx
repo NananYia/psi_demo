@@ -5,7 +5,7 @@ import { makeObservable, observable } from 'mobx';
 import { notification } from "antd";
 import { filterObj } from "src/utils/util";
 import MySpin from "src/components/Spin";
-import { deleteAction, getAction } from "src/api/manage";
+import { deleteAction, getAction, postAction } from "src/api/manage";
 import api from "../../../api/api";
 import DepotModalForm from "./DepotModal"
 import DepotTable from "../depot/DepotTable";
@@ -101,7 +101,7 @@ export default class DepotList extends Component<any,any> {
     addList = async (value?) => {
         let params = { ...value};
         try {
-            const result: any = await api.addSupplier(params);
+            const result: any = await api.addDepot(params);
             if (result.code === 200) {
                 this.getSearchDepotList()
             }
@@ -115,7 +115,7 @@ export default class DepotList extends Component<any,any> {
     editList = async (value?) => {
         let params = { ...value, type: '仓库', };
         try {
-            const result: any = await api.editSupplier(params);
+            const result: any = await api.editDepot(params);
             if (result.code === 200) {
                 this.getSearchDepotList()
             }
@@ -128,7 +128,7 @@ export default class DepotList extends Component<any,any> {
     }
     updateDefault = async (values?) => {
         try {
-            const result: any = await deleteAction("depot/updateIsDefault?", values?.id);
+            const result: any = await postAction("depot/updateIsDefault", { id: values?.id });
             if (result.code === 200) {
                 this.getSearchDepotList()
             }
