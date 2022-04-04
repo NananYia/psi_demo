@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { observer } from 'mobx-react'
 import { makeObservable, observable } from 'mobx'
-import { notification } from "antd";
+import { Button, Modal, notification } from "antd";
 import SearchForm from "../../../components/SearchForm";
 import { filterObj } from "src/utils/util";
 import store from "store";
@@ -9,13 +9,15 @@ import MySpin from "src/components/Spin";
 import { deleteAction, getAction, httpAction, postAction, putAction } from "src/api/manage";
 import PurchaseOrderTable from "./PurchaseOrderTable";
 import PurchaseOrderModalForm from './PurchaseOrderModal';
+import { CheckOutlined, StopOutlined } from '@ant-design/icons';
+import { LoginOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import api from "../../../api/api";
 import "./index.less";
 
 const FormitemValue = [
     { queryParam: "number", text: "单据编号", placeholder: "请输入单据编号" },
     { queryParam: "materialParam", text: "商品信息", placeholder: "请输入条码、名称、规格、型号" },
-    { queryParam: "createTimeRange", text: "单据日期", placeholder: "请输入名称查询" },
+    { queryParam: "createTimeRange", text: "单据日期"},
     { queryParam: "organId", text: "供应商", placeholder: "选择供应商" },
     { queryParam: "creator", text: "操作员", placeholder: "选择操作员" },
 ]
@@ -62,6 +64,7 @@ export default class PurchaseOrderList extends Component<any,any> {
     @observable public lastTotal: any;
     @observable public fileList: any = [];
     @observable public model: any = {};
+    @observable public auditData: any = {};
     /* 排序参数 */
     private isorter: any= {
         column: 'createTime',
@@ -216,7 +219,35 @@ export default class PurchaseOrderList extends Component<any,any> {
             console.log(error);
         }
     }
-    
+    getauditData = (value) => {
+        this.auditData=[]
+        this.auditData = value.join();
+    }
+    /**操作弹框 */
+    confirm = (status) => {
+        Modal.confirm({
+            title: '提示',
+            icon: <ExclamationCircleOutlined />,
+            content: "是否操作选中数据?",
+            okText: '确认',
+            cancelText: '取消',
+            onOk: () => this.auditOrder(status)
+        });
+    }
+    /** */
+    auditOrder = async(audit?) => { 
+        try {
+            const result: any = await postAction("/depotHead/batchSetStatus", {status:audit, ids: this.auditData});
+            if (result.code === 200) {
+                this.getSearchList()
+            }
+            if (result.code === 510) {
+                notification.warning(result.data.message)
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
     render() {
         return (
             <div className="PurchaseOrder-container">
@@ -228,13 +259,16 @@ export default class PurchaseOrderList extends Component<any,any> {
                 {this.loading ?
                     <div className="search-result-list">
                         <PurchaseOrderModalForm buttonlabel="新建" title="新增采购单" getModalValue={this.addList.bind(this)} />
+                        <Button icon={<CheckOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(1)} > 审核 </Button>
+                        <Button icon={<StopOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(0)} > 反审核 </Button>
                         <PurchaseOrderTable
                             columns={columns}
                             dataSource={this.dataSource}
                             // loading={this.loading}
                             rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
                             getExitValue={this.addList.bind(this)}
-                            getdeleteValue={ this.deleteList.bind(this)}
+                            getdeleteValue={this.deleteList.bind(this)}
+                            getauditData={this.getauditData.bind(this)}
                         />
                     </div>
                     : <MySpin />}

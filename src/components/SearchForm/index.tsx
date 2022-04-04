@@ -4,8 +4,11 @@ import { FormInstance } from 'antd/es/form';
 import { makeObservable, observable } from 'mobx'
 import { Form, Row, Col, Input, Button, DatePicker } from 'antd';
 import './index.less';
+import moment from 'moment';
 
 const { RangePicker } = DatePicker;
+const dateFormat = 'YYYY-MM-DD HH:mm' || undefined;
+
 interface DataType {
     FormitemValue: any;
     getSearchList: (value: any) => {}
@@ -16,6 +19,10 @@ export default class SearchForm extends React.Component<DataType, any>{
     private expand: any = false;
     @observable
     private FormitemValue: any;
+    @observable
+    private beginTime: undefined;//开始时间
+    @observable
+    private endTime: undefined;  //结束时间
 
     private formRef = React.createRef<FormInstance>();
 
@@ -27,13 +34,26 @@ export default class SearchForm extends React.Component<DataType, any>{
 
     onFinish = (values) => {
         console.log('Received values of form: ', values);
-        this.props.getSearchList(values)
+        this.props.getSearchList({ ...values, createTimeRange: [moment(this.beginTime, dateFormat), moment(this.endTime, dateFormat)],beginTime:this.beginTime,endTime:this.endTime})
     };
 
     onReset = () => {
         this.formRef.current!.resetFields();
     };
+    //切换tab的时候的回调函数
+    tabChange = (activeKey) => {
+        this.beginTime = undefined;//开始时间
+        this.endTime = undefined; //结束时间
+    }
 
+    //时间改变的方法
+    onPickerChange = (date, dateString) => {
+        console.log("data", date, "dateString", dateString);
+        //这两个参数值antd自带的参数
+        console.log("dateString", dateString[0], "dateString", dateString[1]);
+        this.beginTime = dateString[0];//开始时间
+        this.endTime = dateString[1]; //结束时间
+    }
     AdvancedSearchForm = () => { 
         return (
             <Form
@@ -48,8 +68,14 @@ export default class SearchForm extends React.Component<DataType, any>{
                             if (item.queryParam === "createTimeRange") {
                                 return (
                                     <Col span={8} key={index}>
-                                        <Form.Item name={item.queryParam} label={item.text} rules={[{ message: 'Input something!', },]} >
-                                            <RangePicker placement="bottomLeft" />
+                                        <Form.Item name={item.queryParam} label={item.text}>
+                                            <RangePicker
+                                                onChange={this.onPickerChange}
+                                                placement="bottomLeft"
+                                                format={dateFormat}
+                                                value={this.beginTime === undefined || this.endTime === undefined || this.beginTime === "" || this.endTime === "" ? null : [moment(this.beginTime, dateFormat), moment(this.endTime, dateFormat)]}
+                                                placeholder={['开始时间', '结束时间']}
+                                            />
                                         </Form.Item>
                                     </Col>
                                 )

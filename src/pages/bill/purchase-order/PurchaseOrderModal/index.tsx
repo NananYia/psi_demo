@@ -105,6 +105,9 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                     autoFocusFirstInput
                     modalProps={{ onCancel: () => console.log('run'), }}
                     onFinish={async (values) => {
+                        console.log('====================================');
+                        console.log(values);
+                        console.log('====================================');
                         await this.waitTime(1000);
                         const allValues = {
                             name: values.name,

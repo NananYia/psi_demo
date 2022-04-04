@@ -76,7 +76,7 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
     render() {
         const { initialValues } = this.props;
         return (
-            <div className="ModalFormButton-container">
+            <div className={initialValues ? "ModalFormText-container":"ModalFormButton-container"}>
                 <ModalForm<{ name: string; company: string; }>
                     title={this.props.title}
                     trigger={initialValues ? <a>编辑</a> :

@@ -10,13 +10,14 @@ interface VendorTableProps {
     rowSelection: any;
     getExitValue: (value: any) => {}
     getdeleteValue: (value: any) => {}
+    getauditData: (value: any) => {}
 }
 @observer
 export default class PurchaseOrderTable extends React.Component<VendorTableProps, any>{
     @observable
     private columns:any;
     @observable
-    dataSource: any;
+    dataSource: any=[];
     @observable
     selectedRowKeys: any
     @observable statusColor: string;//状态颜色
@@ -24,7 +25,10 @@ export default class PurchaseOrderTable extends React.Component<VendorTableProps
     constructor(props) {
         super(props);
         makeObservable(this);
-        this.dataSource = props.dataSource;
+        for (let index = 0; index < props.dataSource.length; index++) {
+            const element = props.dataSource[index];
+            this.dataSource.push({ ...element, key: element.id});
+        }
         this.columns = [
             ...props.columns,
             {
@@ -62,16 +66,25 @@ export default class PurchaseOrderTable extends React.Component<VendorTableProps
         }
     }
     onSelectChange = selectedRowKeys => {
+        this.props.getauditData(selectedRowKeys);
         console.log('selectedRowKeys changed: ', selectedRowKeys);
         this.selectedRowKeys = selectedRowKeys
     };
     render() {
         const selectedRowKeys = this.selectedRowKeys;
-        const rowSelection = { selectedRowKeys, onChange: this.onSelectChange };
+        const rowSelection = {
+            selectedRowKeys,
+            onChange: this.onSelectChange,
+            selections: [
+                Table.SELECTION_ALL,
+                Table.SELECTION_INVERT,
+                Table.SELECTION_NONE,
+            ],
+        };
         return (
             <div className="PurchaseOrderTable-container">
                 <Table
-                    rowSelection={rowSelection }
+                    rowSelection={{ ...rowSelection } }
                     bordered
                     dataSource={this.dataSource}
                     columns={this.columns}
