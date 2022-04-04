@@ -16,6 +16,7 @@ export default class MaterialCategoryList extends Component<any, any> {
     @observable private loading: boolean = false;
     @observable private categoryTree: any = [];
     @observable private checkedData: Array<number> = [];
+    @observable private isOpen: boolean = true;
     
     constructor(props) {
         super(props);
@@ -102,6 +103,10 @@ export default class MaterialCategoryList extends Component<any, any> {
                             placeholder='点击展开'
                             style={{ width: 500 }}
                             onChange={this.onChange}
+                            open={ this.isOpen}
+                            onDropdownVisibleChange={(open) => {
+                                this.isOpen = open;
+                            }}
                         />
                         : <MySpin />}
                     </div>
