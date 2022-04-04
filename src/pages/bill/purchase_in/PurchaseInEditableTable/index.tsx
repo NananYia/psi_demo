@@ -12,23 +12,6 @@ const waitTime = (data?, row?,time: number = 100) => {
         }, time);
     });
 };
-/**校验商品条码 */
-const validateBarCode = async (value: any, callback: any) => {
-    let params = {
-        barCode: value,
-        id: value.id ? value.id : 0,
-    };
-    const result: any = await api.checkMaterialBarCode(params)
-    if (result && result.code === 200) {
-        if (!result.data.status) {
-            callback();
-        } else {
-            callback("名称已经存在");
-        }
-    } else {
-        callback(result.data);
-    }
-}
 
 type DataSourceType = {
     barCode?: React.Key;
@@ -61,38 +44,52 @@ const PurchaseOrderEditableTable = (props) => {
     //     })
     // }
     const columns: ProColumns<DataSourceType>[] = [
-        // { title: '仓库名称', dataIndex: 'depotId', width: '7%', },
-        { title: '条码', dataIndex: 'barCode', width: '8%',
-            formItemProps: {
-                rules: [ { required: true, whitespace: true, message: '${title}不能为空' }, ]
-            }
-        },
-        { title: '名称', dataIndex: 'name', width: '6%', },
-        { title: '规格', dataIndex: 'standard', width: '5%',  },
-        { title: '型号', dataIndex: 'model', width: '5%',  },
-        { title: '颜色', dataIndex: 'color', width: '5%',  },
-        // { title: '扩展信息', dataIndex: 'materialOther', width: '5%',  },
-        { title: '库存', dataIndex: 'stock', width: '5%',  },
-        { title: '单位', dataIndex: 'unit', width: '4%',  },
-        // { title: '多属性', dataIndex: 'sku', width: '4%',    },
-        { title: '数量', dataIndex: 'operNumber', width: '5%',
+        {
+            title: '仓库名称', key: 'depotId', width: '7%',
             formItemProps: {
                 rules: [{ required: true, whitespace: true, message: '${title}不能为空' },]
             }
         },
-        { title: '单价', dataIndex: 'unitPrice', width: '5%',    },
-        { title: '金额', dataIndex: 'allPrice', width: '5%', },
-        { title: '税率', dataIndex: 'taxRate', width: '3%',},
-        { title: '税额', dataIndex: 'taxMoney', width: '5%',},
-        { title: '价税合计', dataIndex: 'taxLastMoney', width: '5%',},
-        { title: '备注', dataIndex: 'remark', width: '5%'}
+        { title: '条码', key: 'barCode', width: '8%',
+            formItemProps: {
+                rules: [{ required: true, message: '${title}不能为空' },]
+            }
+        },
+        { title: '名称', key: 'name', width: '6%' },
+        { title: '规格', key: 'standard', width: '5%' },
+        // { title: '型号', key: 'model', width: '5%' },
+        // { title: '颜色', key: 'color', width: '5%' },
+        // { title: '扩展信息', key: 'materialOther', width: '5%' },
+        { title: '库存', key: 'stock', width: '5%' },
+        { title: '单位', key: 'unit', width: '4%' },
+        // { title: '序列号', key: 'snList', width: '12%',
+        //     formItemProps: {
+        //         rules: [{ pattern: /^\S{1,100}$/, whitespace: true, message: '请小于100位字符' },]
+        //     }
+        // },
+        // { title: '批号', key: 'batchNumber', width: '5%', },
+        // { title: '有效期', key: 'expirationDate', width: '7%', },
+        // { title: '多属性', key: 'sku', width: '4%' },
+        // { title: '原数量', key: 'preNumber', width: '4%' },
+        // { title: '已入库', key: 'finishNumber', width: '4%' },
+        { title: '数量', key: 'operNumber', width: '4%', 
+            formItemProps: {
+                rules: [{ required: true, message: '请小于100位字符' },]
+            }
+        },
+        { title: '单价', key: 'unitPrice', width: '4%' },
+        { title: '金额', key: 'allPrice', width: '5%'},
+        { title: '税率', key: 'taxRate', width: '3%' },
+        { title: '税额', key: 'taxMoney', width: '5%', readonly: true },
+        { title: '价税合计', key: 'taxLastMoney', width: '5%' },
+        { title: '备注', key: 'remark', width: '5%', },
     ];
 
     return (
         <EditableProTable<DataSourceType>
             className="EditableProTable-container"
             rowKey="barCode"//编辑功能识别的rowKey
-            headerTitle="选择商品"
+            // headerTitle="选择商品"
             maxLength={5}
             loading={false}
             columns={columns}

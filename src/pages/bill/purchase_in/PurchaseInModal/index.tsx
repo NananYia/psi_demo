@@ -10,10 +10,11 @@ import ProForm, {
     ProFormSelect,
     ProFormDateTimePicker,
     ProFormTextArea,
+    ProFormUploadButton,
 } from '@ant-design/pro-form';
 import { PlusOutlined } from '@ant-design/icons';
 import api from "../../../../api/api";
-import PurchaseOrderEditableTable from '../PurchaseOrderEditableTable';
+import PurchaseOrderEditableTable from '../PurchaseInEditableTable';
 import './index.less'
 import { getAction } from '../../../../api/manage';
 interface ModalFormButtonProps {
@@ -32,7 +33,7 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
     @observable private number: string;//单据编号
     @observable private timeopen: boolean = false;
 
-    private prefixNo = 'CGDD';
+    private prefixNo = 'CGRK';
 
     constructor(props) {
         super(props);
@@ -164,7 +165,8 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                     <ProForm.Group>
                         <ProFormSelect width="sm" name="organId" label="供应商" placeholder="请选择供应商" options={this.supplierData}/>
                         <ProFormDateTimePicker name="operTime" label="单据日期"/>
-                        <ProFormText initialValue={this.number} width="sm" name="number" label="单据编号" readonly tooltip="单据编号自动生成、自动累加、开头是单据类型的首字母缩写，累加的规则是每次打开页面会自动占用一个新的编号"/>
+                        <ProFormText initialValue={this.number} width="sm" name="number" label="单据编号" readonly tooltip="单据编号自动生成、自动累加、开头是单据类型的首字母缩写，累加的规则是每次打开页面会自动占用一个新的编号" />
+                        <ProFormText width="sm" name="linkNumber" label="关联订单" placeholder="请选择关联订单"/>
                     </ProForm.Group>
                     <ProForm.Group>
                         <PurchaseOrderEditableTable getEditableValue={this.getEditableTabl.bind(this)}/>
@@ -174,6 +176,13 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                         <ProFormText width="sm" name="discount" label="优惠率" placeholder="请输入优惠率(%)" />
                         <ProFormText width="sm" name="discountMoney" label="付款优惠" placeholder="请输入付款优惠" />
                         <ProFormText width="sm" name="discountLastMoney" label="优惠后金额" placeholder="请输入优惠后金额" />
+                        <ProFormText width="sm" name="otherMoney" label="其它费用" placeholder="请输入其它费用" />
+                    </ProForm.Group>
+                    <ProForm.Group>
+                        <ProFormSelect width="sm" name="organId" label="结算账户" placeholder="选择结算账户" options={this.supplierData} />
+                        <ProFormText width="sm" name="changeAmount" label="本次付款" placeholder="请输入本次付款" />
+                        <ProFormText width="sm" name="debt" label="本次欠款" placeholder="请输入本次欠款" />
+                        <ProFormUploadButton width="sm" name="debt" label="附件" />
                     </ProForm.Group>
                 </ModalForm>
             </div >
