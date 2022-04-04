@@ -16,6 +16,7 @@ import LeftNav from "../left-nav";
 import VendorList from "../ststem/vendor";
 import CustomerList from "../ststem/customer";
 import DepotList from "../ststem/depot"
+import AccountList from "../ststem/account"
 import { Header } from "antd/lib/layout/layout";
 import MaterialList from "../material/material";
 import MaterialCategoryList from "../material/material_category";
@@ -90,6 +91,9 @@ export default class admin extends Component<any, any>{
 							<Route path="/home/system/customer" component={CustomerList} />
 							{/* 仓库信息 */}
 							<Route path="/home/system/depot" component={DepotList} />
+							{/* 仓库信息 */}
+							<Route path="/home/system/account" component={AccountList} />
+
 							{/* <Route path="/charts/bar" component={Bar} />
 								<Route path="/charts/pie" component={Pie} />
 								<Route path="/charts/line" component={Line} /> */}

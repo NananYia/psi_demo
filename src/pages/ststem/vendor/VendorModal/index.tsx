@@ -7,6 +7,7 @@ import ProForm, {
     ProFormText,
     ProFormDateRangePicker,
     ProFormSelect,
+    ProFormTextArea,
 } from '@ant-design/pro-form';
 import { PlusOutlined } from '@ant-design/icons';
 import api from "../../../../api/api";
@@ -74,14 +75,38 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                         message.success('提交成功');
                         return true;
                     }}
+                    width={1050}
                 >
-                    <ProFormText width="md" name="supplier" label="供应商名称" tooltip="最长为 24 位" placeholder="请输入名称"
-                        rules={[
-                            { required: true, message: '请输入供应商名称', },
-                            // { type: 'email', message: '请输入正确的电子邮箱', },
-                            { validator: (rule, value, callback) => { this.validateSupplierName(value, callback); } }
-                        ]}
-                    />
+                    <ProForm.Group>
+                        <ProFormText width="sm" name="supplier" label="供应商名称" tooltip="最长为 24 位" placeholder="请输入名称"
+                            rules={[
+                                { required: true, message: '请输入供应商名称', },
+                                { validator: (rule, value, callback) => { this.validateSupplierName(value, callback); } }
+                            ]}
+                        />
+                        <ProFormText width="sm" name="contacts" label="联系人" placeholder="请输入联系人" />
+                        <ProFormText width="sm" name="telephone" label="手机号码" placeholder="请输入手机号码" />
+                        <ProFormText width="sm" name="phoneNum" label="联系电话" placeholder="请输入联系电话" />
+                    </ProForm.Group>
+                    <ProForm.Group>
+                        <ProFormText width="sm" name="email" label="电子邮箱" placeholder="请输入电子邮箱"
+                            rules={[{ type: 'email', message: '请输入正确的电子邮箱', },]}
+                        />
+                        <ProFormText width="sm" name="fax" label="传真" placeholder="请输入传真" />
+                    </ProForm.Group>
+                    <ProForm.Group>
+                        <ProFormText width="sm" name="beginNeedGet" label="期初应收" placeholder="请输入期初应收" />
+                        <ProFormText width="sm" name="allNeedGet" label="期末应收" readonly={true} />
+                    </ProForm.Group>
+                    <ProForm.Group>
+                        <ProFormText width="sm" name="taxNum" label="纳税人识别号" placeholder="请输入纳税人识别号" />
+                        <ProFormText width="sm" name="taxRate" label="税率(%)" placeholder="请输入税率(%)" />
+                        <ProFormText width="sm" name="bankName" label="请输入开户行" placeholder="开户行" />
+                        <ProFormText width="sm" name="accountNumber" label="账号" placeholder="请输开户行入账号" />
+                    </ProForm.Group>
+                    <ProForm.Group>
+                        <ProFormTextArea width="sm" name="description" label="备注" placeholder="请输入备注" />
+                    </ProForm.Group>
 
                     {/* <ProForm.Group>
                         <ProFormText width="md" name="name" label="签约客户名称" tooltip="最长为 24 位" placeholder="请输入名称" />

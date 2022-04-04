@@ -7,27 +7,26 @@ import { filterObj } from "src/utils/util";
 import MySpin from "src/components/Spin";
 import { deleteAction, getAction, postAction } from "src/api/manage";
 import api from "../../../api/api";
-import DepotModalForm from "./DepotModal"
-import DepotTable from "../depot/DepotTable";
+import AccountModalForm from "./AccountModal"
+import AccountTable from "../account/AccountTable";
 import "./index.less";
 
 const FormitemValue = [
-    { queryParam: "name", text: "仓库名称", placeholder: "请输入仓库名称查询" },
-    { queryParam: "remark", text: "描述", placeholder: "请输入描述查询" },
+    { queryParam: "name", text: "名称", placeholder: "请输入仓库名称查询" },
+    { queryParam: "serialNo", text: "编号", placeholder: "请输入编号查询" },
+    { queryParam: "remark", text: "备注", placeholder: "请输入描述查询" },
 ]
 const columns = [
-    { title: '仓库名称', dataIndex: 'name', width: "10%" },
-    { title: '仓库地址', dataIndex: 'address', width: "12%", align: "center" },
-    { title: '仓储费', dataIndex: 'warehousing', width: "10%", align: "center" },
-    { title: '搬运费', dataIndex: 'truckage', width: "10%", align: "center" },
-    { title: '负责人', dataIndex: 'principalName', width: "10%", align: "center" },
-    { title: '排序', dataIndex: 'sort', width: "8%", align: "center" },
+    { title: '名称', dataIndex: 'name', width: 100 },
+    { title: '编号', dataIndex: 'serialNo', width: 150, align: "center" },
+    { title: '期初金额', dataIndex: 'initialAmount', width: 100, align: "center" },
+    { title: '当前余额', dataIndex: 'currentAmount', width: 100, align: "center" },
     // { title: '是否默认', dataIndex: 'isDefault', width: "10%", align: "center" },
     // { title: '备注', dataIndex: 'remark', width: "8%", align: "center" },
     // { title: '操作', dataIndex: 'action', width: 200, align: "center", scopedSlots: { customRender: 'action' }, },
 ]
 @observer
-export default class DepotList extends Component<any,any> {
+export default class AccountList extends Component<any,any> {
     @observable private queryParam: any = {};
     @observable private searchqueryParam: any = {};
     @observable private loading: boolean = false;
@@ -57,12 +56,13 @@ export default class DepotList extends Component<any,any> {
     constructor(props) {
         super(props);
         makeObservable(this);
-        this.getSearchDepotList();
+        this.getSearchAccountList();
     }
     getSearchQueryParams(values) {
         this.searchqueryParam = {
             name: values?.name || "",
             remark: values?.remark || "",
+            serialNo:values?.serialNo || "",
         }
         //获取查询条件
         let searchObj = { search: "", }
@@ -80,11 +80,11 @@ export default class DepotList extends Component<any,any> {
         });
         return str + ",isDefault" + ",remark"+ ",action";
     }
-    getSearchDepotList = async (values?) => {
+    getSearchAccountList = async (values?) => {
         var params = this.getSearchQueryParams(values);//查询参数
         this.loading = false;
         try {
-            const result: any = await getAction("/depot/list", params);
+            const result: any = await getAction("/account/list", params);
             if (result.code === 200) {
                 this.dataSource = result.data.rows;
                 this.ipagination.total = result.data.total;
@@ -101,9 +101,9 @@ export default class DepotList extends Component<any,any> {
     addList = async (value?) => {
         let params = { ...value};
         try {
-            const result: any = await api.addDepot(params);
+            const result: any = await api.addAccount(params);
             if (result.code === 200) {
-                this.getSearchDepotList()
+                this.getSearchAccountList()
             }
             if (result.code === 510) {
                 notification.warning(result.data)
@@ -115,9 +115,9 @@ export default class DepotList extends Component<any,any> {
     editList = async (value?) => {
         let params = { ...value, type: '仓库', };
         try {
-            const result: any = await api.editDepot(params);
+            const result: any = await api.editAccount(params);
             if (result.code === 200) {
-                this.getSearchDepotList()
+                this.getSearchAccountList()
             }
             if (result.code === 510) {
                 notification.warning(result.data)
@@ -128,9 +128,9 @@ export default class DepotList extends Component<any,any> {
     }
     updateDefault = async (values?) => {
         try {
-            const result: any = await postAction("depot/updateIsDefault", { id: values?.id });
+            const result: any = await postAction("/account/updateIsDefault", { id: values?.id });
             if (result.code === 200) {
-                this.getSearchDepotList()
+                this.getSearchAccountList()
             }
             if (result.code === 510) {
                 notification.warning(result.data.message)
@@ -141,9 +141,9 @@ export default class DepotList extends Component<any,any> {
     }
     deleteList = async (values?) => {
         try {
-            const result: any = await deleteAction("/depot/delete?" + "id=" + values.id, null);
+            const result: any = await deleteAction("/account/delete?" + "id=" + values.id, null);
             if (result.code === 200) {
-                this.getSearchDepotList()
+                this.getSearchAccountList()
             }
             if (result.code === 510) {
                 notification.warning(result.data.message)
@@ -154,16 +154,16 @@ export default class DepotList extends Component<any,any> {
     }
     render() {
         return (
-            <div className="Depot-container">
+            <div className="Account-container">
                 <div className="title">仓库信息</div>
                 <SearchForm
                     FormitemValue={FormitemValue}
-                    getSearchList={this.getSearchDepotList.bind(this)}
+                    getSearchList={this.getSearchAccountList.bind(this)}
                 />
                 {this.loading ?
                     <div className="search-result-list">
-                        <DepotModalForm buttonlabel="新建" title="新增仓库" getModalValue={this.addList.bind(this)} />
-                        <DepotTable
+                        <AccountModalForm buttonlabel="新建" title="新增仓库" getModalValue={this.addList.bind(this)} />
+                        <AccountTable
                             columns={columns}
                             dataSource={this.dataSource}
                             rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
