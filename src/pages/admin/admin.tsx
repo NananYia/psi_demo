@@ -17,6 +17,7 @@ import VendorList from "../ststem/vendor";
 import CustomerList from "../ststem/customer";
 import { Header } from "antd/lib/layout/layout";
 import MaterialList from "../material/material";
+import MaterialCategoryList from "../material/material_category";
 import './admin.less';
 import ChangepwdModal from "./change-password";
 import { USER_INFO } from "../../store/mutation-types";
@@ -46,10 +47,6 @@ export default class admin extends Component<any, any>{
 				</Sider>
 				<Layout>
 					<Header className="site-layout-background" style={{ padding: 0 }}>
-						{/* {React.createElement(this.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
-							className: 'trigger',
-							onClick: () => this.onCollapse(),
-						})} */}
 						<div onClick={() => this.onCollapse()}>
 							{this.collapsed ? <MenuUnfoldOutlined style={{ color: '#ffffff' }} /> : <MenuFoldOutlined style={{ color: '#ffffff' }}/>}
 						</div>
@@ -62,9 +59,17 @@ export default class admin extends Component<any, any>{
 					<Content style={{ margin: 20, backgroundColor: "#fff" }} className="panel">
 						<Switch>
 							<Route path="/home/system/home" component={Home} />
-							<Route path="/home/system/vendor" component={VendorList} />
-							<Route path="/home/system/customer" component={CustomerList} />
+							{/* 商品信息 */}
 							<Route path="/home/material/material" component={MaterialList} />
+							{/* 商品列表 */}
+							<Route path="/home/material/material_category" component={MaterialCategoryList} />
+
+							{/* 供应商信息 */}
+							<Route path="/home/system/vendor" component={VendorList} />
+							{/* 客户信息 */}
+							<Route path="/home/system/customer" component={CustomerList} />
+
+
 							{/* <Route path="/charts/bar" component={Bar} />
 								<Route path="/charts/pie" component={Pie} />
 								<Route path="/charts/line" component={Line} /> */}
