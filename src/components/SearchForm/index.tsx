@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import { observer } from 'mobx-react'
 import { FormInstance } from 'antd/es/form';
 import { makeObservable, observable } from 'mobx'
-import { Form, Row, Col, Input, Button, Select } from 'antd';
-import './index.less'
+import { Form, Row, Col, Input, Button, DatePicker } from 'antd';
+import './index.less';
 
+const { RangePicker } = DatePicker;
 interface DataType {
     FormitemValue: any;
     getSearchList: (value: any) => {}
 }
-
 @observer
 export default class SearchForm extends React.Component<DataType, any>{ 
     @observable
@@ -45,13 +45,23 @@ export default class SearchForm extends React.Component<DataType, any>{
                 <Row gutter={24}>
                     {
                         this.FormitemValue.map((item, index) => {
-                            return (
-                                <Col span={8} key={index}>
-                                    <Form.Item name={item.queryParam} label={item.text} rules={[{ message: 'Input something!', },]} >
-                                        <Input placeholder={item.placeholder} />
-                                    </Form.Item>
-                                </Col>
-                            )
+                            if (item.queryParam === "createTimeRange") {
+                                return (
+                                    <Col span={8} key={index}>
+                                        <Form.Item name={item.queryParam} label={item.text} rules={[{ message: 'Input something!', },]} >
+                                            <RangePicker placement="bottomLeft" />
+                                        </Form.Item>
+                                    </Col>
+                                )
+                            } else {
+                                return (
+                                    <Col span={8} key={index}>
+                                        <Form.Item name={item.queryParam} label={item.text} rules={[{ message: 'Input something!', },]} >
+                                            <Input placeholder={item.placeholder} />
+                                        </Form.Item>
+                                    </Col>
+                                )
+                             } 
                         })
                     }
                 </Row>

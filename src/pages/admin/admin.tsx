@@ -18,6 +18,7 @@ import CustomerList from "../ststem/customer";
 import { Header } from "antd/lib/layout/layout";
 import MaterialList from "../material/material";
 import MaterialCategoryList from "../material/material_category";
+import PurchaseOrderList from "../bill/purchase-order";
 import './admin.less';
 import ChangepwdModal from "./change-password";
 import { USER_INFO } from "../../store/mutation-types";
@@ -59,6 +60,10 @@ export default class admin extends Component<any, any>{
 					<Content style={{ margin: 20, backgroundColor: "#fff" }} className="panel">
 						<Switch>
 							<Route path="/home/system/home" component={Home} />
+
+							{/* 采购订单 */}
+							<Route path="/home/bill/purchase_order" component={PurchaseOrderList} />
+
 							{/* 商品信息 */}
 							<Route path="/home/material/material" component={MaterialList} />
 							{/* 商品列表 */}
