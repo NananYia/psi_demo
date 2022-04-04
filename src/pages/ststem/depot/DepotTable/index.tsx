@@ -2,7 +2,7 @@ import React from 'react';
 import { observer } from 'mobx-react'
 import { makeObservable, observable } from 'mobx'
 import { Table, Input, Button, Popconfirm, Form, FormInstance, InputRef, Radio, Tag } from 'antd';
-import CustomerModalForminTable from '../DepotModalinTable';
+import DepotModalForm from '../DepotModal';
 import './index.less';
 interface CustomerTableProps { 
     columns: any;
@@ -36,7 +36,7 @@ export default class CustomerTable extends React.Component<CustomerTableProps, a
                     this.dataSource.length >= 1 ? (
                         <div>
                             <Popconfirm title="确认修改默认?" onConfirm={() => this.props.updateDefault(record)}><a style={{paddingRight:10}}>修改默认</a></Popconfirm>
-                            <CustomerModalForminTable buttonlabel="编辑" title="编辑" getModalValue={this.props.getExitValue} initialValues={record}/>
+                            <DepotModalForm buttonlabel="编辑" title="编辑仓库" getModalValue={this.props.getExitValue.bind(this)} initialValues={record}/>
                             <Popconfirm title="确认删除?" onConfirm={()=>this.props.getdeleteValue(record)}><a>删除</a></Popconfirm>
                         </div>
                     ) : null,

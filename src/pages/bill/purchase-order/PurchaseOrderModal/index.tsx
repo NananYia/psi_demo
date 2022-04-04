@@ -141,7 +141,7 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                         return true;
                     }}
                     width={1500}
-                    initialValues={initialValues?this.props.initialValues:null}
+                    initialValues={initialValues?initialValues:null}
                 >
                     <ProForm.Group>
                         <ProFormSelect width="sm" name="organId" label="供应商" placeholder="请选择供应商" options={this.supplierData}/>

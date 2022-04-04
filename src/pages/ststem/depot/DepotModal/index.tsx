@@ -17,6 +17,7 @@ interface ModalFormButtonProps {
     buttonlabel: string;
     title: string;
     getModalValue: (value: any) => {}
+    initialValues?: {}//穿参为编辑，不传为新增
 }
 @observer
 export default class ModalFormButton extends React.Component<ModalFormButtonProps, any>{
@@ -73,11 +74,12 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
         this.TreeValue = value;
     };
     render() {
+        const { initialValues } = this.props;
         return (
             <div className="ModalFormButton-container">
                 <ModalForm<{ name: string; company: string; }>
                     title={this.props.title}
-                    trigger={
+                    trigger={initialValues ? <a>编辑</a> :
                         <Button type="primary">
                             <PlusOutlined /> {this.props.buttonlabel}
                         </Button>
@@ -92,6 +94,7 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                         return true;
                     }}
                     width={750}
+                    initialValues={initialValues ? initialValues : null}
                 >
                     <ProForm.Group>
                         <ProFormText width="md" name="name" label="仓库名称" tooltip="最长为 24 位" placeholder="请输入仓库名称"
@@ -101,16 +104,10 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                             ]}
                         />
                     </ProForm.Group>
-                    {/* <div className="TreeSelect-title" style={{ paddingBottom: 10 }}>负责人</div> */}
                     <ProForm.Group>
                         <ProFormText width="md" name="address" label="仓库地址" placeholder="请输入仓库地址" />
                         <ProFormSelect width="md" name="principal" label="负责人" options={this.loadTreeData} placeholder="请输入负责人" />
                     </ProForm.Group>
-                    {/* <Select style={{ width: 328, paddingBottom: 20 }}>
-                        {this.loadTreeData && this.loadTreeData.map((item, index) => { 
-                            return <Option value={item.id} key={index}>{item.userName}</Option>
-                        })} */}
-                    {/* </Select> */}
                     <ProForm.Group>
                         <ProFormText width="md" name="warehousing" label="仓储费" placeholder="请输入仓储费(元/天/KG)" />
                         <ProFormText width="md" name="truckage" label="搬运费" placeholder="请输入搬运费(元)" />
