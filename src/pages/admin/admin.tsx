@@ -20,6 +20,7 @@ import { Header } from "antd/lib/layout/layout";
 import MaterialList from "../material/material";
 import MaterialCategoryList from "../material/material_category";
 import PurchaseOrderList from "../bill/purchase-order";
+import SaleOrderList from "../bill/sale_order";
 import './admin.less';
 import ChangepwdModal from "./change-password";
 import { USER_INFO } from "../../store/mutation-types";
@@ -65,6 +66,9 @@ export default class admin extends Component<any, any>{
 							{/* 采购订单 */}
 							<Route path="/home/bill/purchase_order" component={PurchaseOrderList} />
 
+							{/* 销售订单 */}
+							<Route path="/home/bill/sale_order" component={SaleOrderList} />
+
 							{/* 商品信息 */}
 							<Route path="/home/material/material" component={MaterialList} />
 							{/* 商品列表 */}
@@ -76,7 +80,6 @@ export default class admin extends Component<any, any>{
 							<Route path="/home/system/customer" component={CustomerList} />
 							{/* 仓库信息 */}
 							<Route path="/home/system/depot" component={DepotList} />
-
 							{/* <Route path="/charts/bar" component={Bar} />
 								<Route path="/charts/pie" component={Pie} />
 								<Route path="/charts/line" component={Line} /> */}
