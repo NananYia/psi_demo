@@ -137,13 +137,14 @@ export default class VendorList extends Component<any,any> {
     }
     addVendorList = async (value?) => {
         let params = {
-            supplier: value.supplier,
+            ...value,
+            // supplier: value.supplier,
             type: '供应商',
         };
         try {
             const result: any = await api.addSupplier(params);
             if (result.code === 200) {
-                this.getVendorList()
+                this.getSearchVendorList()
             }
             if (result.code === 510) {
                 notification.warning(result.data)
@@ -157,7 +158,7 @@ export default class VendorList extends Component<any,any> {
         try {
             const result: any = await api.editSupplier(params);
             if (result.code === 200) {
-                this.getVendorList()
+                this.getSearchVendorList()
             }
             if (result.code === 510) {
                 notification.warning(result.data)
@@ -170,10 +171,10 @@ export default class VendorList extends Component<any,any> {
         try {
             const result: any = await deleteAction("/supplier/delete?" + "id="+ values.id, null);
             if (result.code === 200) {
-                this.getVendorList()
+                this.getSearchVendorList()
             }
-            if (result.code === 510) {
-                notification.warning(result.data.message)
+            if (result.code === 510 || result.code === 601) {
+                notification.warning({ message: result.data.message })
             }
         } catch (error) {
             console.log(error);
