@@ -7,8 +7,8 @@ import { filterObj } from "src/utils/util";
 import store from "store";
 import MySpin from "src/components/Spin";
 import { deleteAction, getAction, httpAction, postAction, putAction } from "src/api/manage";
-import SaleOrderTable from "./OtherInTable";
-import SaleOrderModalForm from './OtherInModal';
+import SaleOrderTable from "./OtherOutTable";
+import SaleOrderModalForm from './OtherOutModal';
 import { CheckOutlined, StopOutlined } from '@ant-design/icons';
 import { LoginOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import api from "../../../api/api";
@@ -18,13 +18,13 @@ const FormitemValue = [
     { queryParam: "number", text: "单据编号", placeholder: "请输入单据编号" },
     { queryParam: "materialParam", text: "商品信息", placeholder: "请输入条码、名称、规格、型号" },
     { queryParam: "createTimeRange", text: "单据日期"},
-    { queryParam: "organId", text: "客户", placeholder: "选择客户" },
+    { queryParam: "organId", text: "选择客户", placeholder: "选择客户" },
     { queryParam: "depotId", text: "仓库名称", placeholder: "请选择仓库" },
-    { queryParam: "creator", text: "操作员", placeholder: "选择操作员" },
+    { queryParam: "creator", text: "选操作员", placeholder: "选择操作员" },
     { queryParam: "linkNumber", text: "关联单据", placeholder: "请输入关联单据" },
 ]
 const columns =[
-    { title: '供应商', dataIndex: 'organName', width: '10%', ellipsis: true},
+    { title: '客户', dataIndex: 'organName', width: '10%', ellipsis: true},
     { title: '单据编号', dataIndex: 'number', width: '13%', ellipsis: true,
         customRender: function (text, record, index) {
             if (record.linkNumber) {
@@ -86,7 +86,7 @@ export default class OtherInList extends Component<any,any> {
         this.searchqueryParam = {
             number: values?.number ||"",
             materialParam: values?.materialParam ||"",
-            type: "入库",
+            type: "出库",
             subType: "其它",
             roleType: store.get('roleType'),
             organId: values?.organId ||"",
@@ -227,7 +227,6 @@ export default class OtherInList extends Component<any,any> {
             onOk: () => this.auditOrder(status)
         });
     }
-    /** */
     auditOrder = async(audit?) => { 
         try {
             const result: any = await postAction("/depotHead/batchSetStatus", {status:audit, ids: this.auditData});
@@ -251,7 +250,7 @@ export default class OtherInList extends Component<any,any> {
                 />
                 {this.loading ?
                     <div className="search-result-list">
-                        <SaleOrderModalForm buttonlabel="新建" title="新增其他入库单" getModalValue={this.addList.bind(this)} />
+                        <SaleOrderModalForm buttonlabel="新建" title="新增其他出库单" getModalValue={this.addList.bind(this)} />
                         <Button icon={<CheckOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(1)} > 审核 </Button>
                         <Button icon={<StopOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(0)} > 反审核 </Button>
                         <SaleOrderTable
