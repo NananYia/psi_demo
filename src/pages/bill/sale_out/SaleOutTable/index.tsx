@@ -2,7 +2,7 @@ import React from 'react';
 import { observer } from 'mobx-react'
 import { makeObservable, observable } from 'mobx'
 import { Table, Input, Button, Popconfirm, Form, FormInstance, InputRef, Radio, Tag } from 'antd';
-import ModalFormButton from '../SaleOrderModal';
+import ModalFormButton from '../SaleOutModal';
 import './index.less';
 interface VendorTableProps { 
     columns: any;

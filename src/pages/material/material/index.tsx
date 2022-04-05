@@ -25,7 +25,7 @@ const columns =[
     { title: '类别', dataIndex: 'categoryName', width: '5%', ellipsis: true },
     { title: '扩展信息', dataIndex: 'materialOther', width: '7%', ellipsis: true },
     { title: '单位', dataIndex: 'unit', width: '5%', ellipsis: true,
-        customRender: function (t, r, index) {
+        render:  (t, r, index)=> {
             if (r) {
                 let name = t ? t : r.unitName
                 if (r.sku) {

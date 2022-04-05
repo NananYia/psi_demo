@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { observer } from 'mobx-react'
 import { FormInstance } from 'antd/es/form';
 import { makeObservable, observable } from 'mobx'
-import { Form, Row, Col, Input, Button, DatePicker } from 'antd';
+import { Form, Row, Col, Input, Button, DatePicker, Select } from 'antd';
 import './index.less';
 import moment from 'moment';
+const { Option } = Select;
 
 const { RangePicker } = DatePicker;
 const dateFormat = 'YYYY-MM-DD HH:mm' || undefined;
@@ -65,7 +66,19 @@ export default class SearchForm extends React.Component<DataType, any>{
                 <Row gutter={24}>
                     {
                         this.FormitemValue.map((item, index) => {
-                            if (item.queryParam === "createTimeRange") {
+                            if (item.type === "select") { 
+                                return (
+                                    <Col span={8} key={index}>
+                                        <Form.Item name={item.queryParam} label={item.text}>
+                                            <Select>
+                                                {item.options.map((option, index) => {
+                                                    return <Option key={index} value={option.id}>{option.value}</Option>
+                                                }) }
+                                            </Select>
+                                        </Form.Item>
+                                    </Col>
+                                )
+                            } else if (item.type === "dateRange") {
                                 return (
                                     <Col span={8} key={index}>
                                         <Form.Item name={item.queryParam} label={item.text}>

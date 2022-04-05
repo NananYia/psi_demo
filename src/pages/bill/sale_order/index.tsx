@@ -14,17 +14,10 @@ import { LoginOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import api from "../../../api/api";
 import "./index.less";
 
-const FormitemValue = [
-    { queryParam: "number", text: "单据编号", placeholder: "请输入单据编号" },
-    { queryParam: "materialParam", text: "商品信息", placeholder: "请输入条码、名称、规格、型号" },
-    { queryParam: "createTimeRange", text: "单据日期"},
-    { queryParam: "organId", text: "客户", placeholder: "选择客户" },
-    { queryParam: "creator", text: "操作员", placeholder: "选择操作员" },
-]
-const columns =[
-    { title: '供应商', dataIndex: 'organName', width: '10%', ellipsis: true},
+const columns = [
+    { title: '客户', dataIndex: 'organName', width: '10%', ellipsis: true},
     { title: '单据编号', dataIndex: 'number', width: '10%', ellipsis: true,
-        customRender: function (text, record, index) {
+        render:  (text, record, index)=> {
             if (record.linkNumber) {
                 return text + "[转]";
             } else {
@@ -33,7 +26,7 @@ const columns =[
         }
     },
     { title: '商品信息', dataIndex: 'materialsList', width: '10%', ellipsis: true,
-        customRender: function (text, record, index) {
+        render:  (text, record, index)=> {
             if (text) {
                 return text.replace(",", "，");
             }
@@ -42,16 +35,7 @@ const columns =[
     { title: '单据日期', dataIndex: 'operTimeStr', width: '10%' },
     { title: '操作员', dataIndex: 'userName', width: '10%', ellipsis: true },
     { title: '金额合计', dataIndex: 'totalPrice', width: '10%' },
-    {
-        title: '含税合计', dataIndex: 'totalTaxLastMoney', width: '10%',
-        customRender: function (text, record, index) {
-            if (record.discountLastMoney) {
-                return (record.discountMoney + record.discountLastMoney).toFixed(2);
-            } else {
-                return record.totalPrice;
-            }
-        }
-    }
+    
 ]
 @observer
 export default class SaleOrderList extends Component<any,any> {
@@ -65,6 +49,9 @@ export default class SaleOrderList extends Component<any,any> {
     @observable public fileList: any = [];
     @observable public model: any = {};
     @observable public auditData: any = {};
+    @observable private customerData: any = [];
+    @observable private userData: any = [];
+    private FormitemValue: any = []
     /* 排序参数 */
     private isorter: any= {
         column: 'createTime',
@@ -88,6 +75,45 @@ export default class SaleOrderList extends Component<any,any> {
         super(props);
         makeObservable(this);
         this.getSearchList();
+        this.getCustomerName();
+        this.getUserName();
+        this.FormitemValue = [
+            { queryParam: "number", text: "单据编号", placeholder: "请输入单据编号" },
+            { queryParam: "materialParam", text: "商品信息", placeholder: "请输入条码、名称、规格、型号" },
+            { queryParam: "createTimeRange", text: "单据日期" },
+            { queryParam: "organId", text: "选择客户", placeholder: "选择客户", type: "select", options: this.customerData },
+            { queryParam: "creator", text: "选操作员", placeholder: "选择操作员", type: "select", options: this.userData },
+        ]
+    }
+    /**拿到客户列表 */
+    getCustomerName = async () => {
+        try {
+            const result: any = await api.findBySelectCus({});
+            result.map((item) => {
+                const dataitem = {
+                    value: item.supplier,
+                    id: item.id
+                }
+                return this.customerData.push(dataitem)
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    /**拿到操作员列表 */
+    getUserName = async () => {
+        try {
+            const result: any = await api.getUserList({});
+            result.map((item) => {
+                const dataitem = {
+                    value: item.userName,
+                    id: item.id
+                }
+                return this.userData.push(dataitem)
+            })
+        } catch (error) {
+            console.log(error);
+        }
     }
     /**拿到搜索的参数 */
     getSearchQueryParams(values) {
@@ -117,7 +143,7 @@ export default class SaleOrderList extends Component<any,any> {
             str += "," + value.dataIndex;
         });
         //拼接表格里补充的
-        return str + ",status" +",action";
+        return str +",totalTaxLastMoney"+ ",status" +",action";
     }
     /**请求查询的数据 */
     getSearchList = async(values ?,arg ?) => {
@@ -253,7 +279,7 @@ export default class SaleOrderList extends Component<any,any> {
             <div className="SaleOrder-container">
                 <div className="title">销售订单</div>
                 <SearchForm
-                    FormitemValue={FormitemValue}
+                    FormitemValue={this.FormitemValue}
                     getSearchList={this.getSearchList.bind(this)}
                 />
                 {this.loading ?

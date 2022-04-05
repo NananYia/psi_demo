@@ -94,10 +94,10 @@ const checkUnit = (params) => getAction("/unit/checkIsNameExist", params);
 const addSupplier = (params) => postAction("/supplier/add", params);
 const editSupplier = (params) => putAction("/supplier/update", params);
 const checkSupplier = (params) => getAction("/supplier/checkIsNameAndTypeExist", params);
-const findBySelectSup = (params) => postAction("/supplier/findBySelect_sup", params);
-const findBySelectCus = (params) => postAction("/supplier/findBySelect_cus", params);
-const findBySelectRetail = (params) => postAction("/supplier/findBySelect_retail", params);
-const findBySelectOrgan = (params) => postAction("/supplier/findBySelect_organ", params);
+const findBySelectSup = (params) => postAction("/supplier/findBySelect_sup", params);//供应商
+const findBySelectCus = (params) => postAction("/supplier/findBySelect_cus", params);//客户
+const findBySelectRetail = (params) => postAction("/supplier/findBySelect_retail", params);//零售商
+const findBySelectOrgan = (params) => postAction("/supplier/findBySelect_organ", params);//机构
 //单据相关
 const findBillDetailByNumber = (params) => getAction("/depotHead/getDetailByNumber", params);
 const findStockByDepotAndBarCode = (params) => getAction("/depotItem/findStockByDepotAndBarCode", params);

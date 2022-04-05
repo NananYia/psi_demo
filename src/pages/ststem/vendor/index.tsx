@@ -17,11 +17,6 @@ const FormitemValue = [
     { queryParam: "phonenum", text: "联系电话", placeholder: "请输入联系电话查询" },
 ]
 const columns =[
-    // { title: '#', dataIndex: '', key: 'rowIndex', width: 60, align: "center",
-    //     customRender: function (t, r, index) {
-    //         return parseInt(index) + 1;
-    //     }
-    // },
     { title: '名称', dataIndex: 'supplier', width: 100 },
     { title: '联系人', dataIndex: 'contacts', width: 100, align: "center" },
     { title: '手机号码', dataIndex: 'telephone', width: 100, align: "center" },

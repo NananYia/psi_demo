@@ -38,12 +38,8 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
     constructor(props) {
         super(props);
         makeObservable(this);
-        this.buildNumber(this.prefixNo)
-        this.getCustomerName();
-    }
-
-    componentWillUnmount(): void {
-        this.buildNumber(this.prefixNo);
+        // this.buildNumber(this.prefixNo)
+        // this.getCustomerName();
     }
 
     waitTime = (time: number = 100) => {

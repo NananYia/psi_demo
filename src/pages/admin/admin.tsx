@@ -23,6 +23,7 @@ import MaterialCategoryList from "../material/material_category";
 import PurchaseOrderList from "../bill/purchase_order";
 import PurchaseInList from "../bill/purchase_in";
 import SaleOrderList from "../bill/sale_order";
+import SaleOutList from "../bill/sale_out";
 import OtherInList from "../bill/other_in";
 import OtherOutList from "../bill/other_out";
 import './admin.less';
@@ -74,6 +75,8 @@ export default class admin extends Component<any, any>{
 
 							{/* 销售订单 */}
 							<Route path="/home/bill/sale_order" component={SaleOrderList} />
+							{/* 销售出库 */}
+							<Route path="/home/bill/sale_out" component={SaleOutList} />
 
 							{/* 其他入库 */}
 							<Route path="/home/bill/other_in" component={OtherInList} />

@@ -14,19 +14,11 @@ import { LoginOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import api from "../../../api/api";
 import "./index.less";
 
-const FormitemValue = [
-    { queryParam: "number", text: "单据编号", placeholder: "请输入单据编号" },
-    { queryParam: "materialParam", text: "商品信息", placeholder: "请输入条码、名称、规格、型号" },
-    { queryParam: "createTimeRange", text: "单据日期"},
-    { queryParam: "organId", text: "客户", placeholder: "选择客户" },
-    { queryParam: "depotId", text: "仓库名称", placeholder: "请选择仓库" },
-    { queryParam: "creator", text: "操作员", placeholder: "选择操作员" },
-    { queryParam: "linkNumber", text: "关联单据", placeholder: "请输入关联单据" },
-]
+
 const columns =[
     { title: '供应商', dataIndex: 'organName', width: '10%', ellipsis: true},
     { title: '单据编号', dataIndex: 'number', width: '13%', ellipsis: true,
-        customRender: function (text, record, index) {
+        render:  (text, record, index)=> {
             if (record.linkNumber) {
                 return text + "[转]";
             } else {
@@ -35,7 +27,7 @@ const columns =[
         }
     },
     { title: '商品信息', dataIndex: 'materialsList', width: '10%', ellipsis: true,
-        customRender: function (text, record, index) {
+        render: (text, record, index)=> {
             if (text) {
                 return text.replace(",", "，");
             }
@@ -57,6 +49,11 @@ export default class OtherInList extends Component<any,any> {
     @observable public fileList: any = [];
     @observable public model: any = {};
     @observable public auditData: any = {};
+    @observable private supplierData: any = [];
+    @observable private DepotData: any = [];
+    @observable private userData: any = [];
+    private FormitemValue:any = []
+
     /* 排序参数 */
     private isorter: any= {
         column: 'createTime',
@@ -80,6 +77,63 @@ export default class OtherInList extends Component<any,any> {
         super(props);
         makeObservable(this);
         this.getSearchList();
+        this.getSupplierName();
+        this.getDepotName();
+        this.getUserName();
+        this.FormitemValue = [
+            { queryParam: "number", text: "单据编号", placeholder: "请输入单据编号" },
+            { queryParam: "materialParam", text: "商品信息", placeholder: "请输入条码、名称、规格、型号" },
+            { queryParam: "createTimeRange", text: "单据日期" , type: "dateRange" },
+            { queryParam: "organId", text: "选供应商", placeholder: "选供应商", type: "select", options: this.supplierData },
+            { queryParam: "depotId", text: "仓库名称", placeholder: "请选择仓库", type: "select", options: this.DepotData },
+            { queryParam: "creator", text: "操作员", placeholder: "选择操作员", type: "select", options: this.userData },
+            { queryParam: "linkNumber", text: "关联单据", placeholder: "请输入关联单据" },
+        ]
+    }
+    /**拿到供应商列表 */
+    getSupplierName = async () => {
+        try {
+            const result: any = await api.findBySelectSup({});
+            result.map((item) => {
+                const dataitem = {
+                    value: item.supplier,
+                    id: item.id
+                }
+                return this.supplierData.push(dataitem)
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    /**拿到仓库列表 */
+    getDepotName = async () => { 
+        try {
+            const result: any = await await getAction("/depot/findDepotByCurrentUser", null);
+            result.data.map((item) => {
+                const dataitem = {
+                    value: item.depotName,
+                    id: item.id
+                }
+                return this.DepotData.push(dataitem)
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    /**拿到操作员列表 */
+    getUserName = async () => { 
+        try {
+            const result: any = await api.getUserList({});
+            result.map((item) => {
+                const dataitem = {
+                    value: item.userName,
+                    id: item.id
+                }
+                return this.userData.push(dataitem)
+            })
+        } catch (error) {
+            console.log(error);
+        }
     }
     /**拿到搜索的参数 */
     getSearchQueryParams(values) {
@@ -246,7 +300,7 @@ export default class OtherInList extends Component<any,any> {
             <div className="SaleOrder-container">
                 <div className="title">其他入库单</div>
                 <SearchForm
-                    FormitemValue={FormitemValue}
+                    FormitemValue={this.FormitemValue}
                     getSearchList={this.getSearchList.bind(this)}
                 />
                 {this.loading ?
