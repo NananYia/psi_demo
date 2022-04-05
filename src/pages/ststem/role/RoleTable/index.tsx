@@ -3,6 +3,7 @@ import { observer } from 'mobx-react'
 import { makeObservable, observable } from 'mobx'
 import { Table, Input, Button, Popconfirm, Form, FormInstance, InputRef, Radio, Tag } from 'antd';
 import DepotModalForm from '../RoleModal';
+import ModalFunctionForm from '../RoleFunctionModal';
 import './index.less';
 interface CustomerTableProps { 
     columns: any;
@@ -10,15 +11,14 @@ interface CustomerTableProps {
     rowSelection: any;
     getExitValue: (value: any) => {}
     getdeleteValue: (value: any) => {}
+    doSearch: () => {}
 }
 @observer
 export default class CustomerTable extends React.Component<CustomerTableProps, any>{
-    @observable
-    private columns:any;
-    @observable
-    dataSource: any;
-    @observable
-    selectedRowKeys: any;
+    @observable private columns:any;
+    @observable private dataSource: any;
+    @observable private selectedRowKeys: any;
+
     constructor(props) {
         super(props);
         makeObservable(this);
@@ -29,6 +29,7 @@ export default class CustomerTable extends React.Component<CustomerTableProps, a
                 render: (_, record:{ key: React.Key }) =>
                     this.dataSource.length >= 1 ? (
                         <div>
+                            <ModalFunctionForm title="分配功能" initialValues={record} doSearch={ this.props.doSearch.bind(this)}/>
                             <DepotModalForm buttonlabel="编辑" title="编辑仓库" getModalValue={this.props.getExitValue.bind(this)} initialValues={record}/>
                             <Popconfirm title="确认删除?" onConfirm={()=>this.props.getdeleteValue(record)}><a>删除</a></Popconfirm>
                         </div>

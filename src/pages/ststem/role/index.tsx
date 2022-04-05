@@ -149,6 +149,7 @@ export default class DepotList extends Component<any,any> {
                             rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
                             getExitValue={this.editList.bind(this)}
                             getdeleteValue={this.deleteList.bind(this)}
+                            doSearch={ this.getSearchDepotList.bind(this)} 
                         />
                     </div>
                     : <MySpin />
