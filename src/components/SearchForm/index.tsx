@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { observer } from 'mobx-react'
 import { FormInstance } from 'antd/es/form';
 import { makeObservable, observable } from 'mobx'
 import { Form, Row, Col, Input, Button, DatePicker, Select } from 'antd';
-import './index.less';
+import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import moment from 'moment';
-const { Option } = Select;
+import './index.less';
 
+const { Option } = Select;
 const { RangePicker } = DatePicker;
 const dateFormat = 'YYYY-MM-DD HH:mm' || undefined;
-
 interface DataType {
     FormitemValue: any;
     getSearchList: (value: any) => {}
@@ -24,6 +24,8 @@ export default class SearchForm extends React.Component<DataType, any>{
     private beginTime: undefined;//开始时间
     @observable
     private endTime: undefined;  //结束时间
+    @observable
+    private isShowAll: boolean = true; //展开关闭
 
     private formRef = React.createRef<FormInstance>();
 
@@ -64,7 +66,47 @@ export default class SearchForm extends React.Component<DataType, any>{
                 onFinish={this.onFinish}
             >
                 <Row gutter={24}>
-                    {
+                    {this.isShowAll ?
+                        this.FormitemValue.map((item, index) => {
+                            if (index < 3) { 
+                                if (item.type === "select") {
+                                    return (
+                                        <Col span={8} key={index}>
+                                            <Form.Item name={item.queryParam} label={item.text}>
+                                                <Select>
+                                                    {item.options.map((option, index) => {
+                                                        return <Option key={index} value={option.id}>{option.value}</Option>
+                                                    })}
+                                                </Select>
+                                            </Form.Item>
+                                        </Col>
+                                    )
+                                } else if (item.type === "dateRange") {
+                                    return (
+                                        <Col span={8} key={index}>
+                                            <Form.Item name={item.queryParam} label={item.text}>
+                                                <RangePicker
+                                                    onChange={this.onPickerChange}
+                                                    placement="bottomLeft"
+                                                    format={dateFormat}
+                                                    value={this.beginTime === undefined || this.endTime === undefined || this.beginTime === "" || this.endTime === "" ? null : [moment(this.beginTime, dateFormat), moment(this.endTime, dateFormat)]}
+                                                    placeholder={['开始时间', '结束时间']}
+                                                />
+                                            </Form.Item>
+                                        </Col>
+                                    )
+                                } else {
+                                    return (
+                                        <Col span={8} key={index}>
+                                            <Form.Item name={item.queryParam} label={item.text} rules={[{ message: 'Input something!', },]} >
+                                                <Input placeholder={item.placeholder} />
+                                            </Form.Item>
+                                        </Col>
+                                    )
+                                }
+                            }
+                        })
+                    :
                         this.FormitemValue.map((item, index) => {
                             if (item.type === "select") { 
                                 return (
@@ -107,7 +149,14 @@ export default class SearchForm extends React.Component<DataType, any>{
                 <Row>
                     <Col span={24} style={{ textAlign: 'right', }} >
                         <Button type="primary" htmlType="submit"> 查询 </Button>
-                        <Button style={{  margin: '0 8px', }} onClick={() => { this.onReset() }} > 重置 </Button>
+                        <Button style={{ margin: '0 8px', }} onClick={() => { this.onReset() }} > 重置 </Button>
+                        {this.FormitemValue.length > 3 && 
+                            <a onClick={() => { this.isShowAll = !this.isShowAll }}>{this.isShowAll ? "展开" : "收起"}</a>
+                        }
+                        {this.FormitemValue.length > 3 ?
+                            this.isShowAll ? <DownOutlined style={{ color: '#1890ff' }} /> : <UpOutlined style={{ color: '#1890ff' }} />
+                            : null
+                        }
                     </Col>
                 </Row>
             </Form>

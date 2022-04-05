@@ -22,6 +22,8 @@ interface ModalFormButtonProps {
     title: string;
     getModalValue: (value: any) => {}
     initialValues?: {}//穿参为编辑，不传为新增
+    getAccountData?: any[]
+    getcustomerData?: any[]
 }
 @observer
 export default class ModalFormButton extends React.Component<ModalFormButtonProps, any>{
@@ -57,21 +59,6 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
             this.number = amountNum + result.data.defaultNumber;
         }
     }
-    /**拿到客户列表 */
-    getCustomerName = async () => { 
-        try {
-            const result: any = await api.findBySelectCus({});
-            result.map((item) => { 
-                const dataitem = {
-                    value: item.supplier,
-                    id: item.id
-                }
-                return this.customerData.push(dataitem)
-            })
-        } catch (error) {
-            console.log(error);
-        }
-    }
     /**拿到子表格信息 */
     getEditableTabl = (id?,data?, row?) => { 
         this.editabledata = data;
@@ -88,7 +75,7 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
     }
 
     render() {
-        const { initialValues } = this.props;
+        const { initialValues, getAccountData, getcustomerData } = this.props;
         return (
             <div className={initialValues ?"ModalFormaText-container":"ModalFormButton-container"}>
                 <ModalForm
@@ -140,7 +127,7 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                     initialValues={initialValues?initialValues:null}
                 >
                     <ProForm.Group>
-                        <ProFormSelect width="sm" name="organId" label="客户" placeholder="请选择客户" options={this.customerData} />
+                        <ProFormSelect width="sm" name="organId" label="客户" placeholder="请选择客户" options={getcustomerData} />
                         <ProFormDateTimePicker name="operTime" label="单据日期" />
                         <ProFormText width="sm" name="linkNumber" label="关联订单" placeholder="请选择关联订单" />
                         <ProFormText initialValue={this.number} width="sm" name="number" label="单据编号" readonly tooltip="单据编号自动生成、自动累加、开头是单据类型的首字母缩写，累加的规则是每次打开页面会自动占用一个新的编号" />
@@ -156,7 +143,7 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                         <ProFormText width="sm" name="otherMoney" label="其它费用" placeholder="请输入其它费用" />
                     </ProForm.Group>
                     <ProForm.Group>
-                        <ProFormSelect width="sm" name="accountId" label="结算账户" placeholder="选择结算账户" options={this.customerData} />
+                        <ProFormSelect width="sm" name="accountId" label="结算账户" placeholder="选择结算账户" options={getAccountData} />
                         <ProFormText width="sm" name="changeAmount" label="本次收款" placeholder="请输入本次收款" />
                         <ProFormText width="sm" name="debt" label="本次欠款" placeholder="请输入本次欠款" />
                         {/* <ProFormSelect width="sm" name="accountId" label="销售人员" placeholder="请选择销售人员" options={this.customerData} /> */}

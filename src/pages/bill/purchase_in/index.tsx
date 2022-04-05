@@ -105,10 +105,10 @@ export default class PurchaseInList extends Component<any,any> {
         this.FormitemValue = [
             { queryParam: "number", text: "单据编号", placeholder: "请输入单据编号" },
             { queryParam: "materialParam", text: "商品信息", placeholder: "请输入条码、名称、规格、型号" },
-            { queryParam: "createTimeRange", text: "单据日期" },
+            { queryParam: "createTimeRange", text: "单据日期", type: "dateRange" },
             { queryParam: "organId", text: "选供应商", placeholder: "选择供应商", type: "select", options: this.supplierData  },
             { queryParam: "depotId", text: "仓库名称", placeholder: "请选择仓库", type: "select", options: this.DepotData  },
-            { queryParam: "creator", text: "操作员", placeholder: "选择操作员", type: "select", options: this.userData  },
+            { queryParam: "creator", text: "选操作员", placeholder: "选择操作员", type: "select", options: this.userData  },
             { queryParam: "linkNumber", text: "关联订单", placeholder: "请输入关联订单" },
         ]
     }

@@ -70,6 +70,7 @@ export default class SaleOrderList extends Component<any,any> {
     @observable private customerData: any = [];
     @observable private DepotData: any = [];
     @observable private userData: any = [];
+    @observable private accountData: any = [];
     private FormitemValue: any = []
     /* 排序参数 */
     private isorter: any= {
@@ -97,13 +98,14 @@ export default class SaleOrderList extends Component<any,any> {
         this.getDepotName();
         this.getCustomerName();
         this.getUserName();
+        this.getAccountName();
         this.FormitemValue = [
             { queryParam: "number", text: "单据编号", placeholder: "请输入单据编号" },
             { queryParam: "materialParam", text: "商品信息", placeholder: "请输入条码、名称、规格、型号" },
-            { queryParam: "createTimeRange", text: "单据日期" },
+            { queryParam: "createTimeRange", text: "单据日期", type: "dateRange"},
             { queryParam: "organId", text: "选择客户", placeholder: "选择客户", type: "select", options: this.customerData },
             { queryParam: "depotId", text: "仓库名称", placeholder: "请选择仓库", type: "select", options: this.DepotData },
-            { queryParam: "creator", text: "操作员", placeholder: "选择操作员", type: "select", options: this.userData },
+            { queryParam: "creator", text: "选操作员", placeholder: "选择操作员", type: "select", options: this.userData },
             { queryParam: "linkNumber", text: "关联订单", placeholder: "请输入关联订单" },
         ]
     }
@@ -147,6 +149,21 @@ export default class SaleOrderList extends Component<any,any> {
                     id: item.id
                 }
                 return this.userData.push(dataitem)
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    /**拿到账户列表 */
+    getAccountName = async () => {
+        try {
+            const result: any = await api.getAccount({});
+            result.data.accountList.map((item) => {
+                const dataitem = {
+                    value: item.name,
+                    id: item.id
+                }
+                return this.accountData.push(dataitem)
             })
         } catch (error) {
             console.log(error);
@@ -322,7 +339,13 @@ export default class SaleOrderList extends Component<any,any> {
                 />
                 {this.loading ?
                     <div className="search-result-list">
-                        <SaleOrderModalForm buttonlabel="新建" title="新增销售出库单" getModalValue={this.addList.bind(this)} />
+                        <SaleOrderModalForm
+                            buttonlabel="新建"
+                            title="新增销售出库单"
+                            getModalValue={this.addList.bind(this)}
+                            getAccountData={this.accountData}
+                            getcustomerData={this.customerData}
+                        />
                         <Button icon={<CheckOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(1)} > 审核 </Button>
                         <Button icon={<StopOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(0)} > 反审核 </Button>
                         <SaleOrderTable

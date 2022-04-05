@@ -4,8 +4,8 @@ import { Redirect, Route, Switch } from "react-router-dom";
 import { observer } from 'mobx-react'
 import { MenuUnfoldOutlined, MenuFoldOutlined,LoginOutlined } from '@ant-design/icons';
 import { Layout, Menu } from "antd";
+import { Header } from "antd/lib/layout/layout";
 import store from "store";
-// import Header from "../../components/header";
 import Home from "../home/home";
 import Bar from "../charts/bar";
 import Line from "../charts/line";
@@ -17,7 +17,7 @@ import VendorList from "../ststem/vendor";
 import CustomerList from "../ststem/customer";
 import DepotList from "../ststem/depot"
 import AccountList from "../ststem/account"
-import { Header } from "antd/lib/layout/layout";
+import RoleList from "../ststem/role"
 import MaterialList from "../material/material";
 import MaterialCategoryList from "../material/material_category";
 import PurchaseOrderList from "../bill/purchase_order";
@@ -96,6 +96,9 @@ export default class admin extends Component<any, any>{
 							<Route path="/home/system/depot" component={DepotList} />
 							{/* 仓库信息 */}
 							<Route path="/home/system/account" component={AccountList} />
+							{/* 仓库信息 */}
+							<Route path="/home/system/role" component={RoleList} />
+
 
 							{/* <Route path="/charts/bar" component={Bar} />
 								<Route path="/charts/pie" component={Pie} />
