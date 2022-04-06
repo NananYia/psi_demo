@@ -2,7 +2,7 @@ import React from 'react';
 import { observer } from 'mobx-react'
 import { makeObservable, observable } from 'mobx'
 import { Table, Input, Button, Popconfirm, Form, FormInstance, InputRef, Radio, Tag } from 'antd';
-import ModalFormButton from '../PurchaseInModal';
+import ModalFormButton from '../SaleOutModal';
 import './index.less';
 interface VendorTableProps { 
     columns: any;
@@ -13,7 +13,7 @@ interface VendorTableProps {
     getauditData: (value: any) => {}
 }
 @observer
-export default class PurchaseOrderTable extends React.Component<VendorTableProps, any>{
+export default class SaleOrderTable extends React.Component<VendorTableProps, any>{
     @observable
     private columns:any;
     @observable
@@ -31,13 +31,15 @@ export default class PurchaseOrderTable extends React.Component<VendorTableProps
         }
         this.columns = [
             ...props.columns,
-            { title: '状态', dataIndex: 'status', width: 70, align: "center", scopedSlots: { customRender: 'customRenderFlag' },
+            {
+                title: '状态', dataIndex: 'status', width: 70, align: "center", scopedSlots: { customRender: 'customRenderFlag' },
                 render: (status) => {
                     this.getstatusText(status)
                     return <Tag className="tag-style" color={this.statusColor}>{this.statusText}</Tag>
                 }
             },
-            { title: '操作', dataIndex: 'action', width: 100, fixed: 'right',
+            {
+                title: '操作', dataIndex: 'action', width: 100, fixed: 'right',
                 render: (_, record:{ key: React.Key }) =>
                     this.dataSource.length >= 1 ? (
                         <div>
@@ -80,7 +82,7 @@ export default class PurchaseOrderTable extends React.Component<VendorTableProps
             ],
         };
         return (
-            <div className="PurchaseInTable-container">
+            <div className="SaleOrderTable-container">
                 <Table
                     rowSelection={{ ...rowSelection } }
                     bordered

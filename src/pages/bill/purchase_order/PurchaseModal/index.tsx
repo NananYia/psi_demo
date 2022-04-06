@@ -14,7 +14,7 @@ import ProForm, {
 } from '@ant-design/pro-form';
 import { PlusOutlined } from '@ant-design/icons';
 import api from "../../../../api/api";
-import PurchaseOrderEditableTable from '../PurchaseInEditableTable';
+import PurchaseOrderEditableTable from '../PurchaseEditableTable';
 import './index.less'
 import { getAction } from '../../../../api/manage';
 interface ModalFormButtonProps {

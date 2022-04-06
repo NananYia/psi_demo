@@ -45,8 +45,6 @@ export default class MaterialList extends Component<any,any> {
     @observable public dataSource: any = {};
     @observable public modalValue: any = {};
     @observable public auditData: any = {};
-    @observable public firstTotal: any;
-    @observable public lastTotal: any;
     /* 排序参数 */
     private isorter: any= {
         column: 'createTime',

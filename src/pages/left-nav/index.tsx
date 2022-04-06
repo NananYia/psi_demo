@@ -49,7 +49,23 @@ export default class LeftNav extends Component <any,any>{
 					return (
 						<SubMenu key={index} icon={HomeIcons(item.meta.icon)} title={item.name}>
 							{item?.children && item.children.length > 0 ?
-								item.name === "基本资料"
+								item.name === "采购管理" ?
+									item.children.map((item, index) => {
+										if ( item.name == "采购入库" ) {
+											return <Menu.Item icon={HomeIcons(item.meta.icon)} key={item.meta.id}>
+												<MyNavLink toPage={`/home${item.meta.url}`}>采购订单</MyNavLink>
+											</Menu.Item>
+										} else return null;
+									})
+									: item.name === "销售管理" ?
+										item.children.map((item, index) => {
+											if (item.name == "销售出库") {
+												return <Menu.Item icon={HomeIcons(item.meta.icon)} key={item.meta.id}>
+													<MyNavLink toPage={`/home${item.meta.url}`}>销售订单</MyNavLink>
+												</Menu.Item>
+											} else return null;
+										})
+										: item.name === "基本资料"
 									? item.children.map((item, index) => {
 										if (
 											item.name == "供应商信息" || item.name == "客户信息" || item.name == "仓库信息"

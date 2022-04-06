@@ -7,8 +7,8 @@ import { filterObj } from "src/utils/util";
 import store from "store";
 import MySpin from "src/components/Spin";
 import { deleteAction, getAction, httpAction, postAction, putAction } from "src/api/manage";
-import SaleOrderTable from "./SaleOrderTable";
-import SaleOrderModalForm from './SaleOrderModal';
+import SaleOrderTable from "./SaleOutTable";
+import SaleOrderModalForm from './SaleOutModal';
 import { CheckOutlined, StopOutlined } from '@ant-design/icons';
 import { LoginOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import api from "../../../api/api";
@@ -34,8 +34,6 @@ const columns = [
     },
     { title: '单据日期', dataIndex: 'operTimeStr', width: '10%' },
     { title: '操作员', dataIndex: 'userName', width: '10%', ellipsis: true },
-    { title: '金额合计', dataIndex: 'totalPrice', width: '10%' },
-    
 ]
 @observer
 export default class SaleOrderList extends Component<any,any> {
@@ -44,13 +42,13 @@ export default class SaleOrderList extends Component<any,any> {
     @observable private loading: boolean=false;
     @observable public dataSource: any = {};
     @observable public modalValue: any = {};
-    @observable public firstTotal: any;
-    @observable public lastTotal: any;
     @observable public fileList: any = [];
     @observable public model: any = {};
     @observable public auditData: any = {};
     @observable private customerData: any = [];
+    @observable private DepotData: any = [];
     @observable private userData: any = [];
+    @observable private accountData: any = [];
     private FormitemValue: any = []
     /* 排序参数 */
     private isorter: any= {
@@ -75,14 +73,18 @@ export default class SaleOrderList extends Component<any,any> {
         super(props);
         makeObservable(this);
         this.getSearchList();
+        this.getDepotName();
         this.getCustomerName();
         this.getUserName();
+        this.getAccountName();
         this.FormitemValue = [
             { queryParam: "number", text: "单据编号", placeholder: "请输入单据编号" },
             { queryParam: "materialParam", text: "商品信息", placeholder: "请输入条码、名称、规格、型号" },
-            { queryParam: "createTimeRange", text: "单据日期", type: "dateRange" },
+            { queryParam: "createTimeRange", text: "单据日期", type: "dateRange"},
             { queryParam: "organId", text: "选择客户", placeholder: "选择客户", type: "select", options: this.customerData },
+            { queryParam: "depotId", text: "仓库名称", placeholder: "请选择仓库", type: "select", options: this.DepotData },
             { queryParam: "creator", text: "选操作员", placeholder: "选择操作员", type: "select", options: this.userData },
+            { queryParam: "linkNumber", text: "关联订单", placeholder: "请输入关联订单" },
         ]
     }
     /**拿到客户列表 */
@@ -95,6 +97,21 @@ export default class SaleOrderList extends Component<any,any> {
                     id: item.id
                 }
                 return this.customerData.push(dataitem)
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    /**拿到仓库列表 */
+    getDepotName = async () => {
+        try {
+            const result: any = await await getAction("/depot/findDepotByCurrentUser", null);
+            result.data.map((item) => {
+                const dataitem = {
+                    value: item.depotName,
+                    id: item.id
+                }
+                return this.DepotData.push(dataitem)
             })
         } catch (error) {
             console.log(error);
@@ -115,17 +132,33 @@ export default class SaleOrderList extends Component<any,any> {
             console.log(error);
         }
     }
+    /**拿到账户列表 */
+    getAccountName = async () => {
+        try {
+            const result: any = await api.getAccount({});
+            result.data.accountList.map((item) => {
+                const dataitem = {
+                    value: item.name,
+                    id: item.id
+                }
+                return this.accountData.push(dataitem)
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
     /**拿到搜索的参数 */
     getSearchQueryParams(values) {
         this.searchqueryParam = {
             number: values?.number ||"",
             materialParam: values?.materialParam ||"",
-            type: "其它",
-            subType: "销售订单",
+            type: "出库",
+            subType: "销售",
             roleType: store.get('roleType'),
             organId: values?.organId ||"",
             depotId: values?.depotId ||"",
-            creator: values?.creator ||""
+            creator: values?.creator || "",
+            linkNumber: values?.linkNumber || "",
         }
         //获取查询条件
         let searchObj = { search: "", }
@@ -142,8 +175,7 @@ export default class SaleOrderList extends Component<any,any> {
         columns.forEach(function (value) {
             str += "," + value.dataIndex;
         });
-        //拼接表格里补充的
-        return str +",totalTaxLastMoney"+ ",status" +",action";
+        return str;
     }
     /**请求查询的数据 */
     getSearchList = async(values ?,arg ?) => {
@@ -284,13 +316,18 @@ export default class SaleOrderList extends Component<any,any> {
                 />
                 {this.loading ?
                     <div className="search-result-list">
-                        <SaleOrderModalForm buttonlabel="新建" title="新增销售单" getModalValue={this.addList.bind(this)} />
+                        <SaleOrderModalForm
+                            buttonlabel="新建"
+                            title="新增销售订单"
+                            getModalValue={this.addList.bind(this)}
+                            getAccountData={this.accountData}
+                            getcustomerData={this.customerData}
+                        />
                         <Button icon={<CheckOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(1)} > 审核 </Button>
                         <Button icon={<StopOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(0)} > 反审核 </Button>
                         <SaleOrderTable
                             columns={columns}
                             dataSource={this.dataSource}
-                            // loading={this.loading}
                             rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
                             getExitValue={this.addList.bind(this)}
                             getdeleteValue={this.deleteList.bind(this)}

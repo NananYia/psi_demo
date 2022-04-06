@@ -2,7 +2,7 @@ import React from 'react';
 import { observer } from 'mobx-react'
 import { makeObservable, observable } from 'mobx'
 import { Table, Input, Button, Popconfirm, Form, FormInstance, InputRef, Radio, Tag } from 'antd';
-import ModalFormButton from '../SaleOutModal';
+import ModalFormButton from '../SaleOrderModal';
 import './index.less';
 interface VendorTableProps { 
     columns: any;
@@ -31,16 +31,6 @@ export default class SaleOrderTable extends React.Component<VendorTableProps, an
         }
         this.columns = [
             ...props.columns,
-            {
-                title: '含税合计', dataIndex: 'totalTaxLastMoney', width: '10%',
-                render:  (text, record, index) =>{
-                    if (record.discountLastMoney) {
-                        return (record.discountMoney + record.discountLastMoney).toFixed(2);
-                    } else {
-                        return record.totalPrice;
-                    }
-                }
-            },
             {
                 title: '状态', dataIndex: 'status', width: 70, align: "center", scopedSlots: { customRender: 'customRenderFlag' },
                 render: (status) => {

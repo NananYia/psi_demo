@@ -32,8 +32,6 @@ export default class VendorList extends Component<any,any> {
     @observable public dataSource: any = {};
     @observable public modalValue: any = {};
     @observable public auditData: any = {};
-    @observable public firstTotal: any;
-    @observable public lastTotal: any;
     /* 排序参数 */
     private isorter: any= {
         column: 'createTime',
@@ -102,30 +100,6 @@ export default class VendorList extends Component<any,any> {
         } catch (error) {
             console.log(error);
         }
-    }
-    getVendorList = async (arg?) => { 
-        if (arg === 1) {
-            this.ipagination.current = 1;
-        }
-        let param = Object.assign({}, this.queryParam, this.isorter);//查询条件
-        param.field = this.getQueryField();
-        param.currentPage = this.ipagination.current;
-        param.pageSize = this.ipagination.pageSize - 1;
-        this.loading = false;
-        const result: any = await getAction("/supplier/list", param)
-        if (result.code === 200) {
-            this.dataSource = result.data.rows;
-            this.ipagination.total = result.data.total;
-            this.tableAddTotalRow(columns, this.dataSource)
-            if (this.queryParam.organId) {
-                this.firstTotal = '期初应付：' + result.data.firstMoney + "，"
-                this.lastTotal = '期末应付：' + result.data.lastMoney
-            }
-        }
-        if (result.code === 510) {
-            notification.warning(result.data)
-        }
-        this.loading = true;
     }
     addVendorList = async (value?) => {
         let params = {

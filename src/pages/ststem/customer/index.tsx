@@ -31,14 +31,11 @@ const columns = [
 ]
 @observer
 export default class CustomerList extends Component<any,any> {
-    @observable private queryParam: any = {};
     @observable private searchqueryParam: any = {};
     @observable private loading: boolean = false;
     @observable public dataSource: any = {};
     @observable public modalValue: any = {};
     @observable public auditData: any = {};
-    @observable public firstTotal: any;
-    @observable public lastTotal: any;
     /* 排序参数 */
     private isorter: any = {
         column: 'createTime',
@@ -84,7 +81,7 @@ export default class CustomerList extends Component<any,any> {
         columns.forEach(function (value) {
             str += "," + value.dataIndex;
         });
-        return str + ",beginNeedGet" + ",allNeedGet" + ",taxRate"+ ",enabled"+ ",action";
+        return str;
     }
     getSearchCustomerList = async (values?) => {
         var params = this.getSearchQueryParams(values);//查询参数

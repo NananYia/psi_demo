@@ -35,7 +35,6 @@ const columns =[
     },
     { title: '单据日期', dataIndex: 'operTimeStr', width: '10%' },
     { title: '操作员', dataIndex: 'userName', width: '10%', ellipsis: true },
-    { title: '金额合计', dataIndex: 'totalPrice', width: '8%' },
 ]
 @observer
 export default class OtherInList extends Component<any,any> {
@@ -163,8 +162,7 @@ export default class OtherInList extends Component<any,any> {
         columns.forEach(function (value) {
             str += "," + value.dataIndex;
         });
-        //拼接表格里补充的
-        return str + ",status" +",action";
+        return str;
     }
     /**请求查询的数据 */
     getSearchList = async(values ?,arg ?) => {
@@ -215,11 +213,11 @@ export default class OtherInList extends Component<any,any> {
         let totalPrice = 0
         let billMain = Object.assign({}, allValues.formValue)
         let detailArr = allValues.tablesValue[0].values
-        billMain.type = '其它'
-        billMain.subType = '销售订单'
+        billMain.type = '入库'
+        billMain.subType = '其它'
         billMain.defaultNumber = billMain.number
         for (let item of detailArr) {
-            item.depotId = '' //订单不需要仓库
+            item.depotId = ''
             totalPrice += item.allPrice - 0
         }
         billMain.totalPrice = 0 - totalPrice
@@ -298,7 +296,7 @@ export default class OtherInList extends Component<any,any> {
     render() {
         return (
             <div className="OtherIn-container">
-                <div className="title">其他入库单</div>
+                <div className="title">其他入库</div>
                 <SearchForm
                     FormitemValue={this.FormitemValue}
                     getSearchList={this.getSearchList.bind(this)}
