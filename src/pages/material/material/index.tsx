@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import { observer } from 'mobx-react'
 import { makeObservable, observable } from 'mobx'
-import { notification } from "antd";
+import { Button, Modal, notification } from "antd";
 import SearchForm from "../../../components/SearchForm";
 import { filterObj } from "src/utils/util";
+import { CheckOutlined, StopOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import MySpin from "src/components/Spin";
 import { deleteAction, getAction, postAction, putAction } from "src/api/manage";
 import MaterialTable from "./MaterialTable";
@@ -17,14 +18,11 @@ const FormitemValue = [
     { queryParam: "name", text: "名称", placeholder: "请输入名称查询" },
 ]
 const columns =[
-    { title: '条码', dataIndex: 'mBarCode', width: '7%', fixed: 'left' },
-    { title: '名称', dataIndex: 'name', width: '8%', ellipsis: true, fixed: 'left'},
-    { title: '规格', dataIndex: 'standard', width: '5%', ellipsis: true },
-    { title: '型号', dataIndex: 'model', width: '5%', ellipsis: true },
-    { title: '颜色', dataIndex: 'color', width: '5%', ellipsis: true },
-    { title: '类别', dataIndex: 'categoryName', width: '5%', ellipsis: true },
-    { title: '扩展信息', dataIndex: 'materialOther', width: '7%', ellipsis: true },
-    { title: '单位', dataIndex: 'unit', width: '5%', ellipsis: true,
+    { title: '条码', dataIndex: 'mBarCode', width: '7%', fixed: 'left', align: "center" },
+    { title: '名称', dataIndex: 'name', width: '15%', ellipsis: true, fixed: 'left', align: "center"},
+    { title: '颜色', dataIndex: 'color', width: '8%', ellipsis: true, align: "center" },
+    { title: '类别', dataIndex: 'categoryName', width: '8%', ellipsis: true, align: "center" },
+    { title: '单位', dataIndex: 'unit', width: '8%', ellipsis: true,align: "center",
         render:  (t, r, index)=> {
             if (r) {
                 let name = t ? t : r.unitName
@@ -36,12 +34,8 @@ const columns =[
             }
         }
     },
-    { title: '保质期', dataIndex: 'expiryNum', width: '6%' },
-    { title: '库存', dataIndex: 'stock', width: '6%' },
-    { title: '采购价', dataIndex: 'purchaseDecimal', width: '6%' },
-    { title: '零售价', dataIndex: 'commodityDecimal', width: '6%' },
-    { title: '销售价', dataIndex: 'wholesaleDecimal', width: '6%' },
-    { title: '最低售价', dataIndex: 'lowDecimal', width: '7%' },
+    { title: '保质期', dataIndex: 'expiryNum', width: '10%', align: "center" },
+    { title: '库存', dataIndex: 'stock', width: '8%', align: "center" },
 ]
 @observer
 export default class MaterialList extends Component<any,any> {
@@ -50,6 +44,7 @@ export default class MaterialList extends Component<any,any> {
     @observable private loading: boolean=false;
     @observable public dataSource: any = {};
     @observable public modalValue: any = {};
+    @observable public auditData: any = {};
     @observable public firstTotal: any;
     @observable public lastTotal: any;
     /* 排序参数 */
@@ -84,7 +79,7 @@ export default class MaterialList extends Component<any,any> {
             name: values?.name || "",
             standard: values?.standard || "",
             model: values?.telephone||"",
-            mpList: values?.phonenum || "制造商,自定义1,自定义2,自定义3"
+            mpList: values?.phonenum || ""
         }
         //获取查询条件
         let searchObj = { search: "", }
@@ -101,8 +96,7 @@ export default class MaterialList extends Component<any,any> {
         columns.forEach(function (value) {
             str += "," + value.dataIndex;
         });
-        //拼接表格里补充的
-        return str + ",enabled" + ",enableSerialNumber" + ",enableBatchNumber" +",action";
+        return str;
     }
     /**请求查询的数据 */
     getSearchMaterialList = async(values ?,arg ?) => {
@@ -161,7 +155,7 @@ export default class MaterialList extends Component<any,any> {
             otherField2: this.parseParam(value?.otherField2),
             otherField3: this.parseParam(value.otherField3),
             unit: this.parseParam(value.unit),
-            unitId: this.parseParam(value?.unitId) || "",//多单位，待完善
+            unitId: this.parseParam(value?.unitId) || "",
         }
         try {
             const checkresult:any = await api.checkMaterial(params)
@@ -189,9 +183,13 @@ export default class MaterialList extends Component<any,any> {
             console.log(error);
         }
     }
-    deleteMaterialList = async (values?) => {
+    deleteMaterialList = async (values?, maney?) => {
         try {
-            const result: any = await deleteAction("/material/delete?" + "id="+ values.id, null);
+            if (maney) {
+                var result: any = await deleteAction("/material/deleteBatch?" + "ids=" + values, null);
+            } else {
+                var result: any = await deleteAction("/material/delete?" + "id=" + values.id, null);
+            }
             if (result.code === 200) {
                 this.getMaterialList()
             }
@@ -201,7 +199,46 @@ export default class MaterialList extends Component<any,any> {
         } catch (error) {
             console.log(error);
         }
-     }
+    }
+    getauditData = (value) => {
+        this.auditData = []
+        this.auditData = value.join();
+    }
+    /**删除弹框 */
+    deleteconfirm = () => {
+        Modal.confirm({
+            title: '提示',
+            icon: <ExclamationCircleOutlined />,
+            content: "是否操作选中数据?",
+            okText: '确认',
+            cancelText: '取消',
+            onOk: () => this.deleteMaterialList(this.auditData, true)
+        });
+    }
+    /**启用禁用弹框 */
+    confirm = (status) => {
+        Modal.confirm({
+            title: '提示',
+            icon: <ExclamationCircleOutlined />,
+            content: "是否操作选中数据?",
+            okText: '确认',
+            cancelText: '取消',
+            onOk: () => this.auditOrder(status)
+        });
+    }
+    auditOrder = async (audit?) => {
+        try {
+            const result: any = await postAction("material/batchSetStatus", { status: audit, ids: this.auditData });
+            if (result.code === 200) {
+                this.getSearchMaterialList()
+            }
+            if (result.code === 510) {
+                notification.warning(result.data.message)
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
     render() {
         return (
             <div className="Material-container">
@@ -213,13 +250,16 @@ export default class MaterialList extends Component<any,any> {
                 {this.loading ?
                     <div className="search-result-list">
                         <MaterialModalForm buttonlabel="新建" title="新增商品" getModalValue={this.addMaterialList.bind(this)} />
+                        <Button icon={<DeleteOutlined />} style={{ marginLeft: 10 }} onClick={() => this.deleteconfirm()} > 删除 </Button>
+                        <Button icon={<CheckOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(true)} > 启用 </Button>
+                        <Button icon={<StopOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(false)} > 禁用 </Button>
                         <MaterialTable
                             columns={columns}
                             dataSource={this.dataSource}
-                            // loading={this.loading}
                             rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
                             getExitValue={this.addMaterialList.bind(this)}
-                            getdeleteValue={ this.deleteMaterialList.bind(this)}
+                            getdeleteValue={this.deleteMaterialList.bind(this)}
+                            getauditData={this.getauditData.bind(this)}
                         />
                     </div>
                     : <MySpin />}

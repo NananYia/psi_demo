@@ -10,19 +10,23 @@ interface VendorTableProps {
     rowSelection: any;
     getExitValue: (value: any) => {}
     getdeleteValue: (value: any) => {}
+    getauditData: (value: any) => {}
 }
 @observer
 export default class MaterialTable extends React.Component<VendorTableProps, any>{
     @observable
     private columns:any;
     @observable
-    dataSource: any;
+    dataSource: any = [];
     @observable
     selectedRowKeys:any
     constructor(props) {
         super(props);
         makeObservable(this);
-        this.dataSource = props.dataSource;
+        for (let index = 0; index < props.dataSource.length; index++) {
+            const element = props.dataSource[index];
+            this.dataSource.push({ ...element, key: element.id });
+        }
         this.columns = [
             ...props.columns,
             {
@@ -31,16 +35,7 @@ export default class MaterialTable extends React.Component<VendorTableProps, any
                     <Tag className="tag-style" color={enabled ? 'green' : 'geekblue'}>{enabled ? '启用' : '禁用'}</Tag>
             },
             {
-                title: '序列号', dataIndex: 'enableSerialNumber', width: 80, align: "center", scopedSlots: { customRender: 'customRenderFlag' },
-                render: (enableSerialNumber) =>
-                    <Tag className="tag-style" color={enableSerialNumber === 1 ? 'green' : 'geekblue'}>{enableSerialNumber===1 ? '有' : '无'}</Tag>
-            }, {
-                title: '批号', dataIndex: 'enableBatchNumber', width: 70, align: "center", scopedSlots: { customRender: 'customRenderFlag' },
-                render: (enableBatchNumber) =>
-                    <Tag className="tag-style" color={enableBatchNumber===1 ? 'green' : 'geekblue'}>{enableBatchNumber===1 ? '启用' : '禁用'}</Tag>
-            },
-            {
-                title: '操作', dataIndex: 'action', width: 100, fixed: 'right',
+                title: '操作', dataIndex: 'action', width: 100, fixed: 'right', align: "center",
                 render: (_, record:{ key: React.Key }) =>
                     this.dataSource.length >= 1 ? (
                         <div>
@@ -52,21 +47,30 @@ export default class MaterialTable extends React.Component<VendorTableProps, any
         ];
     }
     onSelectChange = selectedRowKeys => {
+        this.props.getauditData(selectedRowKeys);
         console.log('selectedRowKeys changed: ', selectedRowKeys);
         this.selectedRowKeys = selectedRowKeys
     };
     render() {
         const selectedRowKeys = this.selectedRowKeys;
-        const rowSelection = { selectedRowKeys, onChange: this.onSelectChange };
+        const rowSelection = {
+            selectedRowKeys,
+            onChange: this.onSelectChange,
+            selections: [
+                Table.SELECTION_ALL,
+                Table.SELECTION_INVERT,
+                Table.SELECTION_NONE,
+            ],
+        };
         return (
-            <div className="MaterialTable-container">
+            <div className="EditableTable-container">
                 <Table
-                    rowSelection={rowSelection }
+                    rowSelection={{ ...rowSelection }}
                     bordered
                     dataSource={this.dataSource}
                     columns={this.columns}
                     // pagination={{ pageSize: 50}}
-                    scroll={{ x: 1500, y: 300 }} 
+                    // scroll={{ x: 1500, y: 300 }} 
                 />
             </div>
         );

@@ -148,11 +148,11 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                         <ProFormText width="sm" name="weight" label="基础重量" placeholder="请输入基础重量(kg)" />
                         <ProFormText width="sm" name="expiryNum" label="保质期" placeholder="请输入保质期(天)" />
                     </ProForm.Group>
-                    <ProForm.Group>
-                        {/* <ProFormSelect width="xs" name="categoryId" label="类别" options={[{ value: '1', label: '有', }, { value: '2', label: '无', }]}/>
+                    {/* <ProForm.Group>
+                        <ProFormSelect width="xs" name="categoryId" label="类别" options={[{ value: '1', label: '有', }, { value: '2', label: '无', }]}/>
                         <ProFormSelect width="xs" name="enableSerialNumber" label="有无序列号" options={[{ value: '1', label: '有', }, { value: '2', label: '无', }]}/>
-                        <ProFormSelect width="xs" name="enableBatchNumber" label="有无批号"  options={[{ value: '1', label: '有', }, { value: '2', label: '无', }]}/> */}
-                    </ProForm.Group>
+                        <ProFormSelect width="xs" name="enableBatchNumber" label="有无批号"  options={[{ value: '1', label: '有', }, { value: '2', label: '无', }]}/>
+                    </ProForm.Group> */}
                     <ProForm.Group>
                         <MaterialEditableTable getEditableValue={this.getEditableTabl.bind(this)}/>
                     </ProForm.Group>

@@ -58,7 +58,7 @@ const MaterialEditableTable = (props) => {
                 ]
             }
         },
-        { title: '单位', dataIndex: 'unit', width: '15%', formItemProps: { rules: [ { required: true,} ]}},
+        // { title: '单位', dataIndex: 'unit', width: '15%', formItemProps: { rules: [ { required: true,} ]}},
         { title: '采购价', dataIndex: 'purchase', width: '12%', formItemProps: { rules: [{ required: true, }] }},
         { title: '零售价', dataIndex: 'commodity', width: '12%', formItemProps: { rules: [{ required: true, }] }},
         { title: '销售价', dataIndex: 'wholesale', width: '12%', formItemProps: { rules: [{ required: true, }] } },
