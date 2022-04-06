@@ -40,8 +40,6 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
     constructor(props) {
         super(props);
         makeObservable(this);
-        // this.buildNumber(this.prefixNo)
-        // this.getSupplierName();
     }
 
     waitTime = (time: number = 100) => {
@@ -51,7 +49,22 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
             }, time);
         });
     };
-
+    /**拿到供应商列表 */
+    getSupplierName = async () => {
+        try {
+            const result: any = await api.findBySelectSup({});
+            result.map((item) => {
+                const dataitem = {
+                    value: item.supplier,
+                    id: item.id
+                }
+                return this.supplierData.push(dataitem)
+            })
+            // this.supplierData = result;
+        } catch (error) {
+            console.log(error);
+        }
+    }
     /**拿到编号 */
     buildNumber = async (amountNum) => {
         const result: any = await getAction('/sequence/buildNumber');
@@ -97,8 +110,11 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
     };
     ondateChange(date, dateString) {
         console.log(date, dateString);
+    }   
+    onClick = () => {
+        this.buildNumber(this.prefixNo)
+        this.getSupplierName()
     }
-
     render() {
         const { initialValues ,getAccountData,getsupplierData} = this.props;
         return (
@@ -106,8 +122,8 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                 <ModalForm
                     className="purchasein-content"
                     title={this.props.title}
-                    trigger={initialValues ? <a>编辑</a>:
-                        <Button type="primary">
+                    trigger={initialValues ? <a onClick={() => this.onClick()}>编辑</a>:
+                        <Button type="primary" onClick={() => this.onClick()} >
                             <PlusOutlined /> {this.props.buttonlabel}
                         </Button>
                     }
@@ -142,30 +158,18 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                         message.success('提交成功');
                         return true;
                     }}
-                    width={1500}
+                    width={1200}
                     initialValues={initialValues?initialValues:null}
                 >
                     <ProForm.Group>
                         <ProFormSelect width="sm" name="organId" label="供应商" placeholder="请选择供应商" options={getsupplierData}/>
                         <ProFormDateTimePicker name="operTime" label="单据日期" />
-                        <ProFormText width="sm" name="linkNumber" label="关联订单" placeholder="请选择关联订单" />
                         <ProFormText initialValue={this.number} width="sm" name="number" label="单据编号" readonly tooltip="单据编号自动生成、自动累加、开头是单据类型的首字母缩写，累加的规则是每次打开页面会自动占用一个新的编号" />
+                        <ProFormTextArea width="sm" name="remark" label="备注" placeholder="请输入备注" style={{ height: 32 }} />
+                        <ProFormUploadButton width="sm" name="debt" label="附件" />
                     </ProForm.Group>
                     <ProForm.Group>
                         <PurchaseOrderEditableTable getEditableValue={this.getEditableTabl.bind(this)}/>
-                    </ProForm.Group>
-                    <ProForm.Group>
-                        <ProFormTextArea width="sm" name="remark" label="备注" placeholder="请输入备注" style={{height:32}}/>
-                        <ProFormText width="sm" name="discount" label="优惠率" placeholder="请输入优惠率(%)" />
-                        <ProFormText width="sm" name="discountMoney" label="付款优惠" placeholder="请输入付款优惠" />
-                        <ProFormText width="sm" name="discountLastMoney" label="优惠后金额" placeholder="请输入优惠后金额" />
-                        <ProFormText width="sm" name="otherMoney" label="其它费用" placeholder="请输入其它费用" />
-                    </ProForm.Group>
-                    <ProForm.Group>
-                        <ProFormSelect width="sm" name="accountId" label="结算账户" placeholder="选择结算账户" options={getAccountData} />
-                        <ProFormText width="sm" name="changeAmount" label="本次付款" placeholder="请输入本次付款" />
-                        <ProFormText width="sm" name="debt" label="本次欠款" placeholder="请输入本次欠款" />
-                        <ProFormUploadButton width="sm" name="debt" label="附件" />
                     </ProForm.Group>
                 </ModalForm>
             </div >

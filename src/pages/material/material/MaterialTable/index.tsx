@@ -35,7 +35,7 @@ export default class MaterialTable extends React.Component<VendorTableProps, any
                     <Tag className="tag-style" color={enabled ? 'green' : 'geekblue'}>{enabled ? '启用' : '禁用'}</Tag>
             },
             {
-                title: '操作', dataIndex: 'action', width: 100, fixed: 'right', align: "center",
+                title: '操作', dataIndex: 'action', width: 100, align: "center",
                 render: (_, record:{ key: React.Key }) =>
                     this.dataSource.length >= 1 ? (
                         <div>
@@ -70,7 +70,6 @@ export default class MaterialTable extends React.Component<VendorTableProps, any
                     dataSource={this.dataSource}
                     columns={this.columns}
                     // pagination={{ pageSize: 50}}
-                    // scroll={{ x: 1500, y: 300 }} 
                 />
             </div>
         );

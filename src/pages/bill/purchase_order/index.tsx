@@ -15,8 +15,8 @@ import api from "../../../api/api";
 import "./index.less";
 
 const columns = [
-    { title: '供应商', dataIndex: 'organName', width: '10%', ellipsis: true},
-    { title: '单据编号', dataIndex: 'number', width: '10%', ellipsis: true,
+    { title: '供应商', dataIndex: 'organName', width: '17%', ellipsis: true},
+    { title: '单据编号', dataIndex: 'number', width: '17%', ellipsis: true,
         render:  (text, record, index)=> {
             if (record.linkNumber) {
                 return text + "[订]";
@@ -25,14 +25,14 @@ const columns = [
             }
         }
     },
-    { title: '商品信息', dataIndex: 'materialsList', width: '10%', ellipsis: true,
+    { title: '商品信息', dataIndex: 'materialsList', width: '17%', ellipsis: true,
         render:  (text, record, index)=> {
             if (text) {
                 return text.replace(",", "，");
             }
         }
     },
-    { title: '单据日期', dataIndex: 'operTimeStr', width: '10%' },
+    { title: '单据日期', dataIndex: 'operTimeStr', width: '17%' },
     { title: '操作员', dataIndex: 'userName', width: '10%', ellipsis: true }
 ]
 @observer
@@ -84,7 +84,6 @@ export default class PurchaseInList extends Component<any,any> {
             { queryParam: "organId", text: "选供应商", placeholder: "选择供应商", type: "select", options: this.supplierData  },
             { queryParam: "depotId", text: "仓库名称", placeholder: "请选择仓库", type: "select", options: this.DepotData  },
             { queryParam: "creator", text: "选操作员", placeholder: "选择操作员", type: "select", options: this.userData  },
-            { queryParam: "linkNumber", text: "关联订单", placeholder: "请输入关联订单" },
         ]
     }
     /**拿到供应商列表 */
@@ -325,7 +324,6 @@ export default class PurchaseInList extends Component<any,any> {
                         />
                         <Button icon={<CheckOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(1)} > 审核 </Button>
                         <Button icon={<StopOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(0)} > 反审核 </Button>
-
                         <PurchaseOrderTable
                             columns={columns}
                             dataSource={this.dataSource}

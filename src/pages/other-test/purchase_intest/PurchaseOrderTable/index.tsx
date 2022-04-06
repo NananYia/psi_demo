@@ -32,14 +32,14 @@ export default class PurchaseOrderTable extends React.Component<VendorTableProps
         this.columns = [
             ...props.columns,
             {
-                title: '状态', dataIndex: 'status', width: 70, align: "center", scopedSlots: { customRender: 'customRenderFlag' },
+                title: '状态', dataIndex: 'status', width: "10%", align: "center", scopedSlots: { customRender: 'customRenderFlag' },
                 render: (status) => {
                     this.getstatusText(status)
                     return <Tag className="tag-style" color={this.statusColor}>{this.statusText}</Tag>
                 }
             },
             {
-                title: '操作', dataIndex: 'action', width: 100, fixed: 'right',
+                title: '操作', dataIndex: 'action', width: "10%", align: "center",
                 render: (_, record:{ key: React.Key }) =>
                     this.dataSource.length >= 1 ? (
                         <div>
@@ -89,7 +89,6 @@ export default class PurchaseOrderTable extends React.Component<VendorTableProps
                     dataSource={this.dataSource}
                     columns={this.columns}
                     pagination={{ pageSize: 20}}
-                    scroll={{ x: 1500, y: 300 }} 
                 />
             </div>
         );

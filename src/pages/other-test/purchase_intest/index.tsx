@@ -15,8 +15,8 @@ import api from "../../../api/api";
 import "./index.less";
 
 const columns =[
-    { title: '供应商', dataIndex: 'organName', width: '10%', ellipsis: true},
-    { title: '单据编号', dataIndex: 'number', width: '10%', ellipsis: true,
+    { title: '供应商', dataIndex: 'organName', width: '17%', ellipsis: true},
+    { title: '单据编号', dataIndex: 'number', width: '17%', ellipsis: true,
         render:  (text, record, index)=> {
             if (record.linkNumber) {
                 return text + "[转]";
@@ -25,14 +25,14 @@ const columns =[
             }
         }
     },
-    { title: '商品信息', dataIndex: 'materialsList', width: '10%', ellipsis: true,
+    { title: '商品信息', dataIndex: 'materialsList', width: '17%', ellipsis: true,
         render:  (text, record, index) =>{
             if (text) {
                 return text.replace(",", "，");
             }
         }
     },
-    { title: '单据日期', dataIndex: 'operTimeStr', width: '10%' },
+    { title: '单据日期', dataIndex: 'operTimeStr', width: '17%' },
     { title: '操作员', dataIndex: 'userName', width: '10%', ellipsis: true }
 ]
 @observer

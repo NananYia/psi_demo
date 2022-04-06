@@ -38,10 +38,7 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
     constructor(props) {
         super(props);
         makeObservable(this);
-        // this.buildNumber(this.prefixNo)
-        // this.getCustomerName();
     }
-
     waitTime = (time: number = 100) => {
         return new Promise((resolve) => {
             setTimeout(() => {
@@ -49,7 +46,6 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
             }, time);
         });
     };
-
     /**拿到编号 */
     buildNumber = async (amountNum) => {
         const result: any = await getAction('/sequence/buildNumber');
@@ -85,7 +81,10 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
     ondateChange(date, dateString) {
         console.log(date, dateString);
     }
-
+    onClick = () => {
+        this.buildNumber(this.prefixNo)
+        this.getCustomerName()
+    }
     render() {
         const { initialValues } = this.props;
 
@@ -94,8 +93,8 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                 <ModalForm
                     className="ortherout-content"
                     title={this.props.title}
-                    trigger={initialValues ? <a>编辑</a>:
-                        <Button type="primary">
+                    trigger={initialValues ? <a onClick={() => this.onClick()}>编辑</a>:
+                        <Button type="primary" onClick={() => this.onClick()} >
                             <PlusOutlined /> {this.props.buttonlabel}
                         </Button>
                     }

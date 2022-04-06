@@ -38,8 +38,6 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
     constructor(props) {
         super(props);
         makeObservable(this);
-        // this.buildNumber(this.prefixNo)
-        // this.getSupplierName();
     }
     
     waitTime = (time: number = 100) => {
@@ -86,7 +84,10 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
     ondateChange(date, dateString) {
         console.log(date, dateString);
     }
-
+    onClick = () => {
+        this.buildNumber(this.prefixNo)
+        this.getSupplierName()
+    }
     render() {
         const { initialValues } = this.props;
 
@@ -95,8 +96,8 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                 <ModalForm
                     className="orderin-content"
                     title={this.props.title}
-                    trigger={initialValues ? <a>编辑</a>:
-                        <Button type="primary">
+                    trigger={initialValues ? <a onClick={() => this.onClick()}>编辑</a>:
+                        <Button type="primary" onClick={() => this.onClick()} >
                             <PlusOutlined /> {this.props.buttonlabel}
                         </Button>
                     }
