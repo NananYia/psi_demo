@@ -31,7 +31,7 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
     constructor(props) {
         super(props);
         makeObservable(this);
-        this.getUserList()
+        
     }
 
     waitTime = (time: number = 100) => {
@@ -79,8 +79,8 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
             <div className={initialValues ? "ModalFormText-container":"ModalFormButton-container"}>
                 <ModalForm<{ name: string; company: string; }>
                     title={this.props.title}
-                    trigger={initialValues ? <a>编辑</a> :
-                        <Button type="primary">
+                    trigger={initialValues ? <div onClick={()=>this.getUserList()}><a>编辑</a></div>:
+                        <Button type="primary" onClick={() => this.getUserList()} >
                             <PlusOutlined /> {this.props.buttonlabel}
                         </Button>
                     }
@@ -93,29 +93,23 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                         message.success('提交成功');
                         return true;
                     }}
-                    width={750}
+                    width={480}
                     initialValues={initialValues ? initialValues : null}
                 >
-                    <ProForm.Group>
-                        <ProFormText width="md" name="name" label="仓库名称" tooltip="最长为 24 位" placeholder="请输入仓库名称"
-                            rules={[
-                                { required: true, message: '请输入供应商名称', },
-                                { validator: (rule, value, callback) => { this.validateSupplierName(value, callback); } }
-                            ]}
-                        />
-                    </ProForm.Group>
-                    <ProForm.Group>
-                        <ProFormText width="md" name="address" label="仓库地址" placeholder="请输入仓库地址" />
-                        <ProFormSelect width="md" name="principal" label="负责人" options={this.loadTreeData} placeholder="请输入负责人" />
-                    </ProForm.Group>
-                    <ProForm.Group>
+                    <ProFormText width="lg" name="name" label="仓库名称" tooltip="最长为 24 位" placeholder="请输入仓库名称"
+                        rules={[
+                            { required: true, message: '请输入供应商名称', },
+                            { validator: (rule, value, callback) => { this.validateSupplierName(value, callback); } }
+                        ]}
+                    />
+                    <ProFormText width="lg" name="address" label="仓库地址" placeholder="请输入仓库地址" />
+                    <ProFormSelect width="lg" name="principal" label="负责人" options={this.loadTreeData} placeholder="请输入负责人" />
+                    <ProFormTextArea width="lg" name="remark" label="备注" placeholder="请输入备注" />
+                    {/* <ProForm.Group>
                         <ProFormText width="md" name="warehousing" label="仓储费" placeholder="请输入仓储费(元/天/KG)" />
+                        <ProFormText width="md" name="sort" label="排序" placeholder="请输入排序" /> 
                         <ProFormText width="md" name="truckage" label="搬运费" placeholder="请输入搬运费(元)" />
-                    </ProForm.Group>
-                    <ProForm.Group>
-                        <ProFormTextArea width="md" name="remark" label="备注" placeholder="请输入备注" />
-                        <ProFormText width="md" name="sort" label="排序" placeholder="请输入排序" />
-                    </ProForm.Group>
+                    </ProForm.Group> */}
                 </ModalForm>
             </div >
         )
