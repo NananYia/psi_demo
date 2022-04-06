@@ -51,12 +51,15 @@ export default class LeftNav extends Component <any,any>{
 							{item?.children && item.children.length > 0 ?
 								item.name === "基本资料"
 									? item.children.map((item, index) => {
-										if (item.name == "供应商信息" || item.name == "客户信息" || item.name == "仓库信息" || item.name == "结算账户") {
-													return <Menu.Item icon={HomeIcons(item.meta.icon)} key={item.meta.id}>
-														<MyNavLink toPage={`/home${item.meta.url}`}>{item.name}</MyNavLink>
-													</Menu.Item>
-												} else return null;
-											})
+										if (
+											item.name == "供应商信息" || item.name == "客户信息" || item.name == "仓库信息"
+											// || item.name == "结算账户"
+										) {
+											return <Menu.Item icon={HomeIcons(item.meta.icon)} key={item.meta.id}>
+												<MyNavLink toPage={`/home${item.meta.url}`}>{item.name}</MyNavLink>
+											</Menu.Item>
+										} else return null;
+									})
 									:
 									item.children.map((item, index) => {
 										if (index < 2) {
@@ -65,7 +68,7 @@ export default class LeftNav extends Component <any,any>{
 											</Menu.Item>
 										} else return null;
 									})
-								
+
 								: null
 							}
 						</SubMenu>

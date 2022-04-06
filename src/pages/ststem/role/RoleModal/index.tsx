@@ -31,7 +31,6 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
     constructor(props) {
         super(props);
         makeObservable(this);
-        this.getUserList()
     }
 
     waitTime = (time: number = 100) => {
@@ -79,8 +78,8 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
             <div className={initialValues ? "ModalFormText-container":"ModalFormButton-container"}>
                 <ModalForm<{ name: string; company: string; }>
                     title={this.props.title}
-                    trigger={initialValues ? <a>编辑</a> :
-                        <Button type="primary">
+                    trigger={initialValues ? <a onClick={()=>this.getUserList() }>编辑</a> :
+                        <Button type="primary" onClick={() => this.getUserList()} >
                             <PlusOutlined /> {this.props.buttonlabel}
                         </Button>
                     }

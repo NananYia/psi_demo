@@ -1,22 +1,36 @@
 import React from 'react';
 import { observer } from 'mobx-react'
 import { makeObservable, observable } from 'mobx'
-import { message, notification, TreeSelect } from 'antd';
+import { message, notification, Table, TreeSelect } from 'antd';
 import { deleteAction, getAction, postAction } from "src/api/manage";
-import {  ModalForm } from '@ant-design/pro-form';
+import { ModalForm } from '@ant-design/pro-form';
 import api from "../../../../api/api";
 import MySpin from '../../../../components/Spin';
 import './index.less';
+import Checkbox from 'antd/lib/checkbox/Checkbox';
 
-interface ModalFunctionFormProps {
+interface RolePushBtnModalFormProps {
     buttonlabel?: string;
     title?: string;
     getModalValue?: (value: any) => {}
     initialValues?: any//穿参为编辑，不传为新增
     doSearch?: () => {}
 }
+const columns = [
+    { title: '#', dataIndex: '', key: 'rowIndex', width: 40, Column: { align: 'center' } ,
+        render: (t, r, index) => {
+            return parseInt(index) + 1;
+        }
+    },
+    { title: '名称', dataIndex: 'name', Column: { align: 'center' }  },
+    { title: '按钮列表', dataIndex: 'action', Column: { align: 'center' },
+        render: (t, r, index) => {
+            return <Checkbox/>
+        }
+    }
+];
 @observer
-export default class ModalFunctionForm extends React.Component<ModalFunctionFormProps, any>{
+export default class RolePushBtnModalForm extends React.Component<RolePushBtnModalFormProps, any>{
     @observable private model = { id: "" };
     @observable private TreeValue: any;
     @observable private loadTreeData: any = [];
@@ -41,7 +55,7 @@ export default class ModalFunctionForm extends React.Component<ModalFunctionForm
             }, time);
         });
     };
-    checkUserBusiness = async() => {
+    checkUserBusiness = async () => {
         try {
             const result: any = await api.checkUserBusiness({ 'type': 'RoleFunctions', 'keyId': this.roleId });
             if (result.data && result.data.id) {
@@ -50,10 +64,10 @@ export default class ModalFunctionForm extends React.Component<ModalFunctionForm
                 this.addUserBusiness(this.checkedData);
             }
         } catch (error) {
-            
+
         }
     }
-    addUserBusiness = async (value) => { 
+    addUserBusiness = async (value) => {
         const params = {
             keyId: this.roleId,
             type: "RoleFunctions",
@@ -63,14 +77,14 @@ export default class ModalFunctionForm extends React.Component<ModalFunctionForm
             const result: any = await api.addUserBusiness(params);
             if (result && result.code === 200) {
                 // this.props.doSearch();
-            } else { 
-                notification.warning({message: result.data.message})
+            } else {
+                notification.warning({ message: result.data.message })
             }
         } catch (error) {
-            
+
         }
     }
-    editUserBusiness = async (value,id) => {
+    editUserBusiness = async (value, id) => {
         const params = {
             id: id,
             keyId: this.roleId,
@@ -115,38 +129,26 @@ export default class ModalFunctionForm extends React.Component<ModalFunctionForm
     render() {
         const { initialValues } = this.props;
         return (
-            <div className="FunctionModalFormText-container">
+            <div className="RolePushBtnModal-container">
                 <ModalForm<{ name: string; company: string; }>
                     title={this.props.title}
-                    trigger={<a onClick = { () => this.loadTree(initialValues?initialValues.id: 0) }>分配功能</a>}
+                    trigger={<a onClick={() => this.loadTree(initialValues ? initialValues.id : 0)}>分配按钮</a>}
                     autoFocusFirstInput
                     modalProps={{ onCancel: () => console.log('run'), }}
                     onFinish={async (values) => {
                         await this.waitTime(1000);
-                        this.checkUserBusiness()
+                        // this.checkUserBusiness()
                         message.success('提交成功');
                         return true;
                     }}
                     width={550}
                     initialValues={initialValues ? initialValues : null}
-                    className="FunctionModalFormText-content"
-                    
+                    className="RolePushBtnModal-content"
+
                 >
                     {this.loading ?
-                        <TreeSelect
-                            allowClear
-                            treeData={this.categoryTree}
-                            treeCheckable
-                            showSearch={false}
-                            treeDefaultExpandAll
-                            // showCheckedStrategy={SHOW_PARENT}
-                            placeholder='点击展开'
-                            style={{ width: 500 }}
-                            onChange={this.onChange}
-                            open={this.isOpen}
-                            onDropdownVisibleChange={(open) => {
-                                this.isOpen = open;
-                            }}
+                        <Table
+                            columns={columns}
                         />
                         : <MySpin />}
                 </ModalForm>
