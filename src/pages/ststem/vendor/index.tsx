@@ -1,13 +1,15 @@
 import React, { Component } from "react";
 import { observer } from 'mobx-react'
 import { makeObservable, observable } from 'mobx'
-import { notification } from "antd";
+import { notification, Modal, Button } from "antd";
 import VendorTable from "./VendorTable";
 import SearchForm from "../../../components/SearchForm";
 import { filterObj } from "src/utils/util";
 import MySpin from "src/components/Spin";
 import { deleteAction, getAction, postAction } from "src/api/manage";
 import VendorModalForm from './VendorModal';
+import { CheckOutlined, StopOutlined } from '@ant-design/icons';
+import { LoginOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import api from "../../../api/api";
 import "./index.less";
 
@@ -17,14 +19,14 @@ const FormitemValue = [
     { queryParam: "phonenum", text: "联系电话", placeholder: "请输入联系电话查询" },
 ]
 const columns =[
-    { title: '名称', dataIndex: 'supplier', width: 100 },
-    { title: '联系人', dataIndex: 'contacts', width: 100, align: "center" },
-    { title: '手机号码', dataIndex: 'telephone', width: 100, align: "center" },
-    { title: '联系电话', dataIndex: 'phoneNum', width: 100, align: "center" },
-    { title: '电子邮箱', dataIndex: 'email', width: 150, align: "center" },
-    { title: '期初应付', dataIndex: 'beginNeedPay', width: 80, align: "center" },
-    { title: '期末应付', dataIndex: 'allNeedPay', width: 80, align: "center" },
-    { title: '税率(%)', dataIndex: 'taxRate', width: 80, align: "center" },
+    { title: '名称', dataIndex: 'supplier', width: "17%", align: "center" },
+    { title: '联系人', dataIndex: 'contacts', width: "10%", align: "center" },
+    { title: '手机号码', dataIndex: 'telephone', width: "15%", align: "center" },
+    { title: '联系电话', dataIndex: 'phoneNum', width: "10%", align: "center" },
+    { title: '电子邮箱', dataIndex: 'email', width: "17%", align: "center" },
+    // { title: '期初应付', dataIndex: 'beginNeedPay', width: 80, align: "center" },
+    // { title: '期末应付', dataIndex: 'allNeedPay', width: 80, align: "center" },
+    // { title: '税率(%)', dataIndex: 'taxRate', width: 80, align: "center" },
     // { title: '状态', dataIndex: 'enabled', width: 70, align: "center", scopedSlots: { customRender: 'customRenderFlag' } ,},
     // { title: '操作', dataIndex: 'action', width: 200, align: "center", scopedSlots: { customRender: 'action' }, },
 ]
@@ -35,6 +37,7 @@ export default class VendorList extends Component<any,any> {
     @observable private loading: boolean=false;
     @observable public dataSource: any = {};
     @observable public modalValue: any = {};
+    @observable public auditData: any = {};
     @observable public firstTotal: any;
     @observable public lastTotal: any;
     /* 排序参数 */
@@ -86,7 +89,7 @@ export default class VendorList extends Component<any,any> {
         columns.forEach(function (value) {
             str += "," + value.dataIndex;
         });
-        return str+",action";
+        return str + ",beginNeedPay" + ",allNeedPay" + ",taxRate" + ",enabled"+",action";
     }
     getSearchVendorList = async (values?) => {
         var params = this.getSearchQueryParams(values);//查询参数
@@ -174,7 +177,35 @@ export default class VendorList extends Component<any,any> {
         } catch (error) {
             console.log(error);
         }
-     }
+    }
+    getauditData = (value) => {
+        this.auditData = []
+        this.auditData = value.join();
+    }
+    /**操作弹框 */
+    confirm = (status) => {
+        Modal.confirm({
+            title: '提示',
+            icon: <ExclamationCircleOutlined />,
+            content: "是否操作选中数据?",
+            okText: '确认',
+            cancelText: '取消',
+            onOk: () => this.auditOrder(status)
+        });
+    }
+    auditOrder = async (audit?) => {
+        try {
+            const result: any = await postAction("supplier/batchSetStatus", { status: audit, ids: this.auditData });
+            if (result.code === 200) {
+                this.getSearchVendorList()
+            }
+            if (result.code === 510) {
+                notification.warning(result.data.message)
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
     render() {
         return (
             <div className="vendor-container">
@@ -186,13 +217,16 @@ export default class VendorList extends Component<any,any> {
                 {this.loading ?
                     <div className="search-result-list">
                         <VendorModalForm buttonlabel="新建" title="新建供应商" getModalValue={this.addVendorList.bind(this)} />
+                        <Button icon={<CheckOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(true)} > 启用 </Button>
+                        <Button icon={<StopOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(false)} > 禁用 </Button>
                         <VendorTable
                             columns={columns}
                             dataSource={this.dataSource}
                             // loading={this.loading}
                             rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
                             getExitValue={this.editVendorList.bind(this)}
-                            getdeleteValue={ this.deleteVendorList.bind(this)}
+                            getdeleteValue={this.deleteVendorList.bind(this)}
+                            getauditData={this.getauditData.bind(this)}
                         />
                     </div>
                     : <MySpin />}

@@ -17,7 +17,7 @@ interface ModalFormButtonProps {
     buttonlabel: string;
     title: string;
     getModalValue: (value: any) => {}
-    initialValues?: {}//穿参为编辑，不传为新增
+    initialValues?: any//穿参为编辑，不传为新增
 }
 @observer
 export default class ModalFormButton extends React.Component<ModalFormButtonProps, any>{
@@ -75,10 +75,11 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
     render() {
         const { initialValues } = this.props;
         return (
-            <div className={initialValues ? "ModalFormText-container":"ModalFormButton-container"}>
-                <ModalForm<{ name: string; company: string; }>
+            <div className={initialValues ? "role-from-modalText-container" :"role-from-modalButton-container"}>
+                <ModalForm
+                    className="role-from-modal"
                     title={this.props.title}
-                    trigger={initialValues ? <a onClick={()=>this.getUserList() }>编辑</a> :
+                    trigger={initialValues ? <a onClick={()=>this.getUserList() }>编辑角色信息</a> :
                         <Button type="primary" onClick={() => this.getUserList()} >
                             <PlusOutlined /> {this.props.buttonlabel}
                         </Button>
@@ -87,12 +88,15 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                     modalProps={{ onCancel: () => console.log('run'), }}
                     onFinish={async (values) => {
                         await this.waitTime(1000);
+                        if (initialValues) {
+                            values = { ...values,id: initialValues.id, deleteFlag: initialValues.deleteFlag, tenantId: initialValues.tenantId }
+                        } 
                         this.props.getModalValue(values)
                         console.log(values);
                         message.success('提交成功');
                         return true;
                     }}
-                    width={450}
+                    width={350}
                     initialValues={initialValues ? initialValues : null}
                 >
                     <ProFormText width="md" name="name" label="角色名称" placeholder="请输入仓库名称"
@@ -101,7 +105,7 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                             { validator: (rule, value, callback) => { this.validateRoleName(value, callback); } }
                         ]}
                     />
-                    <ProFormSelect width="md" name="type" label="数据类型" placeholder="请选择数据类型"
+                    {/* <ProFormSelect width="md" name="type" label="数据类型" placeholder="请选择数据类型"
                         // 3、本机构数据-该角色对应的用户可以看到自己所在机构的全部单据；
                         tooltip="1、全部数据-该角色对应的用户可以看到全部单据；
                         2、个人数据-该角色对应的用户只可以看到自己的单据。单据是指采购入库、销售出库等"
@@ -111,7 +115,7 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                         rules={[
                             { required: true, message: '请选择数据类型', },
                         ]}
-                    />
+                    /> */}
                     <ProFormTextArea width="md" name="description" label="描述" placeholder="请输入描述"
                         rules={[
                             { min: 0, max: 126, message: '长度不超过 126 个字符', },

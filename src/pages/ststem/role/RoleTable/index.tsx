@@ -30,10 +30,10 @@ export default class CustomerTable extends React.Component<CustomerTableProps, a
                 render: (_, record:{ key: React.Key }) =>
                     this.dataSource.length >= 1 ? (
                         <div>
-                            <ModalFunctionForm title="分配功能" initialValues={record} doSearch={this.props.doSearch.bind(this)} />
-                            <RolePushBtnModalForm title="分配按钮" initialValues={record} doSearch={ this.props.doSearch.bind(this)}/>
-                            <DepotModalForm buttonlabel="编辑" title="编辑仓库" getModalValue={this.props.getExitValue.bind(this)} initialValues={record}/>
-                            <Popconfirm title="确认删除?" onConfirm={()=>this.props.getdeleteValue(record)}><a>删除</a></Popconfirm>
+                            {/* <ModalFunctionForm title="分配功能" initialValues={record} doSearch={this.props.doSearch.bind(this)} /> */}
+                            {/* <RolePushBtnModalForm title="分配按钮" initialValues={record} doSearch={ this.props.doSearch.bind(this)}/> */}
+                            <DepotModalForm buttonlabel="编辑角色信息" title="编辑角色" getModalValue={this.props.getExitValue.bind(this)} initialValues={record}/>
+                            {/* <Popconfirm title="确认删除?" onConfirm={()=>this.props.getdeleteValue(record)}><a>删除</a></Popconfirm> */}
                         </div>
                     ) : null,
             },
@@ -66,15 +66,19 @@ export default class CustomerTable extends React.Component<CustomerTableProps, a
                 }),
             };
         });
+        const state:any = {
+            top: 'none',
+            bottom: 'none',
+        };
         return (
-            <div className="EditableTable-container">
+            <div className="role-from-modal-container">
                 <Table
-                    rowSelection={rowSelection }
+                    // rowSelection={rowSelection }
                     bordered
                     dataSource={this.dataSource}
                     columns={columns}
-                    pagination={{ pageSize: 50 }}
-                    scroll={{ y: 350 }}
+                    pagination={{ position: [state.top, state.bottom] }}
+                    // scroll={{ y: 350 }}
                 />
             </div>
         );

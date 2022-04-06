@@ -16,7 +16,7 @@ const FormitemValue = [
 ]
 const columns = [
     { title: '角色名称', dataIndex: 'name', width: "20%",align: "center"},
-    { title: '数据类型', dataIndex: 'type', width: "20%", align: "center" },
+    // { title: '数据类型', dataIndex: 'type', width: "20%", align: "center" },
     { title: '描述', dataIndex: 'description', width: "20%", align: "center" },
     // { title: '操作', dataIndex: 'action', width: 200, align: "center", scopedSlots: { customRender: 'action' }, },
 ]
@@ -106,7 +106,10 @@ export default class DepotList extends Component<any,any> {
         }
     }
     editList = async (value?) => {
-        let params = { ...value, type: '仓库', };
+        // deleteFlag: "0"
+        // id: 23
+        // tenantId: 146
+        let params = { ...value, type: '全部数据', };
         try {
             const result: any = await api.editRole(params);
             if (result.code === 200) {
@@ -134,15 +137,15 @@ export default class DepotList extends Component<any,any> {
     }
     render() {
         return (
-            <div className="Depot-container">
+            <div className="Role-container">
                 <div className="title">角色管理</div>
-                <SearchForm
+                {/* <SearchForm
                     FormitemValue={FormitemValue}
                     getSearchList={this.getSearchDepotList.bind(this)}
-                />
+                /> */}
                 {this.loading ?
                     <div className="search-result-list">
-                        <DepotModalForm buttonlabel="新建" title="新增角色" getModalValue={this.addList.bind(this)} />
+                        {/* <DepotModalForm buttonlabel="新建" title="新增角色" getModalValue={this.addList.bind(this)} /> */}
                         <DepotTable
                             columns={columns}
                             dataSource={this.dataSource}

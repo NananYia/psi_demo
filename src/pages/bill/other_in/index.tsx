@@ -7,8 +7,8 @@ import { filterObj } from "src/utils/util";
 import store from "store";
 import MySpin from "src/components/Spin";
 import { deleteAction, getAction, httpAction, postAction, putAction } from "src/api/manage";
-import SaleOrderTable from "./OtherInTable";
-import SaleOrderModalForm from './OtherInModal';
+import OtherInTable from "./OtherInTable";
+import OtherInModalForm from './OtherInModal';
 import { CheckOutlined, StopOutlined } from '@ant-design/icons';
 import { LoginOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import api from "../../../api/api";
@@ -297,7 +297,7 @@ export default class OtherInList extends Component<any,any> {
     }
     render() {
         return (
-            <div className="SaleOrder-container">
+            <div className="OtherIn-container">
                 <div className="title">其他入库单</div>
                 <SearchForm
                     FormitemValue={this.FormitemValue}
@@ -305,10 +305,10 @@ export default class OtherInList extends Component<any,any> {
                 />
                 {this.loading ?
                     <div className="search-result-list">
-                        <SaleOrderModalForm buttonlabel="新建" title="新增其他入库单" getModalValue={this.addList.bind(this)} />
+                        <OtherInModalForm buttonlabel="新建" title="新增其他入库单" getModalValue={this.addList.bind(this)} />
                         <Button icon={<CheckOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(1)} > 审核 </Button>
                         <Button icon={<StopOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(0)} > 反审核 </Button>
-                        <SaleOrderTable
+                        <OtherInTable
                             columns={columns}
                             dataSource={this.dataSource}
                             // loading={this.loading}
