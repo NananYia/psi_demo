@@ -73,6 +73,9 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                     modalProps={{ onCancel: () => console.log('run'), }}
                     onFinish={async (values) => {
                         await this.waitTime(1000);
+                        if (initialValues) { 
+                            values = { ...initialValues, ...values };
+                        }
                         this.props.getModalValue(values)
                         console.log(values);
                         message.success('提交成功');

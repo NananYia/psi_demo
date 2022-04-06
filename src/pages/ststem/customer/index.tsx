@@ -2,29 +2,30 @@ import React, { Component } from "react";
 import { observer } from 'mobx-react'
 import SearchForm from "../../../components/SearchForm";
 import { makeObservable, observable } from 'mobx';
-import { notification } from "antd";
+import { Button, Modal, notification } from "antd";
 import { filterObj } from "src/utils/util";
 import MySpin from "src/components/Spin";
-import { deleteAction, getAction } from "src/api/manage";
+import { deleteAction, getAction, postAction } from "src/api/manage";
 import api from "../../../api/api";
 import CustomerModalForm from "./CustomerModal"
 import CustomerTable from "../customer/CustomerTable";
+import { CheckOutlined, StopOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import "./index.less";
 
 const FormitemValue = [
     { queryParam: "supplier", text: "名称", placeholder: "请输入名称查询" },
     { queryParam: "telephone", text: "手机号码", placeholder: "请输入手机号码查询" },
-    { queryParam: "phonenum", text: "联系电话", placeholder: "请输入联系电话查询" },
+    // { queryParam: "phonenum", text: "联系电话", placeholder: "请输入联系电话查询" },
 ]
 const columns = [
-    { title: '名称', dataIndex: 'supplier', width: 100 },
-    { title: '联系人', dataIndex: 'contacts', width: 100, align: "center" },
-    { title: '手机号码', dataIndex: 'telephone', width: 100, align: "center" },
-    { title: '联系电话', dataIndex: 'phoneNum', width: 100, align: "center" },
-    { title: '电子邮箱', dataIndex: 'email', width: 150, align: "center" },
-    { title: '期初应付', dataIndex: 'beginNeedGet', width: 100, align: "center" },
-    { title: '期末应付', dataIndex: 'allNeedPay', width: 100, align: "center" },
-    { title: '税率(%)', dataIndex: 'taxRate', width: 100, align: "center" },
+    { title: '名称', dataIndex: 'supplier', width: "17%", align: "center" },
+    { title: '联系人', dataIndex: 'contacts', width: "10%", align: "center" },
+    { title: '手机号码', dataIndex: 'telephone', width: "15%", align: "center" },
+    { title: '联系电话', dataIndex: 'phoneNum', width: "10%", align: "center" },
+    { title: '电子邮箱', dataIndex: 'email', width: "17%", align: "center" },
+    // { title: '期初应付', dataIndex: 'beginNeedGet', width: 100, align: "center" },
+    // { title: '期末应付', dataIndex: 'allNeedPay', width: 100, align: "center" },
+    // { title: '税率(%)', dataIndex: 'taxRate', width: 100, align: "center" },
     // { title: '状态', dataIndex: 'enabled', width: 70, align: "center", scopedSlots: { customRender: 'customRenderFlag' } ,},
     // { title: '操作', dataIndex: 'action', width: 200, align: "center", scopedSlots: { customRender: 'action' }, },
 ]
@@ -35,6 +36,7 @@ export default class CustomerList extends Component<any,any> {
     @observable private loading: boolean = false;
     @observable public dataSource: any = {};
     @observable public modalValue: any = {};
+    @observable public auditData: any = {};
     @observable public firstTotal: any;
     @observable public lastTotal: any;
     /* 排序参数 */
@@ -82,7 +84,7 @@ export default class CustomerList extends Component<any,any> {
         columns.forEach(function (value) {
             str += "," + value.dataIndex;
         });
-        return str + ",enabled"+ ",action";
+        return str + ",beginNeedGet" + ",allNeedPay" + ",taxRate"+ ",enabled"+ ",action";
     }
     getSearchCustomerList = async (values?) => {
         var params = this.getSearchQueryParams(values);//查询参数
@@ -130,9 +132,52 @@ export default class CustomerList extends Component<any,any> {
             console.log(error);
         }
     }
-    deleteCustomerList = async (values?) => {
+    deleteCustomerList = async (values?, maney?) => {
         try {
-            const result: any = await deleteAction("/supplier/delete?" + "id=" + values.id, null);
+            if (maney) {
+                var result: any = await deleteAction("/supplier/deleteBatch?" + "ids=" + values, null);
+            } else {
+                var result: any = await deleteAction("/supplier/delete?" + "id=" + values.id, null);
+            }
+            if (result.code === 200) {
+                this.getSearchCustomerList()
+            }
+            if (result.code === 510) {
+                notification.warning(result.data.message)
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    getauditData = (value) => {
+        this.auditData = []
+        this.auditData = value.join();
+    }
+    /**删除弹框 */
+    deleteconfirm = () => {
+        Modal.confirm({
+            title: '提示',
+            icon: <ExclamationCircleOutlined />,
+            content: "是否操作选中数据?",
+            okText: '确认',
+            cancelText: '取消',
+            onOk: () => this.deleteCustomerList(this.auditData, true)
+        });
+    }
+    /**启用禁用弹框 */
+    confirm = (status) => {
+        Modal.confirm({
+            title: '提示',
+            icon: <ExclamationCircleOutlined />,
+            content: "是否操作选中数据?",
+            okText: '确认',
+            cancelText: '取消',
+            onOk: () => this.auditOrder(status)
+        });
+    }
+    auditOrder = async (audit?) => {
+        try {
+            const result: any = await postAction("supplier/batchSetStatus", { status: audit, ids: this.auditData });
             if (result.code === 200) {
                 this.getSearchCustomerList()
             }
@@ -154,12 +199,16 @@ export default class CustomerList extends Component<any,any> {
                 {this.loading ?
                     <div className="search-result-list">
                         <CustomerModalForm buttonlabel="新建" title="新建客户" getModalValue={this.addCustomerList.bind(this)} />
+                        <Button icon={<DeleteOutlined />} style={{ marginLeft: 10 }} onClick={() => this.deleteconfirm()} > 删除 </Button>
+                        <Button icon={<CheckOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(true)} > 启用 </Button>
+                        <Button icon={<StopOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(false)} > 禁用 </Button>
                         <CustomerTable
                             columns={columns}
                             dataSource={this.dataSource}
                             rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
                             getExitValue={this.editCustomerList.bind(this)}
                             getdeleteValue={this.deleteCustomerList.bind(this)}
+                            getauditData={this.getauditData.bind(this)}
                         />
                     </div>
                     : <MySpin />

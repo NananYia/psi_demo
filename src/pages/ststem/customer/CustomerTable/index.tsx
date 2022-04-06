@@ -2,7 +2,7 @@ import React from 'react';
 import { observer } from 'mobx-react'
 import { makeObservable, observable } from 'mobx'
 import { Table, Input, Button, Popconfirm, Form, FormInstance, InputRef, Radio, Tag } from 'antd';
-import CustomerModalForminTable from '../CustomerModalinTable';
+import CustomerModalForminTable from '../CustomerModal';
 import './index.less';
 interface CustomerTableProps { 
     columns: any;
@@ -10,6 +10,7 @@ interface CustomerTableProps {
     rowSelection: any;
     getExitValue: (value: any) => {}
     getdeleteValue: (value: any) => {}
+    getauditData: (value: any) => {}
 }
 @observer
 export default class CustomerTable extends React.Component<CustomerTableProps, any>{
@@ -23,15 +24,19 @@ export default class CustomerTable extends React.Component<CustomerTableProps, a
         super(props);
         makeObservable(this);
         this.dataSource = props.dataSource;
+        for (let index = 0; index < props.dataSource.length; index++) {
+            const element = props.dataSource[index];
+            this.dataSource.push({ ...element, key: element.id });
+        }
         this.columns = [
             ...props.columns,
             {
-                title: '状态', dataIndex: 'enabled', width: 70, align: "center", scopedSlots: { customRender: 'customRenderFlag' },
+                title: '状态', dataIndex: 'enabled', width: "10%", align: "center", scopedSlots: { customRender: 'customRenderFlag' },
                 render: (enabled) => 
                     <Tag className="tag-style" color={enabled ? 'green' : 'geekblue'}>{enabled ? '启用' : '禁用'}</Tag>
             },
             {
-                title: '操作', dataIndex: 'action',
+                title: '操作', dataIndex: 'action', align: "center",
                 render: (_, record:{ key: React.Key }) =>
                     this.dataSource.length >= 1 ? (
                         <div>
@@ -42,40 +47,29 @@ export default class CustomerTable extends React.Component<CustomerTableProps, a
             },
         ];
     }
-    handleSave = (row) => {
-        const newData = [...this.dataSource];
-        const index = newData.findIndex((item) => row.key === item.key);
-        const item = newData[index];
-        newData.splice(index, 1, { ...item, ...row });
-        this.dataSource = newData;
-    };
     onSelectChange = selectedRowKeys => {
+        this.props.getauditData(selectedRowKeys);
         console.log('selectedRowKeys changed: ', selectedRowKeys);
         this.selectedRowKeys = selectedRowKeys
     };
     render() {
         const selectedRowKeys = this.selectedRowKeys;
-        const rowSelection = { selectedRowKeys, onChange: this.onSelectChange };
-        const columns = this.columns.map((col) => {
-            if (!col.editable) { return col; }
-            return {
-                ...col,
-                onCell: (record) => ({
-                    record,
-                    editable: col.editable,
-                    dataIndex: col.dataIndex,
-                    title: col.title,
-                    handleSave: this.handleSave,
-                }),
-            };
-        });
+        const rowSelection = {
+            selectedRowKeys,
+            onChange: this.onSelectChange,
+            selections: [
+                Table.SELECTION_ALL,
+                Table.SELECTION_INVERT,
+                Table.SELECTION_NONE,
+            ],
+        };
         return (
             <div className="EditableTable-container">
                 <Table
                     rowSelection={rowSelection }
                     bordered
                     dataSource={this.dataSource}
-                    columns={columns}
+                    columns={this.columns}
                     pagination={{ pageSize: 50 }}
                     scroll={{ y: 350 }}
                 />

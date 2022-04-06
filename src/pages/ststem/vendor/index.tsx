@@ -8,15 +8,14 @@ import { filterObj } from "src/utils/util";
 import MySpin from "src/components/Spin";
 import { deleteAction, getAction, postAction } from "src/api/manage";
 import VendorModalForm from './VendorModal';
-import { CheckOutlined, StopOutlined } from '@ant-design/icons';
-import { LoginOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import { CheckOutlined, StopOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import api from "../../../api/api";
 import "./index.less";
 
 const FormitemValue = [
     { queryParam:"supplier", text: "名称", placeholder: "请输入名称查询" },
     { queryParam: "telephone", text: "手机号码", placeholder: "请输入手机号码查询" },
-    { queryParam: "phonenum", text: "联系电话", placeholder: "请输入联系电话查询" },
+    // { queryParam: "phonenum", text: "联系电话", placeholder: "请输入联系电话查询" },
 ]
 const columns =[
     { title: '名称', dataIndex: 'supplier', width: "17%", align: "center" },
@@ -165,9 +164,13 @@ export default class VendorList extends Component<any,any> {
             console.log(error);
         }
     }
-    deleteVendorList = async (values?) => {
+    deleteVendorList = async (values?, maney?) => {
         try {
-            const result: any = await deleteAction("/supplier/delete?" + "id="+ values.id, null);
+            if (maney) {
+                var result: any = await deleteAction("/supplier/deleteBatch?" + "ids=" + values, null);
+            } else { 
+                var result: any = await deleteAction("/supplier/delete?" + "id=" + values.id, null);
+            }
             if (result.code === 200) {
                 this.getSearchVendorList()
             }
@@ -182,7 +185,18 @@ export default class VendorList extends Component<any,any> {
         this.auditData = []
         this.auditData = value.join();
     }
-    /**操作弹框 */
+    /**删除弹框 */
+    deleteconfirm = () => {
+        Modal.confirm({
+            title: '提示',
+            icon: <ExclamationCircleOutlined />,
+            content: "是否操作选中数据?",
+            okText: '确认',
+            cancelText: '取消',
+            onOk: () => this.deleteVendorList(this.auditData,true)
+        });
+    }
+    /**启用禁用弹框 */
     confirm = (status) => {
         Modal.confirm({
             title: '提示',
@@ -217,6 +231,7 @@ export default class VendorList extends Component<any,any> {
                 {this.loading ?
                     <div className="search-result-list">
                         <VendorModalForm buttonlabel="新建" title="新建供应商" getModalValue={this.addVendorList.bind(this)} />
+                        <Button icon={<DeleteOutlined />} style={{ marginLeft: 10 }} onClick={() => this.deleteconfirm()} > 删除 </Button>
                         <Button icon={<CheckOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(true)} > 启用 </Button>
                         <Button icon={<StopOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(false)} > 禁用 </Button>
                         <VendorTable

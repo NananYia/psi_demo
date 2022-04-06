@@ -46,7 +46,6 @@ export default class VendorTable extends React.Component<VendorTableProps, any>{
             },
         ];
     }
-    
     onSelectChange = selectedRowKeys => {
         this.props.getauditData(selectedRowKeys);
         console.log('selectedRowKeys changed: ', selectedRowKeys);
