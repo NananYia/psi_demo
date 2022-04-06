@@ -84,7 +84,7 @@ export default class CustomerList extends Component<any,any> {
         columns.forEach(function (value) {
             str += "," + value.dataIndex;
         });
-        return str + ",beginNeedGet" + ",allNeedPay" + ",taxRate"+ ",enabled"+ ",action";
+        return str + ",beginNeedGet" + ",allNeedGet" + ",taxRate"+ ",enabled"+ ",action";
     }
     getSearchCustomerList = async (values?) => {
         var params = this.getSearchQueryParams(values);//查询参数

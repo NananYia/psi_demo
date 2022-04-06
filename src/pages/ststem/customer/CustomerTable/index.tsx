@@ -17,13 +17,12 @@ export default class CustomerTable extends React.Component<CustomerTableProps, a
     @observable
     private columns:any;
     @observable
-    dataSource: any;
+    dataSource: any = [];
     @observable
     selectedRowKeys:any
     constructor(props) {
         super(props);
         makeObservable(this);
-        this.dataSource = props.dataSource;
         for (let index = 0; index < props.dataSource.length; index++) {
             const element = props.dataSource[index];
             this.dataSource.push({ ...element, key: element.id });
