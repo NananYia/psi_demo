@@ -51,17 +51,8 @@ const checkMaterialCategory = (params) => getAction("/materialCategory/checkIsNa
 const addMaterial = (params) => postAction("/material/add", params);
 const editMaterial = (params) => putAction("/material/update", params);
 const checkMaterial = (params) => getAction("/material/checkIsExist", params);
-// depotId: 21
-// column: createTime
-// order: desc
-// mpList: 制造商, 自定义1, 自定义2, 自定义3
-// page: 1
-// rows: 10
 const getMaterialBySelect = (params) => getAction("/material/findBySelect", params);
 const getSerialMaterialBySelect = (params) => getAction("/material/getMaterialEnableSerialNumberList", params);
-// barCode: 1000
-// mpList: 制造商, 自定义1, 自定义2, 自定义3
-// prefixNo: CGRK
 const getMaterialByBarCode = (params) => getAction("/material/getMaterialByBarCode", params);
 const getMaxBarCode = (params) => getAction("/material/getMaxBarCode", params);
 const checkMaterialBarCode = (params) => getAction("/materialsExtend/checkIsBarCodeExist", params);
@@ -109,8 +100,6 @@ const findBySelectRetail = (params) => postAction("/supplier/findBySelect_retail
 const findBySelectOrgan = (params) => postAction("/supplier/findBySelect_organ", params);//机构
 //单据相关
 const findBillDetailByNumber = (params) => getAction("/depotHead/getDetailByNumber", params);
-// depotId: 21
-// barCode: 1000
 const findStockByDepotAndBarCode = (params) => getAction("/depotItem/findStockByDepotAndBarCode", params);
 const getBatchNumberList = (params) => getAction("/depotItem/getBatchNumberList", params);
 const findFinancialDetailByNumber = (params) => getAction("/accountHead/getDetailByNumber", params);
