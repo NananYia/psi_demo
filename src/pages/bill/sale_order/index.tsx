@@ -49,6 +49,7 @@ export default class SaleOrderList extends Component<any,any> {
     @observable private DepotData: any = [];
     @observable private userData: any = [];
     @observable private accountData: any = [];
+    @observable private MaterialData: [];
     private FormitemValue: any = []
     /* 排序参数 */
     private isorter: any= {
@@ -77,6 +78,7 @@ export default class SaleOrderList extends Component<any,any> {
         this.getCustomerName();
         // this.getUserName();
         // this.getAccountName();
+        this.loadMaterialData();
         this.FormitemValue = [
             { queryParam: "number", text: "单据编号", placeholder: "请输入单据编号" },
             { queryParam: "materialParam", text: "商品信息", placeholder: "请输入条码、名称、规格、型号" },
@@ -92,8 +94,8 @@ export default class SaleOrderList extends Component<any,any> {
             const result: any = await api.findBySelectCus({});
             result.map((item) => {
                 const dataitem = {
-                    value: item.supplier,
-                    id: item.id
+                    label: item.supplier,
+                    value: item.id
                 }
                 return this.customerData.push(dataitem)
             })
@@ -101,8 +103,27 @@ export default class SaleOrderList extends Component<any,any> {
             console.log(error);
         }
     }
+    /**拿到库存信息 */
+    loadMaterialData = async (arg?) => {
+        const params = {
+            depotId: 21,//嘿嘿仓库
+            column: "createTime",
+            order: "desc",
+            mpList: "制造商, 自定义1, 自定义2, 自定义3",
+            page: 1,
+            rows: 10,
+        }
+        if (arg === 1) {
+            this.ipagination.current = 1;
+        }
+        const result: any = await api.getMaterialBySelect(params)
+        if (result) {
+            this.MaterialData = result.rows
+            this.ipagination.total = result.total
+        }
+    }
     /**拿到搜索的参数 */
-    getSearchQueryParams(values) {
+    getSearchQueryParams(values?) {
         this.searchqueryParam = {
             number: values?.number ||"",
             materialParam: values?.materialParam ||"",
@@ -179,14 +200,10 @@ export default class SaleOrderList extends Component<any,any> {
     classifyIntoFormData=(allValues)=> {
         let totalPrice = 0
         let billMain = Object.assign({}, allValues.formValue)
-        let detailArr = allValues.tablesValue[0].values
-        billMain.type = '其它'
-        billMain.subType = '销售订单'
+        let detailArr = allValues.tablesValue.values;
+        billMain.type = '出库'
+        billMain.subType = '销售'
         billMain.defaultNumber = billMain.number
-        for (let item of detailArr) {
-            item.depotId = '' 
-            totalPrice += item.allPrice - 0
-        }
         billMain.totalPrice = 0 - totalPrice
         if (this.fileList && this.fileList.length > 0) {
             billMain.fileName = this.fileList
@@ -196,6 +213,7 @@ export default class SaleOrderList extends Component<any,any> {
         if (this.model.id) {
             billMain.id = this.model.id
         }
+        billMain.salesMan = "";//销售人员
         return {
             info: JSON.stringify(billMain),
             rows: JSON.stringify(detailArr),
@@ -207,11 +225,11 @@ export default class SaleOrderList extends Component<any,any> {
             //进一步校验单位
             if (allvalues.id) { //存在id执行更新
                 const result: any = await httpAction("/depotHead/updateDepotHeadAndDetail", formData, 'post')
-                if (result.code === 200) { this.getList() }
+                if (result.code === 200) { this.getSearchQueryParams() }
                 if (result.code === 510) { notification.warning(result.data) }
             } else {        //不存在id执行新增
                 const result: any = await httpAction("/depotHead/addDepotHeadAndDetail", formData, 'post')
-                if (result.code === 200) { this.getList() }
+                if (result.code === 200) { this.getSearchQueryParams() }
                 if (result.code === 510) { notification.warning(result.data) }
             }
         } catch (error) {
@@ -222,7 +240,7 @@ export default class SaleOrderList extends Component<any,any> {
         try {
             const result: any = await deleteAction("/depotHead/delete?" + "id="+ values.id, null);
             if (result.code === 200) {
-                this.getList()
+                this.getSearchQueryParams()
             }
             if (result.code === 510) {
                 notification.warning(result.data.message)
@@ -276,6 +294,7 @@ export default class SaleOrderList extends Component<any,any> {
                             getModalValue={this.addList.bind(this)}
                             getAccountData={this.accountData}
                             getcustomerData={this.customerData}
+                            getMaterialData={this.MaterialData}
                         />
                         <Button icon={<CheckOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(1)} > 审核 </Button>
                         <Button icon={<StopOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(0)} > 反审核 </Button>

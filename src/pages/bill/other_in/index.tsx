@@ -50,7 +50,8 @@ export default class OtherInList extends Component<any,any> {
     @observable public auditData: any = {};
     @observable private supplierData: any = [];
     @observable private userData: any = [];
-    private FormitemValue:any = []
+    @observable private MaterialData: [];
+    private FormitemValue: any = []
 
     /* 排序参数 */
     private isorter: any= {
@@ -76,6 +77,7 @@ export default class OtherInList extends Component<any,any> {
         makeObservable(this);
         this.getSearchList();
         this.getSupplierName();
+        this.loadMaterialData();
         this.FormitemValue = [
             { queryParam: "number", text: "单据编号", placeholder: "请输入单据编号" },
             { queryParam: "materialParam", text: "商品信息", placeholder: "请输入名称" },
@@ -89,8 +91,8 @@ export default class OtherInList extends Component<any,any> {
             const result: any = await api.findBySelectSup({});
             result.map((item) => {
                 const dataitem = {
-                    value: item.supplier,
-                    id: item.id
+                    label: item.supplier,
+                    value: item.id
                 }
                 return this.supplierData.push(dataitem)
             })
@@ -98,8 +100,27 @@ export default class OtherInList extends Component<any,any> {
             console.log(error);
         }
     }
+    /**拿到库存信息 */
+    loadMaterialData = async (arg?) => {
+        const params = {
+            depotId: 21,//嘿嘿仓库
+            column: "createTime",
+            order: "desc",
+            mpList: "制造商, 自定义1, 自定义2, 自定义3",
+            page: 1,
+            rows: 10,
+        }
+        if (arg === 1) {
+            this.ipagination.current = 1;
+        }
+        const result: any = await api.getMaterialBySelect(params)
+        if (result) {
+            this.MaterialData = result.rows
+            this.ipagination.total = result.total
+        }
+    }
     /**拿到搜索的参数 */
-    getSearchQueryParams(values) {
+    getSearchQueryParams(values?) {
         this.searchqueryParam = {
             number: values?.number ||"",
             materialParam: values?.materialParam ||"",
@@ -175,16 +196,15 @@ export default class OtherInList extends Component<any,any> {
     /** 整理成formData */
     classifyIntoFormData=(allValues)=> {
         let totalPrice = 0
-        let billMain = Object.assign({}, allValues.formValue)
-        let detailArr = allValues.tablesValue[0].values
+        let billMain = Object.assign(this.model, allValues.formValue);
+        let detailArr = allValues.tablesValue.values;
         billMain.type = '入库'
         billMain.subType = '其它'
         billMain.defaultNumber = billMain.number
-        for (let item of detailArr) {
-            item.depotId = ''
-            totalPrice += item.allPrice - 0
-        }
-        billMain.totalPrice = 0 - totalPrice
+        // for (let item of detailArr) {
+        //     totalPrice += item.allPrice - 0
+        // }
+        billMain.totalPrice = totalPrice
         if (this.fileList && this.fileList.length > 0) {
             billMain.fileName = this.fileList
         } else {
@@ -204,11 +224,11 @@ export default class OtherInList extends Component<any,any> {
             //进一步校验单位
             if (allvalues.id) { //存在id执行更新
                 const result: any = await httpAction("/depotHead/updateDepotHeadAndDetail", formData, 'post')
-                if (result.code === 200) { this.getList() }
+                if (result.code === 200) { this.getSearchQueryParams() }
                 if (result.code === 510) { notification.warning(result.data) }
             } else {        //不存在id执行新增
                 const result: any = await httpAction("/depotHead/addDepotHeadAndDetail", formData, 'post')
-                if (result.code === 200) { this.getList() }
+                if (result.code === 200) { this.getSearchQueryParams() }
                 if (result.code === 510) { notification.warning(result.data) }
             }
         } catch (error) {
@@ -219,7 +239,7 @@ export default class OtherInList extends Component<any,any> {
         try {
             const result: any = await deleteAction("/depotHead/delete?" + "id="+ values.id, null);
             if (result.code === 200) {
-                this.getList()
+                this.getSearchQueryParams()
             }
             if (result.code === 510) {
                 notification.warning(result.data.message)
@@ -267,7 +287,13 @@ export default class OtherInList extends Component<any,any> {
                 />
                 {this.loading ?
                     <div className="search-result-list">
-                        <OtherInModalForm buttonlabel="新建" title="新增其他入库单" getModalValue={this.addList.bind(this)} />
+                        <OtherInModalForm
+                            buttonlabel="新建"
+                            title="新增其他入库单"
+                            getModalValue={this.addList.bind(this)}
+                            getMaterialData={this.MaterialData}
+                            getSupplierData={this.supplierData}
+                        />
                         <Button icon={<CheckOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(1)} > 审核 </Button>
                         <Button icon={<StopOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(0)} > 反审核 </Button>
                         <OtherInTable

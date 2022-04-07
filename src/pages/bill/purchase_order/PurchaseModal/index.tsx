@@ -79,7 +79,7 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
         }
     }
     /**拿到子表格信息 */
-    getEditableTabl = (values?, data?, row?) => { 
+    getEditableTable = (values?, data?, row?) => { 
         this.curMaterialdata = this.props.getMaterialData.find((item) => {
             return item.mBarCode = this.auditData
         })
@@ -99,7 +99,7 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
             sku: this.curMaterialdata.sku || "",
             preNumber: this.curMaterialdata.preNumber || "",
             finishNumber: this.curMaterialdata.finishNumber ||"",
-            operNumber: this.curMaterialdata.operNumber || 0,
+            operNumber: values.operNumber || 0,
             unitPrice: this.curMaterialdata.unitPrice || 0,
             allPrice: this.curMaterialdata.allPrice || 0,
             taxRate: this.curMaterialdata.taxRate || 0,
@@ -120,6 +120,7 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                 otherMoney: values.otherMoney || 0,
                 changeAmount: values.changeAmount || 0,
                 debt: values.debt || 0,
+                remark: values.remark || "",
             },
             tablesValue: {
                 values: this.editabledata,
@@ -146,7 +147,7 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
         this.auditData = value.join();
     }
     render() {
-        const { initialValues ,getAccountData,getsupplierData} = this.props;
+        const { initialValues, getMaterialData,getsupplierData} = this.props;
         return (
             <div className={initialValues ?"ModalFormaText-container":"ModalFormButton-container"}>
                 <ModalForm
@@ -161,28 +162,7 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                     modalProps={{ onCancel: () => console.log('run'), }}
                     onFinish={async (values) => {
                         await this.waitTime(1000);
-                        this.getEditableTabl(values)
-                        // const allValues = {
-                        //     formValue: {
-                        //         organId: values.organId,
-                        //         operTime: values.operTime,
-                        //         number: values.number || "",
-                        //         discount: values.discount || 0,
-                        //         discountMoney: values.unitId || 0,
-                        //         discountLastMoney: values?.discountLastMoney || 0,
-                        //         otherMoney: values.otherMoney || 0,
-                        //         changeAmount: values.changeAmount || 0,
-                        //         debt: values.debt || 0,
-                        //     },
-                        //     tablesValue: {
-                        //         values: this.editrowdata,
-                        //     },
-                        // }
-                        // if (initialValues) {
-                        //     this.props.getModalValue({ ...allValues, id: values.id})
-                        // } else { 
-                        //     this.props.getModalValue(allValues)
-                        // }
+                        this.getEditableTable(values)
                         console.log("values===>", values);
                         message.success('提交成功');
                         return true;
@@ -203,13 +183,13 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                                 <ProFormUploadButton width="sm" name="debt" label="附件" />
                             </ProForm.Group>
                             <ProForm.Group>
-                                {/* <ProFormSelect width="sm" name="ordepotIdganId" label="仓库" placeholder="请选择仓库" options={this.DepotData} /> */}
-                                <PurchaseinModelTable
-                                    dataSource={this.props.getMaterialData}
-                                    rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
-                                    getselectData={this.getauditData.bind(this)}
-                                />
-                                {/* <PurchaseOrderEditableTable getEditableValue={this.getEditableTabl.bind(this)} initialValues={this.dataSource}/> */}
+                                {initialValues ? null
+                                    : <PurchaseinModelTable
+                                        dataSource={getMaterialData}
+                                        rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+                                        getselectData={this.getauditData.bind(this)}
+                                    />
+                                }
                             </ProForm.Group>
                         </ProForm.Group>
                         : <MySpin />}

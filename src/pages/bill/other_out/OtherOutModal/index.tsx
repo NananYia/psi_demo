@@ -18,20 +18,25 @@ import EditableTable from '../OtherOutEditableTable';
 import { getAction } from '../../../../api/manage';
 import MySpin from '../../../../components/Spin';
 import './index.less'
+import PurchaseinModelTable from '../../purchase_order/PurchaseinModelTable';
 interface ModalFormButtonProps {
     buttonlabel: string;
     title: string;
     getModalValue: (value: any) => {}
     initialValues?: {}//穿参为编辑，不传为新增
+    getMaterialData?: any[]
+    getcustomerData?: any[]
 }
 @observer
 export default class ModalFormButton extends React.Component<ModalFormButtonProps, any>{
     @observable private model = { id: "" };
-    @observable private editabledata:any = {};
+    @observable private editabledata: any = [];
+    @observable private curMaterialdata: any = {};
     @observable private editrowdata: any = {};
     @observable private TreeValue: any;
-    @observable private customerData: any=[];
-    @observable private DepotData: any = [];
+    @observable public auditData: any = {};//字表信息
+    @observable private supplierData: any = [];
+    // @observable private DepotData: any = [];
     @observable private number: string;//单据编号
     @observable private timeopen: boolean = false;
 
@@ -55,41 +60,48 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
             this.number = amountNum + result.data.defaultNumber;
         }
     }
-    /**拿到客户列表 */
-    getCustomerName = async () => {
-        try {
-            const result: any = await api.findBySelectCus({});
-            result.map((item) => {
-                const dataitem = {
-                    value: item.supplier,
-                    id: item.id
-                }
-                return this.customerData.push(dataitem)
-            })
-        } catch (error) {
-            console.log(error);
-        }
-    }
-    /**拿到仓库列表 */
-    getDepotName = async () => {
-        try {
-            const result: any = await await getAction("/depot/findDepotByCurrentUser", null);
-            result.data.map((item) => {
-                const dataitem = {
-                    value: item.depotName,
-                    id: item.id
-                }
-                return this.DepotData.push(dataitem)
-            })
-        } catch (error) {
-            console.log(error);
-        }
-    }
     /**拿到子表格信息 */
-    getEditableTabl = (id?,data?, row?) => { 
-        this.editabledata = data;
-        this.editrowdata = row;
-        return true
+    getEditableTable = (values?, data?, row?) => {
+        this.curMaterialdata = this.props.getMaterialData.find((item) => {
+            return item.mBarCode = this.auditData
+        })
+        this.editabledata[0] = {
+            id: this.curMaterialdata.id || "",
+            depotId: 21,
+            name: this.curMaterialdata.name || "",
+            standard: this.curMaterialdata.standard || "",
+            model: this.curMaterialdata.model || "",
+            color: this.curMaterialdata.color || "",
+            materialOther: this.curMaterialdata.materialOther || "",
+            stock: this.curMaterialdata.stock || 0,
+            unit: this.curMaterialdata.unit || "",
+            snList: this.curMaterialdata.snList || "",
+            batchNumber: this.curMaterialdata.batchNumber || "",
+            expirationDate: this.curMaterialdata.expirationDate || "",
+            sku: this.curMaterialdata.sku || "",
+            operNumber: values.operNumber || 0,
+            unitPrice: this.curMaterialdata.unitPrice || 0,
+            allPrice: this.curMaterialdata.allPrice || 0,
+            remark: this.curMaterialdata.remark || "",
+            orderNum: this.curMaterialdata.orderNum || 0,
+            barCode: this.curMaterialdata.mBarCode || "",
+        }
+        const allValues = {
+            formValue: {
+                organId: values.organId,
+                operTime: values.operTime,
+                number: values.number || "",
+                remark: values.remark|| "",
+            },
+            tablesValue: {
+                values: this.editabledata,
+            }
+        }
+        if (this.props.initialValues) {
+            this.props.getModalValue({ ...allValues, id: values.id })
+        } else {
+            this.props.getModalValue(allValues)
+        }
     }
     onChange = value => {
         console.log(value);
@@ -100,11 +112,14 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
     }
     onClick = () => {
         this.buildNumber(this.prefixNo)
-        this.getCustomerName()
-        this.getDepotName()
+    }
+    /**子表的信息mbarCode */
+    getauditData = (value) => {
+        this.auditData = []
+        this.auditData = value.join();
     }
     render() {
-        const { initialValues } = this.props;
+        const { initialValues, getcustomerData } = this.props;
 
         return (
             <div className={initialValues ?"ModalFormaText-container":"ModalFormButton-container"}>
@@ -120,54 +135,34 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                     modalProps={{ onCancel: () => console.log('run'), }}
                     onFinish={async (values) => {
                         await this.waitTime(1000);
-                        const allValues = {
-                            name: values.name,
-                            standard: values.standard,
-                            model: values.model || "",
-                            unit: values.unit,
-                            unitId: values.unitId || "",
-                            color: values?.color || "",
-                            weight: values.weight  || "",
-                            expiryNum: values?.expiryNum || null,
-                            meList: [
-                                {
-                                    id: this.editabledata?.id || null,
-                                    barCode: this.editabledata?.mBarCode || "",
-                                    commodityUnit: values.unit || "",
-                                    sku: "",
-                                    purchaseDecimal: this.editabledata?.purchase ||"",
-                                    commodityDecimal: this.editabledata?.commodity ||"",
-                                    wholesaleDecimal: this.editabledata.wholesale ||"",
-                                    lowDecimal: this.editabledata?.low || ""
-                                }
-                            ],
-                            stock: [],
-                            sortList: [],
-                            imgName: values?.imgName || ""
-                        }
-                        if (initialValues) {
-                            this.props.getModalValue({ ...allValues, id: values.id})
-                        } else { 
-                            this.props.getModalValue(allValues)
-                        }
-                        console.log("allValues===>", allValues);
+                        this.getEditableTable(values)
+                        console.log("values===>", values);
                         message.success('提交成功');
                         return true;
                     }}
-                    width={1200}
+                    width={900}
                     initialValues={initialValues?initialValues:null}
                 >
                     {this.number ?
                         <ProForm.Group>
                             <ProForm.Group>
-                                <ProFormSelect width="sm" name="organId" label="客户" placeholder="选择客户" options={this.customerData} />
+                                <ProFormSelect width="sm" name="organId" label="客户" placeholder="选择客户" options={getcustomerData} />
                                 <ProFormDateTimePicker name="operTime" label="单据日期" />
                                 <ProFormText initialValue={this.number} width="sm" name="number" label="单据编号" readonly tooltip="单据编号自动生成、自动累加、开头是单据类型的首字母缩写，累加的规则是每次打开页面会自动占用一个新的编号" />
+                                </ProForm.Group>
+                            <ProForm.Group>
+                                <ProFormText width="sm" name="operNumber" label="出库数量" />
                                 <ProFormTextArea width="sm" name="remark" label="备注" placeholder="请输入备注" style={{ height: 32 }} />
                                 <ProFormUploadButton name="upload" label="附件📎" style={{ paddingTop: 40 }} />
                             </ProForm.Group>
                             <ProForm.Group>
-                                <EditableTable getEditableValue={this.getEditableTabl.bind(this)} />
+                                {initialValues ? null
+                                    : <PurchaseinModelTable
+                                        dataSource={this.props.getMaterialData}
+                                        rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+                                        getselectData={this.getauditData.bind(this)}
+                                    />
+                                }
                             </ProForm.Group>
                         </ProForm.Group>
                     : <MySpin />}

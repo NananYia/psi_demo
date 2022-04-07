@@ -18,6 +18,7 @@ import CustomerList from "../ststem/customer";
 import DepotList from "../ststem/depot"
 import AccountList from "../ststem/account"
 import RoleList from "../ststem/role"
+import UserList from "../ststem/user"
 import MaterialList from "../material/material";
 import MaterialCategoryList from "../material/material_category";
 // import PurchaseOrderList from "../bill/purchase_intest";
@@ -90,7 +91,9 @@ export default class admin extends Component<any, any>{
 							<Route path="/home/system/customer" component={CustomerList} />
 							{/* 角色信息 */}
 							<Route path="/home/system/role" component={RoleList} />
-
+							
+							{/* 用户信息 */}
+							<Route path="/home/system/user" component={UserList} />
 
 							{/* 
 								<Route path="/home/system/depot" component={DepotList} />
