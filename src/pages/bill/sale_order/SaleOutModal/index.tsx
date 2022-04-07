@@ -17,6 +17,7 @@ import api from "../../../../api/api";
 import PurchaseOrderEditableTable from '../SaleOutEditableTable';
 import './index.less'
 import { getAction } from '../../../../api/manage';
+import MySpin from '../../../../components/Spin';
 interface ModalFormButtonProps {
     buttonlabel: string;
     title: string;
@@ -140,16 +141,20 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                     width={1200}
                     initialValues={initialValues?initialValues:null}
                 >
-                    <ProForm.Group>
-                        <ProFormSelect width="sm" name="organId" label="客户" placeholder="请选择客户" options={getcustomerData} />
-                        <ProFormDateTimePicker name="operTime" label="单据日期" />
-                        <ProFormText initialValue={this.number} width="sm" name="number" label="单据编号" readonly tooltip="单据编号自动生成、自动累加、开头是单据类型的首字母缩写，累加的规则是每次打开页面会自动占用一个新的编号" />
-                        <ProFormTextArea width="sm" name="remark" label="备注" placeholder="请输入备注" style={{ height: 32 }} />
-                        <ProFormUploadButton width="sm" name="fileName" label="附件" />
-                    </ProForm.Group>
-                    <ProForm.Group>
-                        <PurchaseOrderEditableTable getEditableValue={this.getEditableTabl.bind(this)} />
-                    </ProForm.Group>
+                    {this.number ?
+                        <ProForm.Group>
+                            <ProForm.Group>
+                                <ProFormSelect width="sm" name="organId" label="客户" placeholder="请选择客户" options={getcustomerData} />
+                                <ProFormDateTimePicker name="operTime" label="单据日期" />
+                                <ProFormText initialValue={this.number} width="sm" name="number" label="单据编号" readonly tooltip="单据编号自动生成、自动累加、开头是单据类型的首字母缩写，累加的规则是每次打开页面会自动占用一个新的编号" />
+                                <ProFormTextArea width="sm" name="remark" label="备注" placeholder="请输入备注" style={{ height: 32 }} />
+                                <ProFormUploadButton width="sm" name="fileName" label="附件" />
+                            </ProForm.Group>
+                            <ProForm.Group>
+                                <PurchaseOrderEditableTable getEditableValue={this.getEditableTabl.bind(this)} />
+                            </ProForm.Group>
+                        </ProForm.Group>
+                        : <MySpin />}
                 </ModalForm>
             </div >
         )

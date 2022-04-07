@@ -462,7 +462,7 @@ export function replaceAll(text, checker, replacer) {
  * @param replacer
  * @returns {string}
  */
-export function getMpListShort(thisRows, checker, replacer) {
+export function getMpListShort(thisRows) {
   let mPropertyListShort = ''
   let nativeNameStr = ''
   for (let i = 0; i < thisRows.length; i++) {

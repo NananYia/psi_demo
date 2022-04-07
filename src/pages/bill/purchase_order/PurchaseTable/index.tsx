@@ -4,7 +4,7 @@ import { makeObservable, observable } from 'mobx'
 import { Table, Input, Button, Popconfirm, Form, FormInstance, InputRef, Radio, Tag } from 'antd';
 import ModalFormButton from '../PurchaseModal';
 import './index.less';
-interface VendorTableProps { 
+interface PurchaseOrderTableProps { 
     columns: any;
     dataSource: any;
     rowSelection: any;
@@ -13,7 +13,7 @@ interface VendorTableProps {
     getauditData: (value: any) => {}
 }
 @observer
-export default class PurchaseOrderTable extends React.Component<VendorTableProps, any>{
+export default class PurchaseOrderTable extends React.Component<PurchaseOrderTableProps, any>{
     @observable
     private columns:any;
     @observable

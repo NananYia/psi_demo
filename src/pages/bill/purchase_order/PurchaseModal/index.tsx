@@ -1,6 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react'
-import { makeObservable, observable } from 'mobx'
+import { makeObservable, observable } from 'mobx';
+import store from "store";
 import { Button, Cascader, DatePicker, Input, message, notification, Table, TimePicker, TreeSelect } from 'antd';
 import addInitUtil from "../../mixins/addInit"
 import ProForm, {
@@ -15,8 +16,11 @@ import ProForm, {
 import { PlusOutlined } from '@ant-design/icons';
 import api from "../../../../api/api";
 import PurchaseOrderEditableTable from '../PurchaseEditableTable';
-import './index.less'
 import { getAction } from '../../../../api/manage';
+import MySpin from '../../../../components/Spin';
+import './index.less'
+import { filterObj, getMpListShort } from '../../../../utils/util';
+import PurchaseinModelTable from '../PurchaseinModelTable';
 interface ModalFormButtonProps {
     buttonlabel: string;
     title: string;
@@ -24,24 +28,26 @@ interface ModalFormButtonProps {
     initialValues?: {}//穿参为编辑，不传为新增
     getAccountData?: any[]
     getsupplierData?: any[]
+    getMaterialData?: any[]
 }
 @observer
 export default class ModalFormButton extends React.Component<ModalFormButtonProps, any>{
     @observable private model = { id: "" };
-    @observable private editabledata:any = [];
+    @observable private editabledata: any = [];
+    @observable private curMaterialdata: any = {};
     @observable private editrowdata: any = {};
     @observable private TreeValue: any;
-    @observable private supplierData: any=[];
+    @observable public auditData: any = {};//字表信息
+    @observable private supplierData: any = [];
+    // @observable private DepotData: any = [];
     @observable private number: string;//单据编号
     @observable private timeopen: boolean = false;
 
     private prefixNo = 'CGRK';
-
     constructor(props) {
         super(props);
         makeObservable(this);
     }
-
     waitTime = (time: number = 100) => {
         return new Promise((resolve) => {
             setTimeout(() => {
@@ -55,8 +61,8 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
             const result: any = await api.findBySelectSup({});
             result.map((item) => {
                 const dataitem = {
-                    value: item.supplier,
-                    id: item.id
+                    label: item.supplier,
+                    value: item.id,
                 }
                 return this.supplierData.push(dataitem)
             })
@@ -73,47 +79,71 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
         }
     }
     /**拿到子表格信息 */
-    getEditableTabl = (id?, data?, row?) => { 
-        for (let index = 0; index < data.length; index++) {
-            const element = data[index];
-            const datatype = {
-                id: element.id || "",
-                depotId: element.depotId || "",
-                name: element.name || "",
-                standard: element.standard || "",
-                model: element.model || "",
-                color: element.color || "",
-                materialOther: element.materialOther || "",
-                stock: element.stock || 0,
-                unit: element.unit || "",
-                sku: element.sku || "",
-                operNumber: element.operNumber || 0,
-                unitPrice: element.unitPrice || 0,
-                allPrice: element.allPrice || 0,
-                taxRate: element.taxRate || 0,
-                taxMoney: element.taxMoney || 0,
-                taxLastMoney: element.taxLastMoney || 0,
-                remark: element.remark || "",
-                orderNum: element.orderNum || 0,
-                barCode: element.barCode ||"",
-            }
-            this.editabledata.push(datatype);
+    getEditableTabl = (values?, data?, row?) => { 
+        this.curMaterialdata = this.props.getMaterialData.find((item) => {
+            return item.mBarCode = this.auditData
+        })
+        this.editabledata[0]={
+            id: this.curMaterialdata.id || "",
+            depotId: 21,
+            name: this.curMaterialdata.name || "",
+            standard: this.curMaterialdata.standard || "",
+            model: this.curMaterialdata.model || "",
+            color: this.curMaterialdata.color || "",
+            materialOther: this.curMaterialdata.materialOther || "",
+            stock: this.curMaterialdata.stock || 0,
+            unit: this.curMaterialdata.unit || "",
+            snList: this.curMaterialdata.snList || "",
+            batchNumber: this.curMaterialdata.batchNumber || "",
+            expirationDate: this.curMaterialdata.expirationDate || "",
+            sku: this.curMaterialdata.sku || "",
+            preNumber: this.curMaterialdata.preNumber || "",
+            finishNumber: this.curMaterialdata.finishNumber ||"",
+            operNumber: this.curMaterialdata.operNumber || 0,
+            unitPrice: this.curMaterialdata.unitPrice || 0,
+            allPrice: this.curMaterialdata.allPrice || 0,
+            taxRate: this.curMaterialdata.taxRate || 0,
+            taxMoney: this.curMaterialdata.taxMoney || 0,
+            taxLastMoney: this.curMaterialdata.taxLastMoney || 0,
+            remark: this.curMaterialdata.remark || "",
+            orderNum: this.curMaterialdata.orderNum || 0,
+            barCode: this.curMaterialdata.mBarCode || "",
         }
-        
-        this.editrowdata = row;
-        return true
+        const allValues = {
+            formValue: {
+                organId: values.organId,
+                operTime: values.operTime,
+                number: values.number || "",
+                discount: values.discount || 0,
+                discountMoney: values.unitId || 0,
+                discountLastMoney: values?.discountLastMoney || 0,
+                otherMoney: values.otherMoney || 0,
+                changeAmount: values.changeAmount || 0,
+                debt: values.debt || 0,
+            },
+            tablesValue: {
+                values: this.editabledata,
+            }
+        }
+        if (this.props.initialValues) {
+            this.props.getModalValue({ ...allValues, id: values.id })
+        } else {
+            this.props.getModalValue(allValues)
+        }
     }
     /**拿到供应商信息 */
     onChange = value => {
         console.log(value);
         this.TreeValue = value;
     };
-    ondateChange(date, dateString) {
-        console.log(date, dateString);
-    }   
     onClick = () => {
         this.buildNumber(this.prefixNo)
         this.getSupplierName()
+    }
+    /**子表的信息mbarCode */
+    getauditData = (value) => {
+        this.auditData = []
+        this.auditData = value.join();
     }
     render() {
         const { initialValues ,getAccountData,getsupplierData} = this.props;
@@ -131,46 +161,58 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                     modalProps={{ onCancel: () => console.log('run'), }}
                     onFinish={async (values) => {
                         await this.waitTime(1000);
-                        const allValues = {
-                            info: {
-                                organId: values.organId,
-                                operTime: values.operTime,
-                                number: values.number || "",
-                                discount: values.discount || 0,
-                                discountMoney: values.unitId || 0,
-                                discountLastMoney: values?.discountLastMoney || 0,
-                                // type: "其它",
-                                // subType: "采购订单",
-                                // defaultNumber: this.number,
-                                // totalPrice: values?.totalPrice || 0,
-                                // fileName: values?.fileName || "",
-                            },
-                            rows: {
-                                ...this.editabledata
-                            },
-                        }
-                        if (initialValues) {
-                            this.props.getModalValue({ ...allValues, id: values.id})
-                        } else { 
-                            this.props.getModalValue(allValues)
-                        }
-                        console.log("allValues===>", allValues);
+                        this.getEditableTabl(values)
+                        // const allValues = {
+                        //     formValue: {
+                        //         organId: values.organId,
+                        //         operTime: values.operTime,
+                        //         number: values.number || "",
+                        //         discount: values.discount || 0,
+                        //         discountMoney: values.unitId || 0,
+                        //         discountLastMoney: values?.discountLastMoney || 0,
+                        //         otherMoney: values.otherMoney || 0,
+                        //         changeAmount: values.changeAmount || 0,
+                        //         debt: values.debt || 0,
+                        //     },
+                        //     tablesValue: {
+                        //         values: this.editrowdata,
+                        //     },
+                        // }
+                        // if (initialValues) {
+                        //     this.props.getModalValue({ ...allValues, id: values.id})
+                        // } else { 
+                        //     this.props.getModalValue(allValues)
+                        // }
+                        console.log("values===>", values);
                         message.success('提交成功');
                         return true;
                     }}
-                    width={1200}
+                    width={900}
                     initialValues={initialValues?initialValues:null}
                 >
-                    <ProForm.Group>
-                        <ProFormSelect width="sm" name="organId" label="供应商" placeholder="请选择供应商" options={getsupplierData}/>
-                        <ProFormDateTimePicker name="operTime" label="单据日期" />
-                        <ProFormText initialValue={this.number} width="sm" name="number" label="单据编号" readonly tooltip="单据编号自动生成、自动累加、开头是单据类型的首字母缩写，累加的规则是每次打开页面会自动占用一个新的编号" />
-                        <ProFormTextArea width="sm" name="remark" label="备注" placeholder="请输入备注" style={{ height: 32 }} />
-                        <ProFormUploadButton width="sm" name="debt" label="附件" />
-                    </ProForm.Group>
-                    <ProForm.Group>
-                        <PurchaseOrderEditableTable getEditableValue={this.getEditableTabl.bind(this)}/>
-                    </ProForm.Group>
+                    {this.number ?
+                        <ProForm.Group>
+                            <ProForm.Group>
+                                <ProFormSelect width="sm" name="organId" label="供应商" placeholder="请选择供应商" options={getsupplierData} />
+                                <ProFormDateTimePicker name="operTime" label="单据日期" />
+                                <ProFormText initialValue={this.number} width="sm" name="number" label="单据编号" readonly tooltip="单据编号自动生成、自动累加、开头是单据类型的首字母缩写，累加的规则是每次打开页面会自动占用一个新的编号" />
+                            </ProForm.Group>
+                            <ProForm.Group>
+                                <ProFormText width="sm" name="operNumber" label="采购数量" />
+                                <ProFormTextArea width="sm" name="remark" label="备注" placeholder="请输入备注" style={{ height: 32 }} />
+                                <ProFormUploadButton width="sm" name="debt" label="附件" />
+                            </ProForm.Group>
+                            <ProForm.Group>
+                                {/* <ProFormSelect width="sm" name="ordepotIdganId" label="仓库" placeholder="请选择仓库" options={this.DepotData} /> */}
+                                <PurchaseinModelTable
+                                    dataSource={this.props.getMaterialData}
+                                    rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+                                    getselectData={this.getauditData.bind(this)}
+                                />
+                                {/* <PurchaseOrderEditableTable getEditableValue={this.getEditableTabl.bind(this)} initialValues={this.dataSource}/> */}
+                            </ProForm.Group>
+                        </ProForm.Group>
+                        : <MySpin />}
                 </ModalForm>
             </div >
         )

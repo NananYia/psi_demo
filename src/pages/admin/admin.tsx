@@ -88,17 +88,17 @@ export default class admin extends Component<any, any>{
 							<Route path="/home/system/vendor" component={VendorList} />
 							{/* 客户信息 */}
 							<Route path="/home/system/customer" component={CustomerList} />
-							{/* 仓库信息 */}
-							<Route path="/home/system/depot" component={DepotList} />
-							{/* 仓库信息 */}
-							<Route path="/home/system/account" component={AccountList} />
-							{/* 仓库信息 */}
+							{/* 角色信息 */}
 							<Route path="/home/system/role" component={RoleList} />
 
 
-							{/* <Route path="/charts/bar" component={Bar} />
+							{/* 
+								<Route path="/home/system/depot" component={DepotList} />
+								<Route path="/home/system/account" component={AccountList} />
+								<Route path="/charts/bar" component={Bar} />
 								<Route path="/charts/pie" component={Pie} />
-								<Route path="/charts/line" component={Line} /> */}
+								<Route path="/charts/line" component={Line} />
+							*/}
 							{/* <Route component={NotFound} /> */}
 							<Redirect to="/home/system/home" />
 						</Switch>

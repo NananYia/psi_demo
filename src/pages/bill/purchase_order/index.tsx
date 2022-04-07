@@ -46,9 +46,8 @@ export default class PurchaseInList extends Component<any,any> {
     @observable public model: any = {};
     @observable public auditData: any = {};
     @observable private supplierData: any = [];
-    @observable private DepotData: any = [];
-    @observable private userData: any = [];
     @observable private accountData: any = [];
+    @observable private MaterialData: [];
     private FormitemValue: any = []
     /* 排序参数 */
     private isorter: any= {
@@ -74,16 +73,12 @@ export default class PurchaseInList extends Component<any,any> {
         makeObservable(this);
         this.getSearchList();
         this.getSupplierName();
-        this.getDepotName();
-        this.getUserName();
-        this.getAccountName();
+        this.loadMaterialData();
         this.FormitemValue = [
             { queryParam: "number", text: "单据编号", placeholder: "请输入单据编号" },
-            { queryParam: "materialParam", text: "商品信息", placeholder: "请输入条码、名称、规格、型号" },
+            { queryParam: "materialParam", text: "商品信息", placeholder: "请输入名称" },
             { queryParam: "createTimeRange", text: "单据日期", type: "dateRange" },
             { queryParam: "organId", text: "选供应商", placeholder: "选择供应商", type: "select", options: this.supplierData  },
-            { queryParam: "depotId", text: "仓库名称", placeholder: "请选择仓库", type: "select", options: this.DepotData  },
-            { queryParam: "creator", text: "选操作员", placeholder: "选择操作员", type: "select", options: this.userData  },
         ]
     }
     /**拿到供应商列表 */
@@ -92,55 +87,10 @@ export default class PurchaseInList extends Component<any,any> {
             const result: any = await api.findBySelectSup({});
             result.map((item) => {
                 const dataitem = {
-                    value: item.supplier,
-                    id: item.id
+                    label: item.supplier,
+                    value: item.id
                 }
                 return this.supplierData.push(dataitem)
-            })
-        } catch (error) {
-            console.log(error);
-        }
-    }
-    /**拿到仓库列表 */
-    getDepotName = async () => {
-        try {
-            const result: any = await await getAction("/depot/findDepotByCurrentUser", null);
-            result.data.map((item) => {
-                const dataitem = {
-                    value: item.depotName,
-                    id: item.id
-                }
-                return this.DepotData.push(dataitem)
-            })
-        } catch (error) {
-            console.log(error);
-        }
-    }
-    /**拿到操作员列表 */
-    getUserName = async () => {
-        try {
-            const result: any = await api.getUserList({});
-            result.map((item) => {
-                const dataitem = {
-                    value: item.userName,
-                    id: item.id
-                }
-                return this.userData.push(dataitem)
-            })
-        } catch (error) {
-            console.log(error);
-        }
-    }
-    /**拿到账户列表 */
-    getAccountName = async () => { 
-        try {
-            const result: any = await api.getAccount({});
-            result.data.accountList.map((item) => {
-                const dataitem = {
-                    value: item.name,
-                    id: item.id
-                }
-                return this.accountData.push(dataitem)
             })
         } catch (error) {
             console.log(error);
@@ -199,6 +149,25 @@ export default class PurchaseInList extends Component<any,any> {
             console.log(error);
         }
     }
+    /**拿到库存信息 */
+    loadMaterialData = async (arg?) => {
+        const params = {
+            depotId: 21,//嘿嘿仓库
+            column: "createTime",
+            order: "desc",
+            mpList: "制造商, 自定义1, 自定义2, 自定义3",
+            page: 1,
+            rows: 10,
+        }
+        if (arg === 1) {
+            this.ipagination.current = 1;
+        }
+        const result: any = await api.getMaterialBySelect(params)
+        if (result) {
+            this.MaterialData = result.rows
+            this.ipagination.total = result.total
+        }
+    }
     /**页面初始化加载的数据 */
     getList = async () => { 
         let param = Object.assign({}, this.queryParam, this.isorter);//查询条件
@@ -222,25 +191,30 @@ export default class PurchaseInList extends Component<any,any> {
     }
     /** 整理成formData */
     classifyIntoFormData=(allValues)=> {
-        let totalPrice = 0;
-        let billMain = Object.assign({}, allValues.info);
-        let detailArr = allValues.rows;
-        billMain.type = '其它';
-        billMain.subType = '采购订单';
+        let totalPrice = 0
+        let billMain = Object.assign(this.model, allValues.formValue)
+        let detailArr = allValues.tablesValue.values;
+        billMain.type = '入库'
+        billMain.subType = '采购'
         billMain.defaultNumber = billMain.number
         for (let item of detailArr) {
-            item.depotId = '' //订单不需要仓库
             totalPrice += item.allPrice - 0
         }
         billMain.totalPrice = 0 - totalPrice
+        billMain.changeAmount = 0 - billMain.changeAmount
+        if (billMain.accountId === 0) {
+            billMain.accountId = ''
+        }
+        billMain.accountIdList = "";
+        billMain.accountMoneyList = "";
         if (this.fileList && this.fileList.length > 0) {
             billMain.fileName = this.fileList
         } else {
             billMain.fileName = ''
         }
         if (this.model.id) {
-            billMain.id = allValues.id
-        }
+            billMain.id = this.model.id
+        } 
         return {
             info: JSON.stringify(billMain),
             rows: JSON.stringify(detailArr),
@@ -321,6 +295,7 @@ export default class PurchaseInList extends Component<any,any> {
                             getModalValue={this.addList.bind(this)}
                             getAccountData={this.accountData}
                             getsupplierData={this.supplierData}
+                            getMaterialData={this.MaterialData}
                         />
                         <Button icon={<CheckOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(1)} > 审核 </Button>
                         <Button icon={<StopOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(0)} > 反审核 </Button>

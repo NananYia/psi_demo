@@ -73,17 +73,17 @@ export default class SaleOrderList extends Component<any,any> {
         super(props);
         makeObservable(this);
         this.getSearchList();
-        this.getDepotName();
+        // this.getDepotName();
         this.getCustomerName();
-        this.getUserName();
-        this.getAccountName();
+        // this.getUserName();
+        // this.getAccountName();
         this.FormitemValue = [
             { queryParam: "number", text: "单据编号", placeholder: "请输入单据编号" },
             { queryParam: "materialParam", text: "商品信息", placeholder: "请输入条码、名称、规格、型号" },
             { queryParam: "createTimeRange", text: "单据日期", type: "dateRange"},
             { queryParam: "organId", text: "选择客户", placeholder: "选择客户", type: "select", options: this.customerData },
-            { queryParam: "depotId", text: "仓库名称", placeholder: "请选择仓库", type: "select", options: this.DepotData },
-            { queryParam: "creator", text: "选操作员", placeholder: "选择操作员", type: "select", options: this.userData },
+            // { queryParam: "depotId", text: "仓库名称", placeholder: "请选择仓库", type: "select", options: this.DepotData },
+            // { queryParam: "creator", text: "选操作员", placeholder: "选择操作员", type: "select", options: this.userData },
         ]
     }
     /**拿到客户列表 */
@@ -96,51 +96,6 @@ export default class SaleOrderList extends Component<any,any> {
                     id: item.id
                 }
                 return this.customerData.push(dataitem)
-            })
-        } catch (error) {
-            console.log(error);
-        }
-    }
-    /**拿到仓库列表 */
-    getDepotName = async () => {
-        try {
-            const result: any = await await getAction("/depot/findDepotByCurrentUser", null);
-            result.data.map((item) => {
-                const dataitem = {
-                    value: item.depotName,
-                    id: item.id
-                }
-                return this.DepotData.push(dataitem)
-            })
-        } catch (error) {
-            console.log(error);
-        }
-    }
-    /**拿到操作员列表 */
-    getUserName = async () => {
-        try {
-            const result: any = await api.getUserList({});
-            result.map((item) => {
-                const dataitem = {
-                    value: item.userName,
-                    id: item.id
-                }
-                return this.userData.push(dataitem)
-            })
-        } catch (error) {
-            console.log(error);
-        }
-    }
-    /**拿到账户列表 */
-    getAccountName = async () => {
-        try {
-            const result: any = await api.getAccount({});
-            result.data.accountList.map((item) => {
-                const dataitem = {
-                    value: item.name,
-                    id: item.id
-                }
-                return this.accountData.push(dataitem)
             })
         } catch (error) {
             console.log(error);
@@ -229,7 +184,7 @@ export default class SaleOrderList extends Component<any,any> {
         billMain.subType = '销售订单'
         billMain.defaultNumber = billMain.number
         for (let item of detailArr) {
-            item.depotId = '' //订单不需要仓库
+            item.depotId = '' 
             totalPrice += item.allPrice - 0
         }
         billMain.totalPrice = 0 - totalPrice

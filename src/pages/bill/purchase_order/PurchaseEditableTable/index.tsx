@@ -56,6 +56,7 @@ const PurchaseOrderEditableTable = (props) => {
         },
         { title: '名称', dataIndex: 'name', width: '6%' },
         { title: '规格', dataIndex: 'standard', width: '5%' },
+        { title: '型号', dataIndex: 'model', width: '5%', },
         { title: '颜色', dataIndex: 'color', width: '5%', },
         { title: '库存', dataIndex: 'stock', width: '5%' },
         { title: '单位', dataIndex: 'unit', width: '4%' },

@@ -61,7 +61,6 @@ const PurchaseOrderEditableTable = (props) => {
     //     })
     // }
     const columns: ProColumns<DataSourceType>[] = [
-        // { title: '仓库名称', dataIndex: 'depotId', width: '7%', },
         { title: '条码', dataIndex: 'barCode', width: '8%',
             formItemProps: {
                 rules: [ { required: true, whitespace: true, message: '${title}不能为空' }, ]

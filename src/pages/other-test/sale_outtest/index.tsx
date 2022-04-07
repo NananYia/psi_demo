@@ -194,7 +194,7 @@ export default class SaleOrderList extends Component<any,any> {
         billMain.subType = '销售订单'
         billMain.defaultNumber = billMain.number
         for (let item of detailArr) {
-            item.depotId = '' //订单不需要仓库
+            item.depotId = '' 
             totalPrice += item.allPrice - 0
         }
         billMain.totalPrice = 0 - totalPrice

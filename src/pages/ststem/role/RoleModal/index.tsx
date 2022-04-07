@@ -99,7 +99,7 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                     width={350}
                     initialValues={initialValues ? initialValues : null}
                 >
-                    <ProFormText width="md" name="name" label="角色名称" placeholder="请输入仓库名称"
+                    <ProFormText width="md" name="name" label="角色名称" placeholder="请输入角色名称"
                         rules={[
                             { required: true, message: '请输入角色名称', },
                             { validator: (rule, value, callback) => { this.validateRoleName(value, callback); } }

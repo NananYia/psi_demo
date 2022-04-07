@@ -47,7 +47,6 @@ export default class OtherInList extends Component<any,any> {
     @observable public model: any = {};
     @observable public auditData: any = {};
     @observable private customerData: any = [];
-    @observable private DepotData: any = [];
     @observable private userData: any = [];
     private FormitemValue: any = []
 
@@ -75,16 +74,11 @@ export default class OtherInList extends Component<any,any> {
         makeObservable(this);
         this.getSearchList();
         this.getCustomerName();
-        this.getDepotName();
-        this.getUserName();
         this.FormitemValue = [
             { queryParam: "number", text: "单据编号", placeholder: "请输入单据编号" },
             { queryParam: "materialParam", text: "商品信息", placeholder: "请输入条码、名称、规格、型号" },
             { queryParam: "createTimeRange", text: "单据日期", type: "dateRange" },
             { queryParam: "organId", text: "选择客户", placeholder: "选择客户", type: "select", options: this.customerData},
-            { queryParam: "depotId", text: "仓库名称", placeholder: "请选择仓库", type: "select", options: this.DepotData },
-            { queryParam: "creator", text: "选操作员", placeholder: "选择操作员", type: "select", options: this.userData },
-            { queryParam: "linkNumber", text: "关联单据", placeholder: "请输入关联单据" },
         ]
     }
     /**拿到客户列表 */
@@ -97,36 +91,6 @@ export default class OtherInList extends Component<any,any> {
                     id: item.id
                 }
                 return this.customerData.push(dataitem)
-            })
-        } catch (error) {
-            console.log(error);
-        }
-    }
-    /**拿到仓库列表 */
-    getDepotName = async () => {
-        try {
-            const result: any = await await getAction("/depot/findDepotByCurrentUser", null);
-            result.data.map((item) => {
-                const dataitem = {
-                    value: item.depotName,
-                    id: item.id
-                }
-                return this.DepotData.push(dataitem)
-            })
-        } catch (error) {
-            console.log(error);
-        }
-    }
-    /**拿到操作员列表 */
-    getUserName = async () => {
-        try {
-            const result: any = await api.getUserList({});
-            result.map((item) => {
-                const dataitem = {
-                    value: item.userName,
-                    id: item.id
-                }
-                return this.userData.push(dataitem)
             })
         } catch (error) {
             console.log(error);

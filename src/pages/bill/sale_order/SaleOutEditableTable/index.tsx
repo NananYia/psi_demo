@@ -40,7 +40,6 @@ const SaleOrderEditableTable = (props) => {
     //     })
     // }
     const columns: ProColumns<DataSourceType>[] = [
-        { title: '仓库名称', dataIndex: 'depotId', width: '7%', },
         { title: '条码', dataIndex: 'barCode', width: '8%',
             formItemProps: {
                 rules: [ { required: true, whitespace: true, message: '${title}不能为空' }, ]
@@ -48,7 +47,8 @@ const SaleOrderEditableTable = (props) => {
         },
         { title: '名称', dataIndex: 'name', width: '6%', },
         { title: '规格', dataIndex: 'standard', width: '5%',  },
-        { title: '颜色', dataIndex: 'color', width: '5%',  },
+        { title: '型号', dataIndex: 'model', width: '5%', },
+        { title: '颜色', dataIndex: 'color', width: '5%', },
         { title: '库存', dataIndex: 'stock', width: '5%',  },
         { title: '单位', dataIndex: 'unit', width: '4%',  },
         { title: '数量', dataIndex: 'operNumber', width: '5%',
