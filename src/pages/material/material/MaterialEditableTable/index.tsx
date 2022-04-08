@@ -62,7 +62,7 @@ const MaterialEditableTable = (props) => {
         { title: '采购价', dataIndex: 'purchase', width: '12%', formItemProps: { rules: [{ required: true, }] }},
         { title: '零售价', dataIndex: 'commodity', width: '12%', formItemProps: { rules: [{ required: true, }] }},
         { title: '销售价', dataIndex: 'wholesale', width: '12%', formItemProps: { rules: [{ required: true, }] } },
-        { title: '最低售价', dataIndex: 'low', width: '12%', formItemProps: { rules: [{ required: true, }] } },
+        // { title: '最低售价', dataIndex: 'low', width: '12%', formItemProps: { rules: [{ required: true, }] } },
         { title: '操作', valueType: 'option', width: 100,
             render: (text, record, _, action) => [
                 <a key="editable" onClick={() => { action?.startEditable?.(record.mBarCode); }}>编辑</a>,

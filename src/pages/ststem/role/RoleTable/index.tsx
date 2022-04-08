@@ -31,7 +31,7 @@ export default class CustomerTable extends React.Component<CustomerTableProps, a
                     this.dataSource.length >= 1 ? (
                         <div>
                             {/* <ModalFunctionForm title="分配功能" initialValues={record} doSearch={this.props.doSearch.bind(this)} /> */}
-                            {/* <RolePushBtnModalForm title="分配按钮" initialValues={record} doSearch={ this.props.doSearch.bind(this)}/> */}
+                            <RolePushBtnModalForm title="分配按钮" initialValues={record} doSearch={ this.props.doSearch.bind(this)}/>
                             <DepotModalForm buttonlabel="编辑角色信息" title="编辑角色" getModalValue={this.props.getExitValue.bind(this)} initialValues={record}/>
                             {/* <Popconfirm title="确认删除?" onConfirm={()=>this.props.getdeleteValue(record)}><a>删除</a></Popconfirm> */}
                         </div>

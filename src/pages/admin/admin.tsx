@@ -21,6 +21,7 @@ import RoleList from "../ststem/role"
 import UserList from "../ststem/user"
 import MaterialList from "../material/material";
 import MaterialCategoryList from "../material/material_category";
+import MaterialStockList from "../material/material_stock";
 // import PurchaseOrderList from "../bill/purchase_intest";
 import PurchaseOrder from "../bill/purchase_order";
 // import SaleOrderList from "../bill/sale_order";
@@ -84,6 +85,8 @@ export default class admin extends Component<any, any>{
 							<Route path="/home/material/material" component={MaterialList} />
 							{/* 商品列表 */}
 							<Route path="/home/material/material_category" component={MaterialCategoryList} />
+							{/* 库存列表 */}
+							<Route path="/home/material/material_stock" component={MaterialStockList} />
 
 							{/* 供应商信息 */}
 							<Route path="/home/system/vendor" component={VendorList} />

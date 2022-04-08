@@ -7,15 +7,13 @@ import { filterObj } from "src/utils/util";
 import { CheckOutlined, StopOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import MySpin from "src/components/Spin";
 import { deleteAction, getAction, postAction, putAction } from "src/api/manage";
-import MaterialTable from "./MaterialTable";
-import MaterialModalForm from './MaterialModal';
+import MaterialTable from "./MaterialStockTable";
+import MaterialModalForm from './MaterialStockModal';
 import api from "../../../api/api";
 import "./index.less";
 
 const FormitemValue = [
-    // { queryParam: "categoryId", text: "类别", placeholder: "请选择类别" },
-    { queryParam: "barCode", text: "条码", placeholder: "请输入条码查询" },
-    { queryParam: "name", text: "名称", placeholder: "请输入名称查询" },
+    { queryParam: "categoryId", text: "类别", placeholder: "请选择类别" },
 ]
 const columns =[
     { title: '条码', dataIndex: 'mBarCode', width: '7%', fixed: 'left', align: "center" },
@@ -23,7 +21,7 @@ const columns =[
     { title: '颜色', dataIndex: 'color', width: '8%', ellipsis: true, align: "center" },
     { title: '类别', dataIndex: 'categoryName', width: '8%', ellipsis: true, align: "center" },
     { title: '单位', dataIndex: 'unit', width: '8%', ellipsis: true,align: "center",},
-    { title: '保质期', dataIndex: 'expiryNum', width: '10%', align: "center" },
+    // { title: '保质期', dataIndex: 'expiryNum', width: '10%', align: "center" },
     { title: '库存', dataIndex: 'stock', width: '8%', align: "center" },
 ]
 @observer
@@ -229,17 +227,17 @@ export default class MaterialList extends Component<any,any> {
     render() {
         return (
             <div className="Material-container">
-                <div className="title">商品信息</div>
+                <div className="title">库存信息</div>
                 <SearchForm
                     FormitemValue={FormitemValue}
                     getSearchList={this.getSearchMaterialList.bind(this)}
                 />
                 {this.loading ?
                     <div className="search-result-list">
-                        <MaterialModalForm buttonlabel="新建" title="新增商品" getModalValue={this.addMaterialList.bind(this)} />
+                        {/* <MaterialModalForm buttonlabel="新建" title="新增商品" getModalValue={this.addMaterialList.bind(this)} />
                         <Button icon={<DeleteOutlined />} style={{ marginLeft: 10 }} onClick={() => this.deleteconfirm()} > 删除 </Button>
                         <Button icon={<CheckOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(true)} > 启用 </Button>
-                        <Button icon={<StopOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(false)} > 禁用 </Button>
+                        <Button icon={<StopOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(false)} > 禁用 </Button> */}
                         <MaterialTable
                             columns={columns}
                             dataSource={this.dataSource}

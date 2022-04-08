@@ -39,7 +39,7 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
 
     /**校验供应商名称 */
     validateSupplierName = async (value: any, callback: any) => {
-        if (this.props.initialValues.supplier === value) { callback(); }
+        if (this.props.initialValues?.supplier === value) { callback(); }
         let params = {
             name: value,
             type: '供应商',
@@ -99,7 +99,7 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                     </ProForm.Group>
                     <ProForm.Group>
                         <ProFormText width="sm" name="email" label="电子邮箱" placeholder="请输入电子邮箱"
-                            rules={[{ type: 'email', message: '请输入正确的电子邮箱', },]}
+                            // rules={[{ type: 'email', message: '请输入正确的电子邮箱', },]}
                         />
                         <ProFormTextArea width="sm" name="description" label="备注" placeholder="请输入备注" />
                     </ProForm.Group>
