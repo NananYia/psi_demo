@@ -50,7 +50,7 @@ export default class LeftNav extends Component <any,any>{
 						item.children.map((item, index) => {
 							if (item.name == "采购入库") {
 								return <Menu.Item icon={HomeIcons(item.meta.icon)} key={item.meta.id}>
-									<MyNavLink toPage={`/home${item.meta.url}`}>采购订单管理</MyNavLink>
+									<MyNavLink topage={`/home${item.meta.url}`}>采购订单管理</MyNavLink>
 								</Menu.Item>
 							} else return null;
 						})
@@ -61,7 +61,7 @@ export default class LeftNav extends Component <any,any>{
 						item.children.map((item, index) => {
 							if (item.name == "销售出库") {
 								return <Menu.Item icon={HomeIcons(item.meta.icon)} key={item.meta.id}>
-									<MyNavLink toPage={`/home${item.meta.url}`}>销售订单管理</MyNavLink>
+									<MyNavLink topage={`/home${item.meta.url}`}>销售订单管理</MyNavLink>
 								</Menu.Item>
 							} else return null;
 						})
@@ -72,7 +72,7 @@ export default class LeftNav extends Component <any,any>{
 						item.children.map((item, index) => {
 							if (index<2) {
 								return <Menu.Item icon={HomeIcons(item.meta.icon)} key={item.meta.id}>
-									<MyNavLink toPage={`/home${item.meta.url}`}>{item.name}</MyNavLink>
+									<MyNavLink topage={`/home${item.meta.url}`}>{item.name}</MyNavLink>
 								</Menu.Item>
 							} else return null;
 						})
@@ -83,7 +83,7 @@ export default class LeftNav extends Component <any,any>{
 						item.children.map((item, index) => {
 							if (item.name === "商品库存") {
 								return <Menu.Item icon={HomeIcons(item.meta.icon)} key={item.meta.id}>
-									<MyNavLink toPage="/home/material/material_stock">库存管理</MyNavLink>
+									<MyNavLink topage="/home/material/material_stock">库存管理</MyNavLink>
 								</Menu.Item>
 							} else return null;
 						})
@@ -95,11 +95,11 @@ export default class LeftNav extends Component <any,any>{
 							if (index < 2) {
 								if (item.name === "供应商信息") {
 									return <Menu.Item icon={HomeIcons(item.meta.icon)} key={item.meta.id}>
-										<MyNavLink toPage={`/home${item.meta.url}`}>供应商管理</MyNavLink>
+										<MyNavLink topage={`/home${item.meta.url}`}>供应商管理</MyNavLink>
 									</Menu.Item>
 								} else { 
 									return <Menu.Item icon={HomeIcons(item.meta.icon)} key={item.meta.id}>
-										<MyNavLink toPage={`/home${item.meta.url}`}>客户管理</MyNavLink>
+										<MyNavLink topage={`/home${item.meta.url}`}>客户管理</MyNavLink>
 									</Menu.Item>
 								}
 							} else return null;
@@ -113,7 +113,7 @@ export default class LeftNav extends Component <any,any>{
 									item.children.map((item, index) => {
 										if (index < 2) {
 											return <Menu.Item icon={HomeIcons(item.meta.icon)} key={item.meta.id}>
-												<MyNavLink toPage={`/home${item.meta.url}`}>{item.name}</MyNavLink>
+												<MyNavLink topage={`/home${item.meta.url}`}>{item.name}</MyNavLink>
 											</Menu.Item>
 										} else return null;
 									})

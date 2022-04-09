@@ -103,34 +103,6 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                         />
                         <ProFormTextArea width="sm" name="description" label="备注" placeholder="请输入备注" />
                     </ProForm.Group>
-
-
-
-                    {/* <ProForm.Group>
-                        <ProFormText width="sm" name="fax" label="传真" placeholder="请输入传真" /> 
-                        <ProFormText width="sm" name="beginNeedGet" label="期初应收" placeholder="请输入期初应收" />
-                        <ProFormText width="sm" name="allNeedGet" label="期末应收" readonly={true} />
-                    </ProForm.Group>
-                    <ProForm.Group>
-                        <ProFormText width="sm" name="taxNum" label="纳税人识别号" placeholder="请输入纳税人识别号" />
-                        <ProFormText width="sm" name="taxRate" label="税率(%)" placeholder="请输入税率(%)" />
-                        <ProFormText width="sm" name="bankName" label="请输入开户行" placeholder="开户行" />
-                        <ProFormText width="sm" name="accountNumber" label="账号" placeholder="请输开户行入账号" />
-                    </ProForm.Group> */}
-                    {/* <ProForm.Group>
-                        <ProFormText width="md" name="name" label="签约客户名称" tooltip="最长为 24 位" placeholder="请输入名称" />
-                        <ProFormText width="md" name="company" label="我方公司名称" placeholder="请输入名称" />
-                    </ProForm.Group>
-                    <ProForm.Group>
-                        <ProFormText width="md" name="contract" label="合同名称" placeholder="请输入名称" />
-                        <ProFormDateRangePicker name="contractTime" label="合同生效时间" />
-                    </ProForm.Group>
-                    <ProForm.Group>
-                        <ProFormSelect width="xs" name="unusedMode" label="合同约定失效效方式"
-                            options={[{ value: 'time', label: '履行完终止', },]}
-                        />
-                    </ProForm.Group>
-                    <ProFormText width="sm" name="id" label="主合同编号" /> */}
                 </ModalForm>
             </div >
         )

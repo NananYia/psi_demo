@@ -81,7 +81,7 @@ export default class SaleOrderList extends Component<any,any> {
         this.loadMaterialData();
         this.FormitemValue = [
             { queryParam: "number", text: "单据编号", placeholder: "请输入单据编号" },
-            { queryParam: "materialParam", text: "商品信息", placeholder: "请输入条码、名称、规格、型号" },
+            { queryParam: "materialParam", text: "商品名称", placeholder: "请输入名称" },
             { queryParam: "createTimeRange", text: "单据日期", type: "dateRange"},
             { queryParam: "organId", text: "选择客户", placeholder: "选择客户", type: "select", options: this.customerData },
             // { queryParam: "depotId", text: "仓库名称", placeholder: "请选择仓库", type: "select", options: this.DepotData },
