@@ -154,7 +154,9 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                         <ProFormSelect width="xs" name="enableBatchNumber" label="有无批号"  options={[{ value: '1', label: '有', }, { value: '2', label: '无', }]}/>
                     </ProForm.Group> */}
                     <ProForm.Group>
-                        <MaterialEditableTable getEditableValue={this.getEditableTabl.bind(this)}/>
+                        {initialValues ? null :
+                            <MaterialEditableTable getEditableValue={this.getEditableTabl.bind(this)} />
+                        }
                     </ProForm.Group>
                 </ModalForm>
             </div >

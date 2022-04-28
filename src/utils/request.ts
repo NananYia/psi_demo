@@ -14,7 +14,8 @@ type ResultDataType = apiKeyDataType[apiKeyType];
  * @type {*|string}
  */
 // let apiBaseUrl = window._CONFIG['/psiERP-boot'] || "/psiERP-boot";
-let apiBaseUrl = "http://localhost:3000/psiERP-boot";
+// let apiBaseUrl = "http://localhost:3000/jshERP-boot";
+let apiBaseUrl = "http://localhost:3000/psi-boot";
 // 创建 axios 实例
 interface NewAxiosInstance extends AxiosInstance {
 	/* 

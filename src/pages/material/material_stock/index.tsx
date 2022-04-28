@@ -70,14 +70,16 @@ export default class MaterialList extends Component<any,any> {
                 for (let i = 0; i < result.length; i++) {
                     let temp = {
                         value: result[i].id, 
-                        label: result[i].title,
+                        title: result[i].title,
+                        key:result[i].id, 
                     };
                     this.categoryData.push(temp);
                     if (result[i].children.length > 0) { 
                         for (let index = 0; index < result[i].children.length; index++) {
                             const element = {
                                 value: result[i].children[index].id, 
-                                label: result[i].children[index].title,
+                                title: result[i].children[index].title,
+                                key: result[i].children[index].id, 
                             };
                             this.categoryData.push(element);
                         }

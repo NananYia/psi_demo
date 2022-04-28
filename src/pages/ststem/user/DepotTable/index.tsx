@@ -26,7 +26,9 @@ export default class CustomerTable extends React.Component<CustomerTableProps, a
         makeObservable(this);
         for (let index = 0; index < props.dataSource.length; index++) {
             const element = props.dataSource[index];
-            this.dataSource.push({ ...element, key: element.id });
+            if (element.roleName!="租户") { 
+                this.dataSource.push({ ...element, key: element.id });
+            }
         }
         this.columns = [
             ...props.columns,
