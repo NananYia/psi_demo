@@ -13,7 +13,7 @@ import api from "../../../api/api";
 import "./index.less";
 
 const FormitemValue = [
-    // { queryParam: "categoryId", text: "类别", placeholder: "请选择类别" },
+    { queryParam: "categoryId", text: "类别", placeholder: "请选择类别" },
     { queryParam: "barCode", text: "条码", placeholder: "请输入条码查询" },
     { queryParam: "name", text: "名称", placeholder: "请输入名称查询" },
 ]
@@ -24,7 +24,7 @@ const columns =[
     { title: '类别', dataIndex: 'categoryName', width: '8%', ellipsis: true, align: "center" },
     { title: '单位', dataIndex: 'unit', width: '8%', ellipsis: true,align: "center",},
     { title: '保质期', dataIndex: 'expiryNum', width: '10%', align: "center" },
-    { title: '库存', dataIndex: 'stock', width: '8%', align: "center" },
+    // { title: '库存', dataIndex: 'stock', width: '8%', align: "center" },
 ]
 @observer
 export default class MaterialList extends Component<any,any> {

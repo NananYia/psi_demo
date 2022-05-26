@@ -22,10 +22,10 @@ import UserList from "../ststem/user"
 import MaterialList from "../material/material";
 import MaterialCategoryList from "../material/material_category";
 import MaterialStockList from "../material/material_stock";
-// import PurchaseOrderList from "../bill/purchase_intest";
+import PurchaseOrderList from "../bill/purchase_in";
 import PurchaseOrder from "../bill/purchase_order";
-// import SaleOrderList from "../bill/sale_order";
 import SaleOrderList from "../bill/sale_order";
+import SaleOrder from "../bill/sale_order";
 import OtherInList from "../bill/other_in";
 import OtherOutList from "../bill/other_out";
 import './admin.less';
@@ -71,15 +71,19 @@ export default class admin extends Component<any, any>{
 							<Route path="/home/system/home" component={Home} />
 
 							{/* 采购订单 */}
-							<Route path="/home/bill/purchase_in" component={PurchaseOrder} />
+							<Route path="/home/bill/purchase_order" component={PurchaseOrder} />
+							{/* 采购入库 */}
+							<Route path="/home/bill/purchase_in" component={PurchaseOrderList} />
 
 							{/* 销售订单 */}
+							<Route path="/home/bill/sale_order" component={SaleOrder} />
+							{/* 销售出库 */}
 							<Route path="/home/bill/sale_out" component={SaleOrderList} />
 
 							{/* 其他入库 */}
-							<Route path="/home/bill/other_in" component={OtherInList} />
+							{/* <Route path="/home/bill/other_in" component={OtherInList} /> */}
 							{/* 其他出库 */}
-							<Route path="/home/bill/other_out" component={OtherOutList} />
+							{/* <Route path="/home/bill/other_out" component={OtherOutList} /> */}
 
 							{/* 商品信息 */}
 							<Route path="/home/material/material" component={MaterialList} />
@@ -94,12 +98,18 @@ export default class admin extends Component<any, any>{
 							<Route path="/home/system/customer" component={CustomerList} />
 							{/* 角色信息 */}
 							<Route path="/home/system/role" component={RoleList} />
-							
 							{/* 用户信息 */}
 							<Route path="/home/system/user" component={UserList} />
 
+							{/* 采购统计 */}
+							<Route path="/home/report/buy_in_report" component={UserList} />
+							{/* 销售统计 */}
+							<Route path="/home/report/sale_out_report" component={UserList} />
+
+							{/* 仓库管理 */}
+							<Route path="/home/system/depot" component={DepotList} />
+							
 							{/* 
-								<Route path="/home/system/depot" component={DepotList} />
 								<Route path="/home/system/account" component={AccountList} />
 								<Route path="/charts/bar" component={Bar} />
 								<Route path="/charts/pie" component={Pie} />

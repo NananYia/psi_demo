@@ -272,7 +272,7 @@ export default class PurchaseOrderList extends Component<any,any> {
     render() {
         return (
             <div className="PurchaseOrder-container">
-                <div className="title">采购订单</div>
+                <div className="title">采购入库单</div>
                 <SearchForm
                     FormitemValue={this.FormitemValue}
                     getSearchList={this.getSearchList.bind(this)}

@@ -37,12 +37,14 @@ export default class CustomerTable extends React.Component<CustomerTableProps, a
                     return <Tag className="tag-style" color={status===0 ? 'green' : 'geekblue'}>{status===0 ? '启用' : '禁用'}</Tag>
                 }
             },
-            { title: '操作', dataIndex: 'action', align: "center",
+            {
+                title: '操作', dataIndex: 'action', align: "center", width: "15%",
                 render: (_, record:{ key: React.Key }) =>
                     this.dataSource.length >= 1 ? (
                         <div>
-                            <DepotModalForm buttonlabel="编辑" title="编辑用户" getModalValue={this.props.getExitValue.bind(this)} initialValues={record}/>
-                            <Popconfirm title="确认删除?" onConfirm={()=>this.props.getdeleteValue(record)}><a>删除</a></Popconfirm>
+                            <DepotModalForm buttonlabel="编辑" title="编辑用户" getModalValue={this.props.getExitValue.bind(this)} initialValues={record} />
+                            <Popconfirm title="确认删除?" onConfirm={() => this.props.getdeleteValue(record)}><a>删除</a></Popconfirm>
+                            <Popconfirm title="确认重置密码?" onConfirm={() => this.props.getdeleteValue(record)}><a> 重置密码</a></Popconfirm>
                         </div>
                     ) : null,
             },

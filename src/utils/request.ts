@@ -9,13 +9,12 @@ import { apiKeyDataType, apiKeyType } from "../api/api";
 type ResultDataType = apiKeyDataType[apiKeyType];
 /**
  * 【指定 axios的 baseURL】
- * 如果手工指定 baseURL: '/p siERP-boot'
- * 则映射后端域名，通过 vue.config.js
+ * 如果手工指定 baseURL: '/psiERP-boot'
  * @type {*|string}
  */
 // let apiBaseUrl = window._CONFIG['/psiERP-boot'] || "/psiERP-boot";
-// let apiBaseUrl = "http://localhost:3000/jshERP-boot";
-let apiBaseUrl = "http://localhost:3000/psi-boot";
+let apiBaseUrl = "http://localhost:3000/jshERP-boot";
+// let apiBaseUrl = "http://localhost:3000/psi-boot";
 // 创建 axios 实例
 interface NewAxiosInstance extends AxiosInstance {
 	/* 

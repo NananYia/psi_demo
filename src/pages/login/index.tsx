@@ -217,12 +217,12 @@ export default class Login extends Component<any, any>{
                 <Form.Item label="" name="password" >
                     <Input.Password placeholder="Password" />
                 </Form.Item>
-                <Form.Item className="center" name="">
+                {/* <Form.Item className="center" name="">
                     <Form.Item label="" name="rememberMe" className="rememberMe">
                         <Checkbox onChange={() => { this.rememberchecked = !this.rememberchecked }} />
                         自动登录
                     </Form.Item>
-                </Form.Item>
+                </Form.Item> */}
                 <Form.Item wrapperCol={{ offset: 8, span: 16, }} name="">
                     <Button type="primary" htmlType="submit" className="login-form-button" >
                         登录

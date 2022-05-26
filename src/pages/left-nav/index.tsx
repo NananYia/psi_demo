@@ -45,45 +45,17 @@ export default class LeftNav extends Component <any,any>{
 			findconstRoutes.map((item, index) => { 
 				if (index === 0) {
 					return <Menu.Item icon={HomeIcons(item.meta.icon)} key={index}> {item.name}</Menu.Item>
-				} else if (item.name === "采购管理") { 
-					return (
-						item.children.map((item, index) => {
-							if (item.name == "采购入库") {
-								return <Menu.Item icon={HomeIcons(item.meta.icon)} key={item.meta.id}>
-									<MyNavLink topage={`/home${item.meta.url}`}>采购订单管理</MyNavLink>
-								</Menu.Item>
-							} else return null;
-						})
-					)
-				}
-				else if (item.name === "销售管理") {
-					return (
-						item.children.map((item, index) => {
-							if (item.name == "销售出库") {
-								return <Menu.Item icon={HomeIcons(item.meta.icon)} key={item.meta.id}>
-									<MyNavLink topage={`/home${item.meta.url}`}>销售订单管理</MyNavLink>
-								</Menu.Item>
-							} else return null;
-						})
-					)
-				}
-				else if (item.name === "库存管理" || item.name === "系统管理") {
-					return (
-						item.children.map((item, index) => {
-							if (index<2) {
-								return <Menu.Item icon={HomeIcons(item.meta.icon)} key={item.meta.id}>
-									<MyNavLink topage={`/home${item.meta.url}`}>{item.name}</MyNavLink>
-								</Menu.Item>
-							} else return null;
-						})
-					)
 				}
 				else if (item.name === "报表查询" ) {
 					return (
 						item.children.map((item, index) => {
 							if (item.name === "商品库存") {
 								return <Menu.Item icon={HomeIcons(item.meta.icon)} key={item.meta.id}>
-									<MyNavLink topage="/home/material/material_stock">库存管理</MyNavLink>
+									<MyNavLink topage="/home/material/material_stock">库存信息</MyNavLink>
+								</Menu.Item>
+							} else if (item.name === "采购统计" || item.name === "销售统计" || item.name === "库存预警") { 
+								return <Menu.Item icon={HomeIcons(item.meta.icon)} key={item.meta.id}>
+									<MyNavLink topage={`/home${item.meta.url}`}>{item.name}</MyNavLink>
 								</Menu.Item>
 							} else return null;
 						})
@@ -92,16 +64,21 @@ export default class LeftNav extends Component <any,any>{
 				else if (item.name === "基本资料") {
 					return (
 						item.children.map((item, index) => {
+							if (index ===0|| index ===1 || index ===3) {
+								return <Menu.Item icon={HomeIcons(item.meta.icon)} key={item.meta.id}>
+									<MyNavLink topage={`/home${item.meta.url}`}>{item.name}</MyNavLink>
+								</Menu.Item>
+							} else return null;
+						})
+					)
+				}
+				else if (item.name === "系统管理") {
+					return (
+						item.children.map((item, index) => {
 							if (index < 2) {
-								if (item.name === "供应商信息") {
-									return <Menu.Item icon={HomeIcons(item.meta.icon)} key={item.meta.id}>
-										<MyNavLink topage={`/home${item.meta.url}`}>供应商管理</MyNavLink>
-									</Menu.Item>
-								} else { 
-									return <Menu.Item icon={HomeIcons(item.meta.icon)} key={item.meta.id}>
-										<MyNavLink topage={`/home${item.meta.url}`}>客户管理</MyNavLink>
-									</Menu.Item>
-								}
+								return <Menu.Item icon={HomeIcons(item.meta.icon)} key={item.meta.id}>
+									<MyNavLink topage={`/home${item.meta.url}`}>{item.name}</MyNavLink>
+								</Menu.Item>
 							} else return null;
 						})
 					)
@@ -133,7 +110,7 @@ export default class LeftNav extends Component <any,any>{
 			<div className="left-nav">
 				<Link to="/home" className="left-nav-header">
 					{/* <img src={require('../../assets/images/icon.png')} alt="logo" /> */}
-					<h1>Nanan ERP</h1>
+					<h1>Nanan</h1>
 				</Link>
 				<Menu
 					mode="inline"

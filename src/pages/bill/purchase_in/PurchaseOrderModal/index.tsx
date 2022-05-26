@@ -2,7 +2,7 @@ import React from 'react';
 import { observer } from 'mobx-react'
 import { makeObservable, observable } from 'mobx'
 import { Button, Cascader, DatePicker, Input, message, notification, Table, TimePicker, TreeSelect } from 'antd';
-import addInitUtil from "../../../bill/mixins/addInit"
+import addInitUtil from "../../mixins/addInit"
 import ProForm, {
     ModalForm,
     ProFormText,

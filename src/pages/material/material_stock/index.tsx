@@ -56,7 +56,9 @@ export default class MaterialList extends Component<any,any> {
         this.getSearchMaterialList();
         this.loadTreeData();
         this.FormitemValue = [
-            { queryParam: "categoryId", text: "类别", placeholder: "请选择类别", type: "select", options: this.categoryData},
+            { queryParam: "categoryId", text: "类别", placeholder: "请选择类别", type: "select", options: this.categoryData },
+            { queryParam: "barCode", text: "条码", placeholder: "请输入条码查询" },
+            { queryParam: "name", text: "名称", placeholder: "请输入名称查询" },
         ]
     }
     loadTreeData = async () => {
