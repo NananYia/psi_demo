@@ -18,7 +18,7 @@ import PurchaseOrderEditableTable from '../OtherInEditableTable';
 import { getAction } from '../../../../api/manage';
 import MySpin from '../../../../components/Spin';
 import './index.less'
-import PurchaseinModelTable from '../../purchase_order/PurchaseinModelTable';
+import PurchaseinModelTable from '../../purchase_in/PurchaseinModelTable';
 interface ModalFormButtonProps {
     buttonlabel: string;
     title: string;

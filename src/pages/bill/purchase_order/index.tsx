@@ -7,26 +7,26 @@ import { filterObj } from "src/utils/util";
 import store from "store";
 import MySpin from "src/components/Spin";
 import { deleteAction, getAction, httpAction, postAction, putAction } from "src/api/manage";
-import PurchaseOrderTable from "./PurchaseTable";
-import PurchaseOrderModalForm from './PurchaseModal';
+import PurchaseOrderTable from "./PurchaseOrderTable";
+import PurchaseOrderModalForm from './PurchaseOrderModal';
 import { CheckOutlined, StopOutlined } from '@ant-design/icons';
 import { LoginOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import api from "../../../api/api";
 import "./index.less";
 
-const columns = [
+const columns =[
     { title: '供应商', dataIndex: 'organName', width: '17%', ellipsis: true},
     { title: '单据编号', dataIndex: 'number', width: '17%', ellipsis: true,
         render:  (text, record, index)=> {
             if (record.linkNumber) {
-                return text + "[订]";
+                return text + "[转]";
             } else {
                 return text;
             }
         }
     },
     { title: '商品信息', dataIndex: 'materialsList', width: '17%', ellipsis: true,
-        render:  (text, record, index)=> {
+        render:  (text, record, index) =>{
             if (text) {
                 return text.replace(",", "，");
             }
@@ -36,7 +36,7 @@ const columns = [
     { title: '操作员', dataIndex: 'userName', width: '10%', ellipsis: true }
 ]
 @observer
-export default class PurchaseInList extends Component<any,any> {
+export default class PurchaseOrderList extends Component<any,any> {
     @observable private queryParam: any = {};
     @observable private searchqueryParam: any = {};
     @observable private loading: boolean=false;
@@ -46,8 +46,7 @@ export default class PurchaseInList extends Component<any,any> {
     @observable public model: any = {};
     @observable public auditData: any = {};
     @observable private supplierData: any = [];
-    @observable private accountData: any = [];
-    @observable private MaterialData: [];
+    @observable private userData: any = [];
     private FormitemValue: any = []
     /* 排序参数 */
     private isorter: any= {
@@ -73,12 +72,13 @@ export default class PurchaseInList extends Component<any,any> {
         makeObservable(this);
         this.getSearchList();
         this.getSupplierName();
-        this.loadMaterialData();
+        this.getUserName();
         this.FormitemValue = [
             { queryParam: "number", text: "单据编号", placeholder: "请输入单据编号" },
-            { queryParam: "materialParam", text: "商品信息", placeholder: "请输入名称" },
-            // { queryParam: "createTimeRange", text: "单据日期", type: "dateRange" },
-            { queryParam: "organId", text: "选供应商", placeholder: "选择供应商", type: "select", options: this.supplierData  },
+            { queryParam: "materialParam", text: "商品信息", placeholder: "请输入条码、名称、规格、型号" },
+            { queryParam: "createTimeRange", text: "单据日期", type: "dateRange" },
+            { queryParam: "organId", text: "选供应商", placeholder: "选择供应商", type: "select", options: this.supplierData},
+            { queryParam: "creator", text: "选操作员", placeholder: "选择操作员", type: "select", options: this.userData},
         ]
     }
     /**拿到供应商列表 */
@@ -87,10 +87,25 @@ export default class PurchaseInList extends Component<any,any> {
             const result: any = await api.findBySelectSup({});
             result.map((item) => {
                 const dataitem = {
-                    label: item.supplier,
-                    value: item.id
+                    value: item.supplier,
+                    id: item.id
                 }
                 return this.supplierData.push(dataitem)
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    /**拿到操作员列表 */
+    getUserName = async () => {
+        try {
+            const result: any = await api.getUserList({});
+            result.map((item) => {
+                const dataitem = {
+                    value: item.userName,
+                    id: item.id
+                }
+                return this.userData.push(dataitem)
             })
         } catch (error) {
             console.log(error);
@@ -101,13 +116,12 @@ export default class PurchaseInList extends Component<any,any> {
         this.searchqueryParam = {
             number: values?.number ||"",
             materialParam: values?.materialParam ||"",
-            type: "入库",
-            subType: "采购",
+            type: "其它",
+            subType: "采购订单",
             roleType: store.get('roleType'),
             organId: values?.organId ||"",
             depotId: values?.depotId ||"",
-            creator: values?.creator || "",
-            linkNumber: values?.linkNumber || ""
+            creator: values?.creator ||""
         }
         //获取查询条件
         let searchObj = { search: "", }
@@ -149,25 +163,6 @@ export default class PurchaseInList extends Component<any,any> {
             console.log(error);
         }
     }
-    /**拿到库存信息 */
-    loadMaterialData = async (arg?) => {
-        const params = {
-            depotId: 21,//嘿嘿仓库
-            column: "createTime",
-            order: "desc",
-            mpList: "制造商, 自定义1, 自定义2, 自定义3",
-            page: 1,
-            rows: 10,
-        }
-        if (arg === 1) {
-            this.ipagination.current = 1;
-        }
-        const result: any = await api.getMaterialBySelect(params)
-        if (result) {
-            this.MaterialData = result.rows
-            this.ipagination.total = result.total
-        }
-    }
     /**页面初始化加载的数据 */
     getList = async () => { 
         let param = Object.assign({}, this.queryParam, this.isorter);//查询条件
@@ -191,30 +186,25 @@ export default class PurchaseInList extends Component<any,any> {
     }
     /** 整理成formData */
     classifyIntoFormData=(allValues)=> {
-        let totalPrice = 0
-        let billMain = Object.assign(this.model, allValues.formValue)
-        let detailArr = allValues.tablesValue.values;
-        billMain.type = '入库'
-        billMain.subType = '采购'
+        let totalPrice = 0;
+        let billMain = Object.assign({}, allValues.info);
+        let detailArr = allValues.rows;
+        billMain.type = '其它';
+        billMain.subType = '采购订单';
         billMain.defaultNumber = billMain.number
         for (let item of detailArr) {
+            item.depotId = '' //订单不需要仓库
             totalPrice += item.allPrice - 0
         }
         billMain.totalPrice = 0 - totalPrice
-        billMain.changeAmount = 0 - billMain.changeAmount
-        if (billMain.accountId === 0) {
-            billMain.accountId = ''
-        }
-        billMain.accountIdList = "";
-        billMain.accountMoneyList = "";
         if (this.fileList && this.fileList.length > 0) {
             billMain.fileName = this.fileList
         } else {
             billMain.fileName = ''
         }
         if (this.model.id) {
-            billMain.id = this.model.id
-        } 
+            billMain.id = allValues.id
+        }
         return {
             info: JSON.stringify(billMain),
             rows: JSON.stringify(detailArr),
@@ -289,19 +279,13 @@ export default class PurchaseInList extends Component<any,any> {
                 />
                 {this.loading ?
                     <div className="search-result-list">
-                        <PurchaseOrderModalForm
-                            buttonlabel="新建"
-                            title="新增采购订单"
-                            getModalValue={this.addList.bind(this)}
-                            getAccountData={this.accountData}
-                            getsupplierData={this.supplierData}
-                            getMaterialData={this.MaterialData}
-                        />
+                        <PurchaseOrderModalForm buttonlabel="新建" title="新增采购单" getModalValue={this.addList.bind(this)} />
                         <Button icon={<CheckOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(1)} > 审核 </Button>
                         <Button icon={<StopOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(0)} > 反审核 </Button>
                         <PurchaseOrderTable
                             columns={columns}
                             dataSource={this.dataSource}
+                            // loading={this.loading}
                             rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
                             getExitValue={this.addList.bind(this)}
                             getdeleteValue={this.deleteList.bind(this)}

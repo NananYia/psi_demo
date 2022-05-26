@@ -22,10 +22,10 @@ import UserList from "../ststem/user"
 import MaterialList from "../material/material";
 import MaterialCategoryList from "../material/material_category";
 import MaterialStockList from "../material/material_stock";
-import PurchaseOrderList from "../bill/purchase_in";
-import PurchaseOrder from "../bill/purchase_order";
+import PurchaseOrderList from "../bill/purchase_order";
+import PurchaseOrderIn from "../bill/purchase_in";
 import SaleOrderList from "../bill/sale_order";
-import SaleOrder from "../bill/sale_order";
+import SaleOrderOut from "../bill/sale_out";
 import OtherInList from "../bill/other_in";
 import OtherOutList from "../bill/other_out";
 import './admin.less';
@@ -71,14 +71,14 @@ export default class admin extends Component<any, any>{
 							<Route path="/home/system/home" component={Home} />
 
 							{/* 采购订单 */}
-							<Route path="/home/bill/purchase_order" component={PurchaseOrder} />
+							<Route path="/home/bill/purchase_order" component={PurchaseOrderList} />
 							{/* 采购入库 */}
-							<Route path="/home/bill/purchase_in" component={PurchaseOrderList} />
+							<Route path="/home/bill/purchase_in" component={PurchaseOrderIn} />
 
 							{/* 销售订单 */}
-							<Route path="/home/bill/sale_order" component={SaleOrder} />
+							<Route path="/home/bill/sale_order" component={SaleOrderList} />
 							{/* 销售出库 */}
-							<Route path="/home/bill/sale_out" component={SaleOrderList} />
+							<Route path="/home/bill/sale_out" component={SaleOrderOut} />
 
 							{/* 其他入库 */}
 							{/* <Route path="/home/bill/other_in" component={OtherInList} /> */}
