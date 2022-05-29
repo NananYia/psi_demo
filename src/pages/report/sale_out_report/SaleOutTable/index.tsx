@@ -12,7 +12,7 @@ interface VendorTableProps {
     getauditData?: (value: any) => {}
 }
 @observer
-export default class StockWarningTable extends React.Component<VendorTableProps, any>{
+export default class SaleOutTable extends React.Component<VendorTableProps, any>{
     @observable
     private columns:any;
     @observable
@@ -45,7 +45,22 @@ export default class StockWarningTable extends React.Component<VendorTableProps,
             // },
         ];
     }
+    onSelectChange = selectedRowKeys => {
+        this.props.getauditData(selectedRowKeys);
+        console.log('selectedRowKeys changed: ', selectedRowKeys);
+        this.selectedRowKeys = selectedRowKeys
+    };
     render() {
+        const selectedRowKeys = this.selectedRowKeys;
+        const rowSelection = {
+            selectedRowKeys,
+            onChange: this.onSelectChange,
+            selections: [
+                Table.SELECTION_ALL,
+                Table.SELECTION_INVERT,
+                Table.SELECTION_NONE,
+            ],
+        };
         return (
             <div className="EditableTable-container">
                 <Table

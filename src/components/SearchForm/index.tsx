@@ -2,10 +2,14 @@ import React from 'react';
 import { observer } from 'mobx-react'
 import { FormInstance } from 'antd/es/form';
 import { makeObservable, observable } from 'mobx'
-import { Form, Row, Col, Input, Button, DatePicker, Select } from 'antd';
+import { Form, Row, Col, Input, Button, DatePicker, Select, Space } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import moment from 'moment';
-import './index.less';
+import 'moment/locale/zh-cn';
+import locale from 'antd/es/date-picker/locale/zh_CN';
+import './index.less'; 
+
+import type { DatePickerProps } from 'antd';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -26,6 +30,8 @@ export default class SearchForm extends React.Component<DataType, any>{
     private endTime: undefined;  //结束时间
     @observable
     private isShowAll: boolean = true; //展开关闭
+    @observable
+    private monthTime: any;  //月份时间
 
     private formRef = React.createRef<FormInstance>();
 
@@ -37,17 +43,18 @@ export default class SearchForm extends React.Component<DataType, any>{
 
     onFinish = (values) => {
         console.log('Received values of form: ', values);
-        this.props.getSearchList({ ...values, createTimeRange: [moment(this.beginTime, dateFormat), moment(this.endTime, dateFormat)],beginTime:this.beginTime,endTime:this.endTime})
+        this.props.getSearchList({
+            ...values,
+            createTimeRange: [moment(this.beginTime, dateFormat), moment(this.endTime, dateFormat)],
+            beginTime: this.beginTime,
+            endTime: this.endTime,
+            monthTime: this.monthTime,
+        })
     };
 
     onReset = () => {
         this.formRef.current!.resetFields();
     };
-    //切换tab的时候的回调函数
-    tabChange = (activeKey) => {
-        this.beginTime = undefined;//开始时间
-        this.endTime = undefined; //结束时间
-    }
 
     //时间改变的方法
     onPickerChange = (date, dateString) => {
@@ -57,6 +64,12 @@ export default class SearchForm extends React.Component<DataType, any>{
         this.beginTime = dateString[0];//开始时间
         this.endTime = dateString[1]; //结束时间
     }
+    //月份
+    onMonthChange: DatePickerProps['onChange'] = (date, dateString) => {
+        console.log(date, dateString);
+        this.monthTime = date;
+    }
+
     AdvancedSearchForm = () => { 
         return (
             <Form
@@ -83,15 +96,16 @@ export default class SearchForm extends React.Component<DataType, any>{
                                     )
                                 } else if (item.type === "dateRange") {
                                     return (
-                                        <Col span={8} key={index}>
+                                        <Col span={5} key={index}>
                                             <Form.Item name={item.queryParam} label={item.text}>
-                                                <RangePicker
+                                                <DatePicker onChange={this.onMonthChange} locale={locale} picker="month" />
+                                                {/* <RangePicker
                                                     onChange={this.onPickerChange}
                                                     placement="bottomLeft"
                                                     format={dateFormat}
                                                     value={this.beginTime === undefined || this.endTime === undefined || this.beginTime === "" || this.endTime === "" ? null : [moment(this.beginTime, dateFormat), moment(this.endTime, dateFormat)]}
                                                     placeholder={['开始时间', '结束时间']}
-                                                />
+                                                /> */}
                                             </Form.Item>
                                         </Col>
                                     )
@@ -122,15 +136,18 @@ export default class SearchForm extends React.Component<DataType, any>{
                                 )
                             } else if (item.type === "dateRange") {
                                 return (
-                                    <Col span={8} key={index}>
+                                    <Col span={5} key={index}>
                                         <Form.Item name={item.queryParam} label={item.text}>
-                                            <RangePicker
+                                            <Space direction="vertical">
+                                                <DatePicker onChange={this.onMonthChange} locale={locale} picker="month" />
+                                            </Space>
+                                            {/* <RangePicker
                                                 onChange={this.onPickerChange}
                                                 placement="bottomLeft"
                                                 format={dateFormat}
                                                 value={this.beginTime === undefined || this.endTime === undefined || this.beginTime === "" || this.endTime === "" ? null : [moment(this.beginTime, dateFormat), moment(this.endTime, dateFormat)]}
                                                 placeholder={['开始时间', '结束时间']}
-                                            />
+                                            /> */}
                                         </Form.Item>
                                     </Col>
                                 )

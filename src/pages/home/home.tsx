@@ -8,9 +8,6 @@ import {
 	ArrowUpOutlined,
 	ReloadOutlined,
 } from "@ant-design/icons";
-import Line from "./line";
-import Bar from "./bar";
-import VendorList from "../ststem/vendor";
 import "./home.less";
 
 const dateFormat = "YYYY/MM/DD";

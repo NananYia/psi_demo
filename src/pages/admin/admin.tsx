@@ -6,13 +6,9 @@ import { MenuUnfoldOutlined, MenuFoldOutlined,LoginOutlined } from '@ant-design/
 import { Layout, Menu } from "antd";
 import { Header } from "antd/lib/layout/layout";
 import store from "store";
-import Home from "../home/home";
-import Bar from "../charts/bar";
-import Line from "../charts/line";
-import Pie from "../charts/pie";
-import { connect } from "react-redux";
 import LeftNav from "../left-nav";
 // import NotFound from "../../not-found/not-found";
+import Home from "../dashboard";
 import VendorList from "../ststem/vendor";
 import CustomerList from "../ststem/customer";
 import DepotList from "../ststem/depot"
@@ -28,7 +24,9 @@ import SaleOrderList from "../bill/sale_order";
 import SaleOrderOut from "../bill/sale_out";
 import OtherInList from "../bill/other_in";
 import OtherOutList from "../bill/other_out";
-import StockWarningList from "../report/stock_warning_report"
+import StockWarningList from "../report/stock_warning_report";
+import BuyInList from "../report/buy_in_report";
+import SaleOutList from "../report/sale_out_report";
 import './admin.less';
 import ChangepwdModal from "./change-password";
 import { USER_INFO } from "../../store/mutation-types";
@@ -69,7 +67,8 @@ export default class admin extends Component<any, any>{
 					</Header>
 					<Content style={{ margin: 20, backgroundColor: "#fff" }} className="panel">
 						<Switch>
-							<Route path="/home/system/home" component={Home} />
+							{/* 首页 */}
+							<Route path="/home/dashboard/analysis" component={Home} />
 
 							{/* 采购订单 */}
 							<Route path="/home/bill/purchase_order" component={PurchaseOrderList} />
@@ -103,21 +102,15 @@ export default class admin extends Component<any, any>{
 							<Route path="/home/system/user" component={UserList} />
 
 							{/* 采购统计 */}
-							<Route path="/home/report/buy_in_report" component={UserList} />
+							<Route path="/home/report/buy_in_report" component={BuyInList} />
 							{/* 销售统计 */}
-							<Route path="/home/report/sale_out_report" component={UserList} />
+							<Route path="/home/report/sale_out_report" component={SaleOutList} />
 							{/* 库存预警 */}
 							<Route path="/home/report/stock_warning_report" component={StockWarningList} />
 
 							{/* 仓库管理 */}
 							<Route path="/home/system/depot" component={DepotList} />
 							
-							{/* 
-								<Route path="/home/system/account" component={AccountList} />
-								<Route path="/charts/bar" component={Bar} />
-								<Route path="/charts/pie" component={Pie} />
-								<Route path="/charts/line" component={Line} />
-							*/}
 							{/* <Route component={NotFound} /> */}
 							<Redirect to="/home/system/home" />
 						</Switch>

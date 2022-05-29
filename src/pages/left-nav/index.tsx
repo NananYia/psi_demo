@@ -41,10 +41,13 @@ export default class LeftNav extends Component <any,any>{
 
 	renderMenuItem = () => { 
 		const findconstRoutes = getSomeValue(this.constRoutes, allneed_menu_meta, 'name') as any;
+		console.log("findconstRoutes=======>", findconstRoutes)
 		return (
 			findconstRoutes.map((item, index) => { 
 				if (index === 0) {
-					return <Menu.Item icon={HomeIcons(item.meta.icon)} key={index}> {item.name}</Menu.Item>
+					return <Menu.Item icon={HomeIcons(item.meta.icon)} key={index}>
+						<MyNavLink topage="/home/dashboard/analysis">{item.name}</MyNavLink>
+					</Menu.Item>
 				}
 				else if (item.name === "报表查询" ) {
 					return (
