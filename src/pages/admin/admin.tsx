@@ -28,6 +28,7 @@ import SaleOrderList from "../bill/sale_order";
 import SaleOrderOut from "../bill/sale_out";
 import OtherInList from "../bill/other_in";
 import OtherOutList from "../bill/other_out";
+import StockWarningList from "../report/stock_warning_report"
 import './admin.less';
 import ChangepwdModal from "./change-password";
 import { USER_INFO } from "../../store/mutation-types";
@@ -89,7 +90,7 @@ export default class admin extends Component<any, any>{
 							<Route path="/home/material/material" component={MaterialList} />
 							{/* 商品列表 */}
 							<Route path="/home/material/material_category" component={MaterialCategoryList} />
-							{/* 库存列表 */}
+							{/* 库存信息 */}
 							<Route path="/home/material/material_stock" component={MaterialStockList} />
 
 							{/* 供应商信息 */}
@@ -105,6 +106,8 @@ export default class admin extends Component<any, any>{
 							<Route path="/home/report/buy_in_report" component={UserList} />
 							{/* 销售统计 */}
 							<Route path="/home/report/sale_out_report" component={UserList} />
+							{/* 库存预警 */}
+							<Route path="/home/report/stock_warning_report" component={StockWarningList} />
 
 							{/* 仓库管理 */}
 							<Route path="/home/system/depot" component={DepotList} />

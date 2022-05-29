@@ -2,7 +2,6 @@ import React from 'react';
 import { observer } from 'mobx-react'
 import { makeObservable, observable } from 'mobx'
 import { Table, Input, Button, Popconfirm, Form, FormInstance, InputRef, Radio, Tag } from 'antd';
-import ModalFormButton from '../MaterialStockModal';
 import './index.less';
 interface VendorTableProps { 
     columns: any;
@@ -13,7 +12,7 @@ interface VendorTableProps {
     getauditData?: (value: any) => {}
 }
 @observer
-export default class MaterialTable extends React.Component<VendorTableProps, any>{
+export default class StockWarningTable extends React.Component<VendorTableProps, any>{
     @observable
     private columns:any;
     @observable
@@ -29,6 +28,7 @@ export default class MaterialTable extends React.Component<VendorTableProps, any
         }
         this.columns = [
             ...props.columns,
+
             // {
             //     title: '状态', dataIndex: 'enabled', width: 70, align: "center", scopedSlots: { customRender: 'customRenderFlag' },
             //     render: (enabled) => 
@@ -46,22 +46,7 @@ export default class MaterialTable extends React.Component<VendorTableProps, any
             // },
         ];
     }
-    onSelectChange = selectedRowKeys => {
-        this.props.getauditData(selectedRowKeys);
-        console.log('selectedRowKeys changed: ', selectedRowKeys);
-        this.selectedRowKeys = selectedRowKeys
-    };
     render() {
-        const selectedRowKeys = this.selectedRowKeys;
-        const rowSelection = {
-            selectedRowKeys,
-            onChange: this.onSelectChange,
-            selections: [
-                Table.SELECTION_ALL,
-                Table.SELECTION_INVERT,
-                Table.SELECTION_NONE,
-            ],
-        };
         return (
             <div className="EditableTable-container">
                 <Table

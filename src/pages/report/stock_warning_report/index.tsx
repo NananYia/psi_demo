@@ -1,36 +1,37 @@
 import React, { Component } from "react";
 import { observer } from 'mobx-react'
-import { makeObservable, observable } from 'mobx'
+import { action, makeObservable, observable } from 'mobx'
 import { Button, Modal, notification } from "antd";
 import SearchForm from "../../../components/SearchForm";
-import { filterObj } from "src/utils/util";
 import { CheckOutlined, StopOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import MySpin from "src/components/Spin";
 import { deleteAction, getAction, postAction, putAction } from "src/api/manage";
-import MaterialTable from "./MaterialStockTable";
-import MaterialModalForm from './MaterialStockModal';
+import StockWarningTable from "./StockWarningTable";
 import api from "../../../api/api";
 import "./index.less";
 
 const columns =[
-    { title: '条码', dataIndex: 'mBarCode', width: '7%', fixed: 'left', align: "center" },
-    { title: '名称', dataIndex: 'name', width: '15%', ellipsis: true, fixed: 'left', align: "center"},
-    { title: '颜色', dataIndex: 'color', width: '8%', ellipsis: true, align: "center" },
-    { title: '类别', dataIndex: 'categoryName', width: '8%', ellipsis: true, align: "center" },
-    // { title: '保质期', dataIndex: 'expiryNum', width: '10%', align: "center" },
-    { title: '库存', dataIndex: 'stock', width: '8%', align: "center" },
-    { title: '单位', dataIndex: 'unit', width: '8%', ellipsis: true, align: "center", },
+    { title: '仓库', dataIndex: 'depotName', width: '15%', fixed: 'left', align: "center" },
+    { title: '条码', dataIndex: 'barCode', width: '7%', fixed: 'left', align: "center" },
+    { title: '名称', dataIndex: 'mname', width: '10%', ellipsis: true, fixed: 'left', align: "center"},
+    { title: '规格', dataIndex: 'mstandard', width: '8%', ellipsis: true, align: "center" },
+    { title: '型号', dataIndex: 'mmodel', width: '8%', ellipsis: true, align: "center" },
+    { title: '库存', dataIndex: 'currentNumber', width: '8%', align: "center" },
+    { title: '单位', dataIndex: 'materialUnit', width: '8%', ellipsis: true, align: "center", },
+    { title: '最低安全库存', dataIndex: 'lowSafeStock', sorter: (a, b) => a.lowSafeStock - b.lowSafeStock, width: '10%' },
+    { title: '最高安全库存', dataIndex: 'highSafeStock', sorter: (a, b) => a.highSafeStock - b.highSafeStock, width: '10%' },
+    { title: '建议入库量', dataIndex: 'lowCritical', sorter: (a, b) => a.lowCritical - b.lowCritical, width: '10%' },
+    { title: '建议出库量', dataIndex: 'highCritical', sorter: (a, b) => a.highCritical - b.highCritical, width: '10%' }
 ]
 @observer
-export default class MaterialList extends Component<any,any> {
+export default class StockWarningList extends Component<any,any> {
     @observable private queryParam: any = {};
     @observable private searchqueryParam: any = {};
-    @observable private loading: boolean=false;
-    @observable private dataSource: any = {};
+    @observable private loading: boolean = false;
+    @observable public dataSource: any = {};
     @observable public modalValue: any = {};
     @observable public auditData: any = {};
     @observable private depotData: any = [];
-    @observable private categoryData: any = [];
     private FormitemValue: any = []
     /* 排序参数 */
     private isorter: any= {
@@ -55,16 +56,14 @@ export default class MaterialList extends Component<any,any> {
         super(props);
         makeObservable(this);
         this.getDepotData();
-        this.loadTreeData();
-        this.getSearchMaterialList();
-        
+        this.getSearchStockWarningList();
     }
     /**获取仓库列表 */
-    getDepotData = async () => {
+    getDepotData = async() => {
         try {
             const result: any = await getAction("/depot/findDepotByCurrentUser");
             if (result.code === 200) {
-                this.depotData = result.data.map((item) => { return { id: item.id, value: item.depotName } })
+                this.depotData=result.data.map((item) => { return {id: item.id, value: item.depotName} })
 
             }
             if (result.code === 510) {
@@ -75,55 +74,18 @@ export default class MaterialList extends Component<any,any> {
             console.log(error);
         }
     }
-    loadTreeData = async () => {
-        let params: any = {};
-        params.id = '';
-        this.loading = false;
-        try {
-            const result: any = await api.queryMaterialCategoryTreeList(params);
-            this.categoryData = [];
-            this.categoryData = result.data.map((item) => { return { id: item.id, value: item.depotName } })
-            if (result) {
-                for (let i = 0; i < result.length; i++) {
-                    let temp = {
-                        value: result[i].id, 
-                        title: result[i].title,
-                        key:result[i].id, 
-                    };
-                    this.categoryData.push(temp);
-                    if (result[i].children.length > 0) { 
-                        for (let index = 0; index < result[i].children.length; index++) {
-                            const element = {
-                                value: result[i].children[index].id, 
-                                title: result[i].children[index].title,
-                                key: result[i].children[index].id, 
-                            };
-                            this.categoryData.push(element);
-                        }
-                    }
-                }
-                this.loading = true;
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    }
     /**拿到搜索的参数 */
-    getSearchQueryParams(values) {
-        this.searchqueryParam = {
-            categoryId: '',
-            materialParam: '',
-            zeroStock: '0',
-            mpList: ''
+    getSearchQueryParams=(values)=>{
+        this.searchqueryParam={
+            materialParam: values?.materialParam||'',
+            depotId: values?.depotId ||'',
+            mpList: ''  //扩展属性
         }
-        //获取查询条件
-        let searchObj = { search: "", }
-        searchObj.search = JSON.stringify(this.searchqueryParam);
-        var param = Object.assign("", searchObj, this.isorter, this.filters);
+        var param = Object.assign({}, this.searchqueryParam, this.isorter);
         param.field = this.getQueryField();
         param.currentPage = this.ipagination.current;
         param.pageSize = this.ipagination.pageSize;
-        return filterObj(param);
+        return param;
     }
     /**获取要请求的字段 */
     getQueryField() {
@@ -134,7 +96,7 @@ export default class MaterialList extends Component<any,any> {
         return str;
     }
     /**请求查询的数据 */
-    getSearchMaterialList = async(values ?,arg ?) => {
+    getSearchStockWarningList = async(values ?,arg ?) => {
         //加载数据 若传入参数1则加载第一页的内容
         if (arg === 1) {
             this.ipagination.current = 1;
@@ -142,7 +104,7 @@ export default class MaterialList extends Component<any,any> {
         var params = this.getSearchQueryParams(values);//查询参数
         this.loading = false;
         try {
-            const result: any = await getAction("/material/list", params);
+            const result: any = await getAction("/depotItem/findStockWarningCount", params);
             if (result.code === 200) {
                 this.dataSource = result.data.rows;
                 this.ipagination.total = result.data.total;
@@ -156,26 +118,23 @@ export default class MaterialList extends Component<any,any> {
             console.log(error);
         }
     }
-   
+    
     render() {
         if (!this.loading) return null;
         this.FormitemValue = [
             { queryParam: "depotId", text: "仓库", placeholder: "请选择仓库", type: "select", options: this.depotData },
-            { queryParam: "categoryId", text: "类别", placeholder: "请选择类别", type: "select", options: this.categoryData },
-            { queryParam: "barCode", text: "条码", placeholder: "请输入条码查询" },
-            { queryParam: "name", text: "名称", placeholder: "请输入名称查询" },
+            { queryParam: "materialParam", text: "商品名称", placeholder: "请输入条码查询" },
         ]
         return (
-            <div className="Material-container">
-                <div className="title">库存信息</div>
+            <div className="StockWarning-container">
+                <div className="title">库存预警</div>
                 <SearchForm
-                    FormitemValue={this.
-                        FormitemValue}
-                    getSearchList={this.getSearchMaterialList.bind(this)}
+                    FormitemValue={this.FormitemValue}
+                    getSearchList={this.getSearchStockWarningList.bind(this)}
                 />
                 {/* {this.loading ? */}
                     <div className="search-result-list">
-                        <MaterialTable
+                        <StockWarningTable
                             columns={columns}
                             dataSource={this.dataSource}
                             rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
