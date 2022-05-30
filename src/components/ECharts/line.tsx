@@ -28,9 +28,9 @@ export default class HomeLine extends Component<any, any> {
                 text: this.title
             },
             tooltip: {},
-            legend: {
-                data: ['金额']
-            },
+            // legend: {
+            //     data: ['金额']
+            // },
             xAxis: {
                 data: this.xdate
             },
