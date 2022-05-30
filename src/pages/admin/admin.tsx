@@ -112,7 +112,7 @@ export default class admin extends Component<any, any>{
 							<Route path="/home/system/depot" component={DepotList} />
 							
 							{/* <Route component={NotFound} /> */}
-							<Redirect to="/home/system/home" />
+							<Redirect to="/home/dashboard/analysis" />
 						</Switch>
 						{/* </div> */}
 					</Content>

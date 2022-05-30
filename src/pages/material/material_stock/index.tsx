@@ -63,7 +63,7 @@ export default class MaterialList extends Component<any,any> {
         try {
             const result: any = await getAction("/depot/findDepotByCurrentUser");
             if (result.code === 200) {
-                this.depotData = result.data.map((item) => { return { id: item.id, value: item.depotName } })
+                this.depotData = result?.data.map((item) => { return { id: item.id, value: item.depotName } })
 
             }
             if (result.code === 510) {
