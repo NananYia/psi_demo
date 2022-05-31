@@ -7,7 +7,7 @@ import './index.less';
 interface VendorTableProps { 
     columns: any;
     dataSource: any;
-    rowSelection: any;
+    rowSelection?: any;
     getExitValue?: (value: any) => {}
     getDeleteValue?: (value: any) => {}
     getUpdateValue?: (value: any) => {}

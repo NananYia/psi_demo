@@ -1,14 +1,14 @@
 import React, { Component } from "react";
 import { observer } from 'mobx-react'
-import { makeObservable, observable } from 'mobx'
+import { makeObservable, observable, runInAction } from 'mobx'
 import { Button, Modal, notification } from "antd";
 import SearchForm from "../../../components/SearchForm";
 import { filterObj } from "src/utils/util";
 import store from "store";
 import MySpin from "src/components/Spin";
 import { deleteAction, getAction, httpAction, postAction, putAction } from "src/api/manage";
-import PurchaseOrderTable from "./PurchaseTable";
-import PurchaseOrderModalForm from './PurchaseModal';
+import PurchaseInTable from "../purchase_order/PurchaseOrderTable";
+import PurchaseInModalForm from './PurchaseModal';
 import { CheckOutlined, StopOutlined } from '@ant-design/icons';
 import { LoginOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import api from "../../../api/api";
@@ -36,7 +36,7 @@ const columns = [
     { title: '操作员', dataIndex: 'userName', width: '10%', ellipsis: true }
 ]
 @observer
-export default class PurchaseOrderIn extends Component<any,any> {
+export default class PurchaseIn extends Component<any,any> {
     @observable private queryParam: any = {};
     @observable private searchqueryParam: any = {};
     @observable private otherSearchqueryParam: any = {};
@@ -104,8 +104,9 @@ export default class PurchaseOrderIn extends Component<any,any> {
         try {
             const result: any = await getAction("/depot/findDepotByCurrentUser");
             if (result.code === 200) {
-                this.depotData = result?.data.map((item) => { return { id: item.id, value: item.depotName } })
-
+                runInAction(() => {
+                    this.depotData = result?.data.map((item) => { return { id: item.id, value: item.depotName } })
+                })
             }
             if (result.code === 510) {
                 notification.warning(result.data)
@@ -163,8 +164,10 @@ export default class PurchaseOrderIn extends Component<any,any> {
         try {
             const result: any = await getAction("/depotHead/list", params);
             if (result.code === 200) {
-                this.dataSource = result.data.rows;
-                this.ipagination.total = result.data.total;
+                runInAction(() => {
+                    this.dataSource = result.data.rows;
+                    this.ipagination.total = result.data.total;
+                })
                 this.tableAddTotalRow(columns, this.dataSource)
             }
             if (result.code === 510) {
@@ -180,7 +183,9 @@ export default class PurchaseOrderIn extends Component<any,any> {
         var params = this.getSearchQueryParams(values,"其他");//查询参数
         const result: any = await getAction("/depotHead/list", params);
         if (result) {
-            this.VoucherData = result.data.rows;
+            runInAction(() => { 
+                this.VoucherData = result.data.rows;
+            })
             // this.ipagination.total = result.data.total
         }
     }
@@ -275,8 +280,11 @@ export default class PurchaseOrderIn extends Component<any,any> {
         }
     }
     render() {
+        console.log('=========render=========PurchaseIn==================');
+        console.log(this.dataSource);
+        console.log('====================================');
         return (
-            <div className="PurchaseOrder-container">
+            <div className="PurchaseIn-container">
                 <div className="title">采购入库单</div>
                 <SearchForm
                     FormitemValue={this.FormitemValue}
@@ -284,7 +292,7 @@ export default class PurchaseOrderIn extends Component<any,any> {
                 />
                 {this.loading ?
                     <div className="search-result-list">
-                        <PurchaseOrderModalForm
+                        <PurchaseInModalForm
                             buttonlabel="新建"
                             title="新增采购入库单"
                             getModalValue={this.addList.bind(this)}
@@ -295,12 +303,12 @@ export default class PurchaseOrderIn extends Component<any,any> {
                         />
                         <Button icon={<CheckOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(1)} > 审核 </Button>
                         <Button icon={<StopOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(0)} > 反审核 </Button>
-                        <PurchaseOrderTable
+                        <PurchaseInTable
                             columns={columns}
                             dataSource={this.dataSource}
-                            rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+                            // rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
                             getExitValue={this.addList.bind(this)}
-                            getdeleteValue={this.deleteList.bind(this)}
+                            getDeleteValue={this.deleteList.bind(this)}
                             getauditData={this.getauditData.bind(this)}
                         />
                     </div>

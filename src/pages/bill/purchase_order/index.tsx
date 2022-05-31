@@ -272,6 +272,9 @@ export default class PurchaseOrderList extends Component<any,any> {
         }
     }
     render() {
+        console.log('=========render=========PurchaseOrder==================');
+        console.log(this.dataSource);
+        console.log('====================================');
         return (
             <div className="PurchaseOrder-container">
                 <div className="title">采购订单</div>
@@ -295,7 +298,7 @@ export default class PurchaseOrderList extends Component<any,any> {
                             columns={columns}
                             dataSource={this.dataSource}
                             // loading={this.loading}
-                            rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+                            // rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
                             getExitValue={this.addList.bind(this)}
                             getDeleteValue={this.deleteList.bind(this)}
                             getauditData={this.getauditData.bind(this)}
