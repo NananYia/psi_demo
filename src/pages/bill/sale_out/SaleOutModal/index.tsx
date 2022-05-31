@@ -28,6 +28,8 @@ interface ModalFormButtonProps {
     getAccountData?: any[]
     getcustomerData?: any[]
     getMaterialData?: any[]
+    getVoucherData?: any[]
+    getDepotData?: any[]
 }
 @observer
 export default class ModalFormButton extends React.Component<ModalFormButtonProps, any>{
@@ -75,49 +77,69 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
             console.log(error);
         }
     }
+    /**拿到选中单据对应信息 */
+    loadVoucherData = async (values?) => {
+        var params = {
+            headerId: this.auditData.split(",")[0],
+            mpList: ""
+        }
+        try {
+            const result: any = await getAction("depotItem/getDetailList", params);
+            if (result.code === 200) {
+                this.curMaterialdata = result.data.rows;
+                this.getEditableTable(values);
+            }
+            if (result.code === 510) {
+                notification.warning(result.data)
+            }
+            // this.loading = true;
+        } catch (error) {
+            console.log(error);
+        }
+    }
     /**拿到子表格信息 */
     getEditableTable = (values?, data?, row?) => {
-        this.curMaterialdata = this.props.getMaterialData.find((item) => {
-            return item.mBarCode = this.auditData
-        })
-        this.editabledata[0] = {
-            id: this.curMaterialdata.id || "",
-            depotId: 21,
-            name: this.curMaterialdata.name || "",
-            standard: this.curMaterialdata.standard || "",
-            model: this.curMaterialdata.model || "",
-            color: this.curMaterialdata.color || "",
-            materialOther: this.curMaterialdata.materialOther || "",
-            stock: this.curMaterialdata.stock || 0,
-            unit: this.curMaterialdata.unit || "",
-            snList: this.curMaterialdata.snList || "",
-            batchNumber: this.curMaterialdata.batchNumber || "",
-            expirationDate: this.curMaterialdata.expirationDate || "",
-            sku: this.curMaterialdata.sku || "",
-            preNumber: this.curMaterialdata.preNumber || "",
-            finishNumber: this.curMaterialdata.finishNumber || "",
-            operNumber: values.operNumber || 0,
-            unitPrice: this.curMaterialdata.unitPrice || 0,
-            allPrice: this.curMaterialdata.allPrice || 0,
-            taxRate: this.curMaterialdata.taxRate || 0,
-            taxMoney: this.curMaterialdata.taxMoney || 0,
-            taxLastMoney: this.curMaterialdata.taxLastMoney || 0,
-            remark: this.curMaterialdata.remark || "",
-            orderNum: this.curMaterialdata.orderNum || 0,
-            barCode: this.curMaterialdata.mBarCode || "",
+        for (let index = 0; index < this.curMaterialdata.length; index++) {
+            this.editabledata[index] = {
+                id: this.curMaterialdata[index].id || "",
+                name: this.curMaterialdata[index].name || "",
+                standard: this.curMaterialdata[index].standard || "",
+                model: this.curMaterialdata[index].model || "",
+                color: this.curMaterialdata[index].color || "",
+                materialOther:"",
+                stock: this.curMaterialdata[index].stock || 0,
+                unit: this.curMaterialdata[index].unit || "",
+                snList:"",
+                batchNumber: this.curMaterialdata[index].batchNumber || "",
+                expirationDate: this.curMaterialdata[index].expirationDate || "",
+                sku: this.curMaterialdata[index].sku || "",
+                preNumber: this.curMaterialdata[index].preNumber || 0,
+                finishNumber: this.curMaterialdata[index].finishNumber || "",
+                operNumber: this.curMaterialdata[index].preNumber|| 0,//出库数量同步销售订单数量
+                unitPrice: this.curMaterialdata[index].unitPrice || 0,
+                allPrice: this.curMaterialdata[index].allPrice || 0,
+                taxRate: "0",
+                taxMoney: "0",
+                taxLastMoney:"0",
+                remark: this.curMaterialdata[index].remark || "",
+                orderNum: this.curMaterialdata[index].orderNum || 0,
+                depotId: values.depotId || "",
+                barCode: this.curMaterialdata[index].barCode || "",
+            }
         }
         const allValues = {
             formValue: {
                 organId: values.organId,
                 operTime: values.operTime,
                 number: values.number || "",
+                linkNumber: this.props.getVoucherData.find((item) => { return item.id = this.auditData[0] }).number || 0,
                 discount: values.discount || 0,
                 discountMoney: values.unitId || 0,
                 discountLastMoney: values?.discountLastMoney || 0,
                 otherMoney: values.otherMoney || 0,
+                accountId: 24,//默认账户
                 changeAmount: values.changeAmount || 0,
                 debt: values.debt || 0,
-                remark: values.remark || "",
             },
             tablesValue: {
                 values: this.editabledata,
@@ -147,7 +169,7 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
         this.auditData = value.join();
     }
     render() {
-        const { initialValues, getAccountData, getcustomerData } = this.props;
+        const { initialValues, getAccountData, getVoucherData, getcustomerData, getDepotData } = this.props;
         return (
             <div className={initialValues ?"ModalFormaText-container":"ModalFormButton-container"}>
                 <ModalForm
@@ -162,30 +184,33 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                     modalProps={{ onCancel: () => console.log('run'), }}
                     onFinish={async (values) => {
                         await this.waitTime(1000);
-                        this.getEditableTable(values)
+                        values.depotId = getDepotData.find(value => value.value === values.depotId).id;
+                        this.loadVoucherData(values)
                         console.log("values===>", values);
                         message.success('提交成功');
                         return true;
                     }}
-                    width={900}
+                    width={1200}
                     initialValues={initialValues?initialValues:null}
                 >
                     {this.number ?
                         <ProForm.Group>
                             <ProForm.Group>
                                 <ProFormSelect width="sm" name="organId" label="客户" placeholder="请选择客户" options={getcustomerData} />
+                                <ProFormSelect width="sm" name="depotId" label="仓库" placeholder="请选择仓库" options={getDepotData} />
                                 <ProFormDateTimePicker name="operTime" label="单据日期" />
                                 <ProFormText initialValue={this.number} width="sm" name="number" label="单据编号" readonly tooltip="单据编号自动生成、自动累加、开头是单据类型的首字母缩写，累加的规则是每次打开页面会自动占用一个新的编号" />
                                </ProForm.Group>
                             <ProForm.Group>
-                                <ProFormText width="sm" name="operNumber" label="销售数量" />
+                                {/* <ProFormText width="sm" name="operNumber" label="销售数量" /> */}
                                 <ProFormTextArea width="sm" name="remark" label="备注" placeholder="请输入备注" style={{ height: 32 }} />
-                                <ProFormUploadButton width="sm" name="fileName" label="附件" />
+                                {/* <ProFormUploadButton width="sm" name="fileName" label="附件" /> */}
                             </ProForm.Group>
                             <ProForm.Group>
                                 {initialValues ? null
                                     : <PurchaseinModelTable
-                                        dataSource={this.props.getMaterialData}
+                                        type="客户"
+                                        dataSource={getVoucherData}
                                         rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
                                         getselectData={this.getauditData.bind(this)}
                                     />

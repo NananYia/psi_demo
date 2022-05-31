@@ -49,7 +49,7 @@ export default class PurchaseOrderIn extends Component<any,any> {
     @observable private supplierData: any = [];
     @observable private depotData: any = [];
     @observable private accountData: any = [];
-    @observable private MaterialData: [];
+    @observable private VoucherData: [];
     private FormitemValue: any = []
     /* 排序参数 */
     private isorter: any= {
@@ -76,7 +76,7 @@ export default class PurchaseOrderIn extends Component<any,any> {
         this.getSearchList();
         this.getSupplierName();
         this.getDepotData();
-        this.loadMaterialData();
+        this.loadVoucherData();
         this.FormitemValue = [
             { queryParam: "number", text: "单据编号", placeholder: "请输入单据编号" },
             { queryParam: "materialParam", text: "商品信息", placeholder: "请输入名称" },
@@ -176,16 +176,13 @@ export default class PurchaseOrderIn extends Component<any,any> {
         }
     }
     /**拿到采购订单信息 */
-    loadMaterialData = async (values?) => {
+    loadVoucherData = async (values?) => {
         var params = this.getSearchQueryParams(values,"其他");//查询参数
         const result: any = await getAction("/depotHead/list", params);
         if (result) {
-            this.MaterialData = result.data.rows;
+            this.VoucherData = result.data.rows;
             // this.ipagination.total = result.data.total
         }
-    }
-    parseParam(param) {
-        return param ? param : ""
     }
     /** 整理成formData */
     classifyIntoFormData=(allValues)=> {
@@ -293,7 +290,7 @@ export default class PurchaseOrderIn extends Component<any,any> {
                             getModalValue={this.addList.bind(this)}
                             getAccountData={this.accountData}
                             getsupplierData={this.supplierData}
-                            getMaterialData={this.MaterialData}
+                            getVoucherData={this.VoucherData}
                             getDepotData={this.depotData}
                         />
                         <Button icon={<CheckOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(1)} > 审核 </Button>

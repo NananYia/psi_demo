@@ -27,7 +27,7 @@ interface ModalFormButtonProps {
     initialValues?: {}//穿参为编辑，不传为新增
     getAccountData?: any[]
     getsupplierData?: any[]
-    getMaterialData?: any[]
+    getVoucherData?: any[]
     getDepotData?: any[]
 }
 @observer
@@ -79,7 +79,7 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
         }
     }
     /**拿到选中单据对应信息 */
-    loadMaterialData = async(values?) => {
+    loadVoucherData = async(values?) => {
         var params = {
             headerId: this.auditData.split(",")[0],
             mpList:""
@@ -114,7 +114,7 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                 sku: this.curMaterialdata[index].sku || "",
                 preNumber: this.curMaterialdata[index].preNumber || "",
                 finishNumber: this.curMaterialdata[index].finishNumber || "",
-                operNumber: values.operNumber || 0,
+                operNumber: this.curMaterialdata[index].preNumber || 0,//入库数量同步采购订单数量
                 unitPrice: this.curMaterialdata[index].unitPrice || 0,
                 allPrice: this.curMaterialdata[index].allPrice || 0,
                 remark: this.curMaterialdata[index].remark || "",
@@ -128,7 +128,7 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                 organId: values.organId,
                 operTime: values.operTime,
                 number: values.number || "",
-                linkNumber: this.props.getMaterialData.find((item) => { return item.id = this.auditData[0] }).number || 0,
+                linkNumber: this.props.getVoucherData.find((item) => { return item.id = this.auditData[0] }).number || 0,
                 discount: values.discount || 0,
                 discountMoney: values.unitId || 0,
                 discountLastMoney: values?.discountLastMoney || 0,
@@ -162,7 +162,7 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
         this.auditData = value.join();
     }
     render() {
-        const { initialValues, getMaterialData,getsupplierData,getDepotData} = this.props;
+        const { initialValues, getVoucherData,getsupplierData,getDepotData} = this.props;
         return (
             <div className={initialValues ?"ModalFormaText-container":"ModalFormButton-container"}>
                 <ModalForm
@@ -178,7 +178,7 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                     onFinish={async (values) => {
                         await this.waitTime(1000);
                         values.depotId = getDepotData.find(value => value.value === values.depotId).id;
-                        this.loadMaterialData(values)
+                        this.loadVoucherData(values)
                         console.log("values===>", values);
                         message.success('提交成功');
                         return true;
@@ -202,7 +202,8 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                             <ProForm.Group>
                                 {initialValues ? null
                                     : <PurchaseinModelTable
-                                        dataSource={getMaterialData}
+                                        type="供应商"
+                                        dataSource={getVoucherData}
                                         getselectData={this.getauditData.bind(this)}
                                     />
                                 }

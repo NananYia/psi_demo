@@ -39,7 +39,8 @@ const columns = [
 export default class SaleOrderOut extends Component<any,any> {
     @observable private queryParam: any = {};
     @observable private searchqueryParam: any = {};
-    @observable private loading: boolean=false;
+    @observable private otherSearchqueryParam: any = {};
+    @observable private loading: boolean = false;
     @observable public dataSource: any = {};
     @observable public modalValue: any = {};
     @observable public fileList: any = [];
@@ -50,6 +51,7 @@ export default class SaleOrderOut extends Component<any,any> {
     @observable private userData: any = [];
     @observable private accountData: any = [];
     @observable private MaterialData: [];
+    @observable private VoucherData: [];
     private FormitemValue: any = []
     /* 排序参数 */
     private isorter: any= {
@@ -74,11 +76,12 @@ export default class SaleOrderOut extends Component<any,any> {
         super(props);
         makeObservable(this);
         this.getSearchList();
-        // this.getDepotName();
+        this.getDepotData();
         this.getCustomerName();
         // this.getUserName();
         // this.getAccountName();
         this.loadMaterialData();
+        this.loadVoucherData()
         this.FormitemValue = [
             { queryParam: "number", text: "单据编号", placeholder: "请输入单据编号" },
             { queryParam: "materialParam", text: "商品名称", placeholder: "请输入名称" },
@@ -122,8 +125,24 @@ export default class SaleOrderOut extends Component<any,any> {
             this.ipagination.total = result.total
         }
     }
+    /**获取仓库列表 */
+    getDepotData = async () => {
+        try {
+            const result: any = await getAction("/depot/findDepotByCurrentUser");
+            if (result.code === 200) {
+                this.DepotData = result?.data.map((item) => { return { id: item.id, value: item.depotName } })
+
+            }
+            if (result.code === 510) {
+                notification.warning(result.data)
+            }
+            this.loading = true;
+        } catch (error) {
+            console.log(error);
+        }
+    }
     /**拿到搜索的参数 */
-    getSearchQueryParams(values?) {
+    getSearchQueryParams(values?,type?) {
         this.searchqueryParam = {
             number: values?.number ||"",
             materialParam: values?.materialParam ||"",
@@ -135,9 +154,16 @@ export default class SaleOrderOut extends Component<any,any> {
             creator: values?.creator || "",
             linkNumber: values?.linkNumber || "",
         }
+        this.otherSearchqueryParam = {
+            number: values?.number || "",
+            searchMaterial: values?.materialParam || "",
+            type: "其它",
+            subType: "销售订单",
+            status: "1,3",
+        }
         //获取查询条件
         let searchObj = { search: "", }
-        searchObj.search = JSON.stringify(this.searchqueryParam);
+        searchObj.search = JSON.stringify(type ? this.otherSearchqueryParam : this.searchqueryParam);
         var param = Object.assign("", searchObj, this.isorter, this.filters);
         param.field = this.getQueryField();
         param.currentPage = this.ipagination.current;
@@ -175,6 +201,15 @@ export default class SaleOrderOut extends Component<any,any> {
             console.log(error);
         }
     }
+    /**拿到销售订单信息 */
+    loadVoucherData = async (values?) => {
+        var params = this.getSearchQueryParams(values, "其他");//查询参数
+        const result: any = await getAction("/depotHead/list", params);
+        if (result) {
+            this.VoucherData = result.data.rows;
+            // this.ipagination.total = result.data.total
+        }
+    }
     /**页面初始化加载的数据 */
     getList = async () => { 
         let param = Object.assign({}, this.queryParam, this.isorter);//查询条件
@@ -204,7 +239,13 @@ export default class SaleOrderOut extends Component<any,any> {
         billMain.type = '出库'
         billMain.subType = '销售'
         billMain.defaultNumber = billMain.number
-        billMain.totalPrice = 0 - totalPrice
+        for (let item of detailArr) {
+            totalPrice += item.allPrice - 0
+        }
+        if (billMain.accountId === 0) {
+            billMain.accountId = ''
+        }
+        billMain.totalPrice = totalPrice
         if (this.fileList && this.fileList.length > 0) {
             billMain.fileName = this.fileList
         } else {
@@ -294,7 +335,9 @@ export default class SaleOrderOut extends Component<any,any> {
                             getModalValue={this.addList.bind(this)}
                             getAccountData={this.accountData}
                             getcustomerData={this.customerData}
+                            getVoucherData={this.VoucherData}
                             getMaterialData={this.MaterialData}
+                            getDepotData={this.DepotData}
                         />
                         <Button icon={<CheckOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(1)} > 审核 </Button>
                         <Button icon={<StopOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(0)} > 反审核 </Button>

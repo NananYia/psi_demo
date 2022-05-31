@@ -3,6 +3,7 @@ import { observer } from 'mobx-react'
 import { makeObservable, observable } from 'mobx'
 import { Table, Tag } from 'antd';
 interface PurchaseinModelTableProps {
+    type?: string;
     columns?: any;
     dataSource: any;
     rowSelection?: any;
@@ -24,7 +25,7 @@ export default class PurchaseinModelTable extends React.Component<PurchaseinMode
             this.dataSource.push({ ...element, key: element.id });
         }
         this.columns = [
-            { title: '供应商', dataIndex: 'organName', width: '12%', fixed: 'left', align: "center" },
+            { title: props.type === "客户" ? '客户' : '供应商', dataIndex: 'organName', width: '12%', fixed: 'left', align: "center" },
             { title: '单据编号', dataIndex: 'number', width: '17%', ellipsis: true, fixed: 'left', align: "center" },
             { title: '商品信息', dataIndex: 'materialsList', width: '28%', ellipsis: true, align: "center" },
             { title: '单据日期', dataIndex: 'operTimeStr', width: '15%', ellipsis: true, align: "center" },
