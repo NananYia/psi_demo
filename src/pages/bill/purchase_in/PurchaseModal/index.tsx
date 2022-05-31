@@ -85,7 +85,7 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
         })
         this.editabledata[0]={
             id: this.curMaterialdata.id || "",
-            depotId: 21,
+            depotId: this.curMaterialdata.depotId || "",
             name: this.curMaterialdata.name || "",
             standard: this.curMaterialdata.standard || "",
             model: this.curMaterialdata.model || "",

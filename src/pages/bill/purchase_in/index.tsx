@@ -291,7 +291,7 @@ export default class PurchaseOrderIn extends Component<any,any> {
                     <div className="search-result-list">
                         <PurchaseOrderModalForm
                             buttonlabel="新建"
-                            title="新增采购订单"
+                            title="新增采购入库单"
                             getModalValue={this.addList.bind(this)}
                             getAccountData={this.accountData}
                             getsupplierData={this.supplierData}
