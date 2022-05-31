@@ -50,7 +50,7 @@ export default class PurchaseinModelTable extends React.Component<PurchaseinMode
             // ],
         };
         return (
-            <div className="PurchaseInTable-container">
+            <div className="PurchaseInTable-container" style={{ paddingLeft: 0 }} >
                 <Table
                     rowSelection={this.props.rowSelection === false ? null: { ...rowSelection }}
                     dataSource={this.dataSource}

@@ -281,7 +281,7 @@ export default class SaleOrderOut extends Component<any,any> {
     render() {
         return (
             <div className="SaleOrder-container">
-                <div className="title">销售订单</div>
+                <div className="title">销售出库单</div>
                 <SearchForm
                     FormitemValue={this.FormitemValue}
                     getSearchList={this.getSearchList.bind(this)}
@@ -290,7 +290,7 @@ export default class SaleOrderOut extends Component<any,any> {
                     <div className="search-result-list">
                         <SaleOrderModalForm
                             buttonlabel="新建"
-                            title="新增销售订单"
+                            title="新增销售出库单"
                             getModalValue={this.addList.bind(this)}
                             getAccountData={this.accountData}
                             getcustomerData={this.customerData}

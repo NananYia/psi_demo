@@ -47,6 +47,7 @@ export default class SaleOrderList extends Component<any,any> {
     @observable public model: any = {};
     @observable public auditData: any = {};
     @observable private customerData: any = [];
+    @observable private MaterialData: [];
     @observable private userData: any = [];
     private FormitemValue: any = []
     /* 排序参数 */
@@ -73,11 +74,12 @@ export default class SaleOrderList extends Component<any,any> {
         makeObservable(this);
         this.getSearchList();
         this.getCustomerName();
+        this.loadMaterialData();
         this.getUserName();
         this.FormitemValue = [
             { queryParam: "number", text: "单据编号", placeholder: "请输入单据编号" },
             { queryParam: "materialParam", text: "商品信息", placeholder: "请输入条码、名称、规格、型号" },
-            { queryParam: "createTimeRange", text: "单据日期", type: "dateRange" },
+            // { queryParam: "createTimeRange", text: "单据日期", type: "dateRange" },
             { queryParam: "organId", text: "选择客户", placeholder: "选择客户", type: "select", options: this.customerData },
             { queryParam: "creator", text: "选操作员", placeholder: "选择操作员", type: "select", options: this.userData },
         ]
@@ -95,6 +97,25 @@ export default class SaleOrderList extends Component<any,any> {
             })
         } catch (error) {
             console.log(error);
+        }
+    }
+    /**拿到库存信息 */
+    loadMaterialData = async (arg?) => {
+        const params = {
+            depotId: 21,//嘿嘿仓库
+            column: "createTime",
+            order: "desc",
+            mpList: "制造商, 自定义1, 自定义2, 自定义3",
+            page: 1,
+            rows: 10,
+        }
+        if (arg === 1) {
+            this.ipagination.current = 1;
+        }
+        const result: any = await api.getMaterialBySelect(params)
+        if (result) {
+            this.MaterialData = result.rows
+            this.ipagination.total = result.total
         }
     }
     /**拿到操作员列表 */
@@ -164,37 +185,16 @@ export default class SaleOrderList extends Component<any,any> {
             console.log(error);
         }
     }
-    /**页面初始化加载的数据 */
-    getList = async () => { 
-        let param = Object.assign({}, this.queryParam, this.isorter);//查询条件
-        param.field = this.getQueryField();
-        param.currentPage = this.ipagination.current;
-        param.pageSize = this.ipagination.pageSize - 1;
-        this.loading = false;
-        const result: any = await getAction("/depotHead/list", param)
-        if (result.code === 200) {
-            this.dataSource = result.data.rows;
-            this.ipagination.total = result.data.total;
-            this.tableAddTotalRow(columns, this.dataSource)
-        }
-        if (result.code === 510) {
-            notification.warning(result.data)
-        }
-        this.loading = true;
-    }
-    parseParam(param) {
-        return param ? param : ""
-    }
     /** 整理成formData */
     classifyIntoFormData=(allValues)=> {
         let totalPrice = 0
         let billMain = Object.assign({}, allValues.formValue)
-        let detailArr = allValues.tablesValue[0].values
+        let detailArr = allValues.tablesValue.values;
         billMain.type = '其它'
         billMain.subType = '销售订单'
         billMain.defaultNumber = billMain.number
-        for (let item of detailArr) {
-            item.depotId = '' 
+        for (let item of detailArr ) {
+            item.depotId = '' //订单不需要仓库
             totalPrice += item.allPrice - 0
         }
         billMain.totalPrice = 0 - totalPrice
@@ -206,6 +206,7 @@ export default class SaleOrderList extends Component<any,any> {
         if (this.model.id) {
             billMain.id = this.model.id
         }
+        // billMain.salesMan = this.personList.value
         return {
             info: JSON.stringify(billMain),
             rows: JSON.stringify(detailArr),
@@ -217,11 +218,11 @@ export default class SaleOrderList extends Component<any,any> {
             //进一步校验单位
             if (allvalues.id) { //存在id执行更新
                 const result: any = await httpAction("/depotHead/updateDepotHeadAndDetail", formData, 'post')
-                if (result.code === 200) { this.getList() }
+                if (result.code === 200) { this.getSearchList() }
                 if (result.code === 510) { notification.warning(result.data) }
             } else {        //不存在id执行新增
                 const result: any = await httpAction("/depotHead/addDepotHeadAndDetail", formData, 'post')
-                if (result.code === 200) { this.getList() }
+                if (result.code === 200) { this.getSearchList() }
                 if (result.code === 510) { notification.warning(result.data) }
             }
         } catch (error) {
@@ -232,7 +233,7 @@ export default class SaleOrderList extends Component<any,any> {
         try {
             const result: any = await deleteAction("/depotHead/delete?" + "id="+ values.id, null);
             if (result.code === 200) {
-                this.getList()
+                this.getSearchList()
             }
             if (result.code === 510) {
                 notification.warning(result.data.message)
@@ -280,7 +281,14 @@ export default class SaleOrderList extends Component<any,any> {
                 />
                 {this.loading ?
                     <div className="search-result-list">
-                        <SaleOrderModalForm buttonlabel="新建" title="新增销售单" getModalValue={this.addList.bind(this)} />
+                        <SaleOrderModalForm
+                            buttonlabel="新建"
+                            title="新增销售订单"
+                            getModalValue={this.addList.bind(this)}
+                            getCustomerName={this.customerData}
+                            getMaterialData={this.MaterialData}
+                            getPersonData={this.userData}
+                        />
                         <Button icon={<CheckOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(1)} > 审核 </Button>
                         <Button icon={<StopOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(0)} > 反审核 </Button>
                         <SaleOrderTable

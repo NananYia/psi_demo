@@ -33,12 +33,11 @@ interface ModalFormButtonProps {
 @observer
 export default class ModalFormButton extends React.Component<ModalFormButtonProps, any>{
     @observable private model = { id: "" };
-    @observable private editabledata: any = [];
+    @observable editabledata: any = [];
     @observable private curMaterialdata: any = {};
     @observable private editrowdata: any = {};
     @observable private TreeValue: any;
     @observable public auditData: any;//字表信息
-    @observable private supplierData: any = [];
     // @observable private DepotData: any = [];
     @observable private number: string;//单据编号
     @observable private timeopen: boolean = false;
@@ -57,22 +56,6 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
             }, time);
         });
     };
-    /**拿到供应商列表 */
-    getSupplierName = async () => {
-        try {
-            const result: any = await api.findBySelectSup({});
-            result.map((item) => {
-                const dataitem = {
-                    label: item.supplier,
-                    value: item.id,
-                }
-                return this.supplierData.push(dataitem)
-            })
-            // this.supplierData = result;
-        } catch (error) {
-            console.log(error);
-        }
-    }
     /**拿到编号 */
     buildNumber = async (amountNum) => {
         const result: any = await getAction('/sequence/buildNumber');
@@ -147,14 +130,8 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
             console.log(error);
         }
     }
-    /**拿到供应商信息 */
-    onChange = value => {
-        console.log(value);
-        this.TreeValue = value;
-    };
     onClick = () => {
         this.buildNumber(this.prefixNo)
-        this.getSupplierName()
     }
     onClickEdit = (initialValues) => {
         this.number = initialValues.defaultNumber;
@@ -200,7 +177,7 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                             <ProForm.Group>
                                 <ProFormText width="sm" name="operNumber" label="采购数量" />
                                 <ProFormTextArea width="sm" name="remark" label="备注" placeholder="请输入备注" style={{ height: 32 }} />
-                                <ProFormTextArea width="sm" name="allPrice" label="金额" placeholder="请输入优惠后金额" style={{ height: 32 }} />
+                                <ProFormTextArea width="sm" name="allPrice" label="金额" placeholder="请输入总金额" style={{ height: 32 }} />
                             </ProForm.Group>
                             <ProForm.Group>
                                 {initialValues ?
