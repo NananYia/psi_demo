@@ -39,6 +39,7 @@ const columns = [
 export default class PurchaseOrderIn extends Component<any,any> {
     @observable private queryParam: any = {};
     @observable private searchqueryParam: any = {};
+    @observable private otherSearchqueryParam: any = {};
     @observable private loading: boolean=false;
     @observable public dataSource: any = {};
     @observable public modalValue: any = {};
@@ -46,6 +47,7 @@ export default class PurchaseOrderIn extends Component<any,any> {
     @observable public model: any = {};
     @observable public auditData: any = {};
     @observable private supplierData: any = [];
+    @observable private depotData: any = [];
     @observable private accountData: any = [];
     @observable private MaterialData: [];
     private FormitemValue: any = []
@@ -73,6 +75,7 @@ export default class PurchaseOrderIn extends Component<any,any> {
         makeObservable(this);
         this.getSearchList();
         this.getSupplierName();
+        this.getDepotData();
         this.loadMaterialData();
         this.FormitemValue = [
             { queryParam: "number", text: "单据编号", placeholder: "请输入单据编号" },
@@ -96,8 +99,24 @@ export default class PurchaseOrderIn extends Component<any,any> {
             console.log(error);
         }
     }
+    /**获取仓库列表 */
+    getDepotData = async () => {
+        try {
+            const result: any = await getAction("/depot/findDepotByCurrentUser");
+            if (result.code === 200) {
+                this.depotData = result?.data.map((item) => { return { id: item.id, value: item.depotName } })
+
+            }
+            if (result.code === 510) {
+                notification.warning(result.data)
+            }
+            this.loading = true;
+        } catch (error) {
+            console.log(error);
+        }
+    }
     /**拿到搜索的参数 */
-    getSearchQueryParams(values) {
+    getSearchQueryParams(values?,type?) {
         this.searchqueryParam = {
             number: values?.number ||"",
             materialParam: values?.materialParam ||"",
@@ -109,9 +128,16 @@ export default class PurchaseOrderIn extends Component<any,any> {
             creator: values?.creator || "",
             linkNumber: values?.linkNumber || ""
         }
+        this.otherSearchqueryParam = {
+            number: values?.number || "",
+            searchMaterial: values?.materialParam || "",
+            type: "其它",
+            subType: "采购订单",
+            status: "1,3",
+        }
         //获取查询条件
         let searchObj = { search: "", }
-        searchObj.search = JSON.stringify(this.searchqueryParam);
+        searchObj.search = JSON.stringify(type ? this.otherSearchqueryParam : this.searchqueryParam);
         var param = Object.assign("", searchObj, this.isorter, this.filters);
         param.field = this.getQueryField();
         param.currentPage = this.ipagination.current;
@@ -149,42 +175,14 @@ export default class PurchaseOrderIn extends Component<any,any> {
             console.log(error);
         }
     }
-    /**拿到库存信息 */
-    loadMaterialData = async (arg?) => {
-        const params = {
-            depotId: 21,//嘿嘿仓库
-            column: "createTime",
-            order: "desc",
-            mpList: "制造商, 自定义1, 自定义2, 自定义3",
-            page: 1,
-            rows: 10,
-        }
-        if (arg === 1) {
-            this.ipagination.current = 1;
-        }
-        const result: any = await api.getMaterialBySelect(params)
+    /**拿到采购订单信息 */
+    loadMaterialData = async (values?) => {
+        var params = this.getSearchQueryParams(values,"其他");//查询参数
+        const result: any = await getAction("/depotHead/list", params);
         if (result) {
-            this.MaterialData = result.rows
-            this.ipagination.total = result.total
+            this.MaterialData = result.data.rows;
+            // this.ipagination.total = result.data.total
         }
-    }
-    /**页面初始化加载的数据 */
-    getList = async () => { 
-        let param = Object.assign({}, this.queryParam, this.isorter);//查询条件
-        param.field = this.getQueryField();
-        param.currentPage = this.ipagination.current;
-        param.pageSize = this.ipagination.pageSize - 1;
-        this.loading = false;
-        const result: any = await getAction("/depotHead/list", param)
-        if (result.code === 200) {
-            this.dataSource = result.data.rows;
-            this.ipagination.total = result.data.total;
-            this.tableAddTotalRow(columns, this.dataSource)
-        }
-        if (result.code === 510) {
-            notification.warning(result.data)
-        }
-        this.loading = true;
     }
     parseParam(param) {
         return param ? param : ""
@@ -226,11 +224,11 @@ export default class PurchaseOrderIn extends Component<any,any> {
             //进一步校验单位
             if (allvalues.id) { //存在id执行更新
                 const result: any = await httpAction("/depotHead/updateDepotHeadAndDetail", formData, 'post')
-                if (result.code === 200) { this.getList() }
+                if (result.code === 200) { this.getSearchList() }
                 if (result.code === 510) { notification.warning(result.data) }
             } else {        //不存在id执行新增
                 const result: any = await httpAction("/depotHead/addDepotHeadAndDetail", formData, 'post')
-                if (result.code === 200) { this.getList() }
+                if (result.code === 200) { this.getSearchList() }
                 if (result.code === 510) { notification.warning(result.data) }
             }
         } catch (error) {
@@ -241,7 +239,7 @@ export default class PurchaseOrderIn extends Component<any,any> {
         try {
             const result: any = await deleteAction("/depotHead/delete?" + "id="+ values.id, null);
             if (result.code === 200) {
-                this.getList()
+                this.getSearchList()
             }
             if (result.code === 510) {
                 notification.warning(result.data.message)
@@ -282,7 +280,7 @@ export default class PurchaseOrderIn extends Component<any,any> {
     render() {
         return (
             <div className="PurchaseOrder-container">
-                <div className="title">采购订单</div>
+                <div className="title">采购入库单</div>
                 <SearchForm
                     FormitemValue={this.FormitemValue}
                     getSearchList={this.getSearchList.bind(this)}
@@ -296,6 +294,7 @@ export default class PurchaseOrderIn extends Component<any,any> {
                             getAccountData={this.accountData}
                             getsupplierData={this.supplierData}
                             getMaterialData={this.MaterialData}
+                            getDepotData={this.depotData}
                         />
                         <Button icon={<CheckOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(1)} > 审核 </Button>
                         <Button icon={<StopOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(0)} > 反审核 </Button>
