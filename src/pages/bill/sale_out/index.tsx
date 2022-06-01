@@ -7,8 +7,8 @@ import { filterObj } from "src/utils/util";
 import store from "store";
 import MySpin from "src/components/Spin";
 import { deleteAction, getAction, httpAction, postAction, putAction } from "src/api/manage";
-import SaleOrderTable from "./SaleOutTable";
-import SaleOrderModalForm from './SaleOutModal';
+import SaleOutTable from "./SaleOutTable";
+import SaleOutModalForm from './SaleOutModal';
 import { CheckOutlined, StopOutlined } from '@ant-design/icons';
 import { LoginOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import api from "../../../api/api";
@@ -36,7 +36,7 @@ const columns = [
     { title: '操作员', dataIndex: 'userName', width: '10%', ellipsis: true },
 ]
 @observer
-export default class SaleOrderOut extends Component<any,any> {
+export default class SaleOutOut extends Component<any,any> {
     @observable private queryParam: any = {};
     @observable private searchqueryParam: any = {};
     @observable private otherSearchqueryParam: any = {};
@@ -242,8 +242,8 @@ export default class SaleOrderOut extends Component<any,any> {
         for (let item of detailArr) {
             totalPrice += item.allPrice - 0
         }
-        if (billMain.accountId === 0) {
-            billMain.accountId = ''
+        if(billMain.accountId === 0) {
+          billMain.accountId = ''
         }
         billMain.totalPrice = totalPrice
         if (this.fileList && this.fileList.length > 0) {
@@ -321,7 +321,7 @@ export default class SaleOrderOut extends Component<any,any> {
     }
     render() {
         return (
-            <div className="SaleOrder-container">
+            <div className="SaleOut-container">
                 <div className="title">销售出库单</div>
                 <SearchForm
                     FormitemValue={this.FormitemValue}
@@ -329,7 +329,7 @@ export default class SaleOrderOut extends Component<any,any> {
                 />
                 {this.loading ?
                     <div className="search-result-list">
-                        <SaleOrderModalForm
+                        <SaleOutModalForm
                             buttonlabel="新建"
                             title="新增销售出库单"
                             getModalValue={this.addList.bind(this)}
@@ -341,7 +341,7 @@ export default class SaleOrderOut extends Component<any,any> {
                         />
                         <Button icon={<CheckOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(1)} > 审核 </Button>
                         <Button icon={<StopOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(0)} > 反审核 </Button>
-                        <SaleOrderTable
+                        <SaleOutTable
                             columns={columns}
                             dataSource={this.dataSource}
                             rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"

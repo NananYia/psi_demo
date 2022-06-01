@@ -831,7 +831,7 @@
 //     }
 // ]
 
-export const allneed_menu_meta = ["首页", "采购单管理", "销售单管理", "库存管理", "商品管理", "基本资料","报表查询","系统管理"]
+export const allneed_menu_meta = ["首页", "采购单管理", "销售单管理", "库存管理", "商品管理", "基本资料","数据统计"]
 //采购  销售 库存  all
 
 export const purchase_menu_meta = ["首页","采购管理","商品管理","基本资料"]
