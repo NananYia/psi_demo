@@ -44,7 +44,7 @@ export default class LeftNav extends Component <any,any>{
 		console.log("findconstRoutes=======>", findconstRoutes)
 		return (
 			findconstRoutes.map((item, index) => { 
-				if (index === 0) {
+				if (item.name === "首页") {
 					return <Menu.Item icon={HomeIcons(item.meta.icon)} key={index}>
 						<MyNavLink topage="/home/dashboard/analysis">{item.name}</MyNavLink>
 					</Menu.Item>

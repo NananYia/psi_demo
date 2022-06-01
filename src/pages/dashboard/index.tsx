@@ -20,14 +20,14 @@ export default class Home extends Component<any, any> {
     constructor(props) {
         super(props);
         makeObservable(this);
-        this.getStatistics();
-        this.getbuyOrSalePrice();
-        this.topContent = [
-            { title: "今日累计采购", number: 0, placeholder: "统计今日采购单据的总金额"},
-            { title: "今日累计销售", number: 0, placeholder: "统计今日销售单据的总金额" },
-            { title: "本月累计采购", number: 0, placeholder: "统计本月采购单据的总金额" },
-            { title: "本月累计销售", number: 0, placeholder: "统计本月销售单据的总金额" },
-        ]
+        // this.getStatistics();
+        // this.getbuyOrSalePrice();
+        // this.topContent = [
+        //     { title: "今日累计采购", number: 0, placeholder: "统计今日采购单据的总金额"},
+        //     { title: "今日累计销售", number: 0, placeholder: "统计今日销售单据的总金额" },
+        //     { title: "本月累计采购", number: 0, placeholder: "统计本月采购单据的总金额" },
+        //     { title: "本月累计销售", number: 0, placeholder: "统计本月销售单据的总金额" },
+        // ]
     }
     /** 获取今日/本月等数据 */
     getStatistics = async() => {
@@ -68,17 +68,17 @@ export default class Home extends Component<any, any> {
     render() {
         return (
             <div className="Home-container">
-                <div className="top">
+                欢迎您，亲爱的用户～
+                {/* <div className="top">
                     {this.topNumberContent()}
-                </div>
+                </div> 
                 {this.loading ?
                     <div className="content">
                         <HomeLine dataSource={this.buyPriceData} title="采购统计" />
                         <HomeLine dataSource={this.salePriceData} title="销售统计" />
                     </div>
                     :<Spin/>
-                }
-                
+                } */}
             </div>
         );
     }
