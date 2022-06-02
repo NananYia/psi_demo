@@ -42,7 +42,7 @@ export const LoginIn = async (userInfo) => {
 				//前端7天有效期，后端默认1天，只要用户在1天内有访问页面就可以一直续期直到7天结束
 				store.set(ACCESS_TOKEN, result.token, 7 * 24 * 60 * 60 * 1000)
 				store.set(USER_INFO, result.user, 7 * 24 * 60 * 60 * 1000)
-				store.set('SET_TOKEN', result.token)
+				// store.set('SET_TOKEN', result.token)
 			}
 			// store.set('SET_INFO', userInfo)
 			return response
@@ -56,7 +56,7 @@ export const LoginIn = async (userInfo) => {
 // 登出
 export const Logout = (state?) => {
 	// let logoutToken = state.token;
-	store.set('SET_TOKEN', '')
+	// store.set('SET_TOKEN', '')
 	store.set('SET_PERMISSIONLIST', [])
 	store.remove(USER_ID)
 	store.remove(USER_LOGIN_NAME)

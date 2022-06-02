@@ -6,12 +6,13 @@ import SearchForm from "../../../components/SearchForm";
 import { filterObj } from "src/utils/util";
 import store from "store";
 import MySpin from "src/components/Spin";
-import { deleteAction, getAction, httpAction, postAction, putAction } from "src/api/manage";
+import { deleteAction, getAction, httpAction, postAction } from "src/api/manage";
 import PurchaseInTable from "../purchase_order/PurchaseOrderTable";
 import PurchaseInModalForm from './PurchaseModal';
 import { CheckOutlined, StopOutlined } from '@ant-design/icons';
 import { LoginOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import api from "../../../api/api";
+import { USER_ID } from "../../../store/mutation-types";
 import "./index.less";
 
 const columns = [
@@ -280,9 +281,6 @@ export default class PurchaseIn extends Component<any,any> {
         }
     }
     render() {
-        console.log('=========render=========PurchaseIn==================');
-        console.log(this.dataSource);
-        console.log('====================================');
         return (
             <div className="PurchaseIn-container">
                 <div className="title">采购入库单</div>
@@ -301,8 +299,12 @@ export default class PurchaseIn extends Component<any,any> {
                             getVoucherData={this.VoucherData}
                             getDepotData={this.depotData}
                         />
-                        <Button icon={<CheckOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(1)} > 审核 </Button>
-                        <Button icon={<StopOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(0)} > 反审核 </Button>
+                        {store.get(USER_ID) !== 150 &&
+                            <Button icon={<CheckOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(1)} > 审核 </Button>
+                        }
+                        {store.get(USER_ID) !== 150 &&
+                            <Button icon={<StopOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(0)} > 反审核 </Button>
+                        }
                         <PurchaseInTable
                             columns={columns}
                             dataSource={this.dataSource}

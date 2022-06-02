@@ -12,6 +12,7 @@ import PurchaseOrderModalForm from './PurchaseOrderModal';
 import { CheckOutlined, StopOutlined } from '@ant-design/icons';
 import { LoginOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import api from "../../../api/api";
+import { USER_ID } from "../../../store/mutation-types";
 import "./index.less";
 
 const columns =[
@@ -272,9 +273,6 @@ export default class PurchaseOrderList extends Component<any,any> {
         }
     }
     render() {
-        console.log('=========render=========PurchaseOrder==================');
-        console.log(this.dataSource);
-        console.log('====================================');
         return (
             <div className="PurchaseOrder-container">
                 <div className="title">采购订单</div>
@@ -292,8 +290,14 @@ export default class PurchaseOrderList extends Component<any,any> {
                             getsupplierData={this.supplierData}
                             getMaterialData={this.MaterialData}
                         />
-                        <Button icon={<CheckOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(1)} > 审核 </Button>
-                        <Button icon={<StopOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(0)} > 反审核 </Button>
+                        {store.get(USER_ID) !== 150 &&
+                            <Button icon={<CheckOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(1)} > 审核 </Button>
+                        }
+                        {store.get(USER_ID) !== 150 &&
+                            <Button icon={<StopOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(0)} > 反审核 </Button>
+                        }
+
+                        
                         <PurchaseOrderTable
                             columns={columns}
                             dataSource={this.dataSource}

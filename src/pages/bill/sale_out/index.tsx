@@ -6,12 +6,13 @@ import SearchForm from "../../../components/SearchForm";
 import { filterObj } from "src/utils/util";
 import store from "store";
 import MySpin from "src/components/Spin";
-import { deleteAction, getAction, httpAction, postAction, putAction } from "src/api/manage";
+import { deleteAction, getAction, httpAction, postAction } from "src/api/manage";
 import SaleOutTable from "./SaleOutTable";
 import SaleOutModalForm from './SaleOutModal';
 import { CheckOutlined, StopOutlined } from '@ant-design/icons';
-import { LoginOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 import api from "../../../api/api";
+import { USER_ID } from "../../../store/mutation-types";
 import "./index.less";
 
 const columns = [
@@ -339,8 +340,12 @@ export default class SaleOutOut extends Component<any,any> {
                             getMaterialData={this.MaterialData}
                             getDepotData={this.DepotData}
                         />
-                        <Button icon={<CheckOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(1)} > 审核 </Button>
-                        <Button icon={<StopOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(0)} > 反审核 </Button>
+                        {store.get(USER_ID) !== 147 &&
+                            <Button icon={<CheckOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(1)} > 审核 </Button>
+                        }
+                        {store.get(USER_ID) !== 147 &&
+                            <Button icon={<StopOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(0)} > 反审核 </Button>
+                        }
                         <SaleOutTable
                             columns={columns}
                             dataSource={this.dataSource}

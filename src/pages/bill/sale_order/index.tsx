@@ -12,6 +12,7 @@ import SaleOrderModalForm from './SaleOrderModal';
 import { CheckOutlined, StopOutlined } from '@ant-design/icons';
 import { LoginOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import api from "../../../api/api";
+import { USER_ID } from "../../../store/mutation-types";
 import "./index.less";
 
 const columns = [
@@ -289,8 +290,12 @@ export default class SaleOrderList extends Component<any,any> {
                             getMaterialData={this.MaterialData}
                             getPersonData={this.userData}
                         />
-                        <Button icon={<CheckOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(1)} > 审核 </Button>
-                        <Button icon={<StopOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(0)} > 反审核 </Button>
+                        {store.get(USER_ID) !== 147 &&
+                            <Button icon={<CheckOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(1)} > 审核 </Button>
+                        }
+                        {store.get(USER_ID) !== 147 &&
+                            <Button icon={<StopOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(0)} > 反审核 </Button>
+                        }
                         <SaleOrderTable
                             columns={columns}
                             dataSource={this.dataSource}

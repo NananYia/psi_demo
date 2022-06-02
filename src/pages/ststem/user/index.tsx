@@ -208,7 +208,7 @@ export default class DepotList extends Component<any,any> {
     render() {
         return (
             <div className="User-container">
-                <div className="title">用户信息</div>
+                <div className="title">员工信息</div>
                 <SearchForm
                     FormitemValue={FormitemValue}
                     getSearchList={this.getSearchUserList.bind(this)}
