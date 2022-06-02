@@ -7,9 +7,9 @@ import { filterObj } from "src/utils/util";
 import MySpin from "src/components/Spin";
 import { deleteAction, getAction, postAction } from "src/api/manage";
 import api from "../../../api/api";
-import UserModalForm from "./DepotModal"
+import UserModalForm from "./UserModal"
 import { CheckOutlined, StopOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
-import UserTable from "./DepotTable";
+import UserTable from "./UserTable";
 import "./index.less";
 
 const FormitemValue = [
@@ -166,6 +166,19 @@ export default class DepotList extends Component<any,any> {
             console.log(error);
         }
     }
+    resetPwd = async (values?) => {
+        try {
+            var result: any = await postAction("/user/resetPwd", { id: values.id })
+            if (result.code === 200) {
+                this.getSearchUserList()
+            }
+            if (result.code === 510) {
+                notification.warning(result.data.message)
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
     getauditData = (value) => {
         this.auditData = []
         this.auditData = value.join();
@@ -232,6 +245,7 @@ export default class DepotList extends Component<any,any> {
                             getdeleteValue={this.deleteList.bind(this)}
                             updateDefault={this.updateDefault.bind(this)}
                             getauditData={this.getauditData.bind(this)}
+                            resetPwd={this.resetPwd.bind(this)}
                         />
                     </div>
                     : <MySpin />

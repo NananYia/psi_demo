@@ -2,9 +2,9 @@ import React from 'react';
 import { observer } from 'mobx-react'
 import { makeObservable, observable } from 'mobx'
 import { Table, Input, Button, Popconfirm, Form, FormInstance, InputRef, Radio, Tag } from 'antd';
-import DepotModalForm from '../DepotModal';
+import DepotModalForm from '../UserModal';
 import './index.less';
-interface CustomerTableProps { 
+interface UserTableProps { 
     columns: any;
     dataSource: any;
     rowSelection: any;
@@ -12,9 +12,10 @@ interface CustomerTableProps {
     getdeleteValue: (value: any) => {}
     updateDefault: (value: any) => {}
     getauditData: (value: any) => {}
+    resetPwd: (value: any) => {}
 }
 @observer
-export default class CustomerTable extends React.Component<CustomerTableProps, any>{
+export default class UserTable extends React.Component<UserTableProps, any>{
     @observable
     private columns:any;
     @observable
@@ -44,7 +45,7 @@ export default class CustomerTable extends React.Component<CustomerTableProps, a
                         <div>
                             <DepotModalForm buttonlabel="编辑" title="编辑用户" getModalValue={this.props.getExitValue.bind(this)} initialValues={record} />
                             <Popconfirm title="确认删除?" onConfirm={() => this.props.getdeleteValue(record)}><a>删除</a></Popconfirm>
-                            <Popconfirm title="确认重置密码?" onConfirm={() => this.props.getdeleteValue(record)}><a> 重置密码</a></Popconfirm>
+                            <Popconfirm title="确认重置密码为123456?" onConfirm={() => this.props.resetPwd(record)}><a> 重置密码</a></Popconfirm>
                         </div>
                     ) : null,
             },

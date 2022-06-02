@@ -30,7 +30,7 @@ export default class StockWarningTable extends React.Component<VendorTableProps,
             ...props.columns,
             // {
             //     title: '状态', dataIndex: 'enabled', width: 70, align: "center", scopedSlots: { customRender: 'customRenderFlag' },
-            //     render: (enabled) => 
+            //     render: (enabled) =>
             //         <Tag className="tag-style" color={enabled ? 'green' : 'geekblue'}>{enabled ? '启用' : '禁用'}</Tag>
             // },
             // {
@@ -39,7 +39,7 @@ export default class StockWarningTable extends React.Component<VendorTableProps,
             //         this.dataSource.length >= 1 ? (
             //             <div>
             //                 <ModalFormButton buttonlabel="编辑" title="编辑" getModalValue={this.props.getExitValue} initialValues={record}/>
-            //                 <Popconfirm title="Sure to delete?" onConfirm={()=>this.props.getdeleteValue(record)}><a>删除</a></Popconfirm>
+            //                 <Popconfirm title="确认删除?" onConfirm={()=>this.props.getdeleteValue(record)}><a>删除</a></Popconfirm>
             //             </div>
             //         ) : null,
             // },

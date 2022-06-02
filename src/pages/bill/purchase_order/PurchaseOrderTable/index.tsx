@@ -45,7 +45,7 @@ export default class PurchaseOrderTable extends React.Component<VendorTableProps
                     this.dataSource.length >= 1 ? (
                         <div>
                             <ModalFormButton buttonlabel="编辑" title="编辑" getModalValue={this.props.getExitValue} initialValues={record}/>
-                            <Popconfirm title="Sure to delete?" onConfirm={()=>this.props.getDeleteValue(record)}><a>删除</a></Popconfirm>
+                            <Popconfirm title="确认删除?" onConfirm={()=>this.props.getDeleteValue(record)}><a>删除</a></Popconfirm>
                         </div>
                     ) : null,
             },
