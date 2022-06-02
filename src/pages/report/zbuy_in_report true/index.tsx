@@ -95,7 +95,7 @@ export default class BuyInList extends Component<any,any> {
     render() {
         this.FormitemValue = [
             { queryParam: "monthTime", text: "月份", type: "dateRange" },
-            { queryParam: "materialParam", text: "商品信息", placeholder: "请输入名称、条码查询" },
+            { queryParam: "materialParam", text: "商品名称", placeholder: "请输入名称" },
         ]
         return (
             <div className="BuyIn-container">

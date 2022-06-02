@@ -104,16 +104,16 @@ export default class SearchForm extends React.Component<DataType, any>{
                                     )
                                 } else if (item.type === "dateRange") {
                                     return (
-                                        <Col span={5} key={index}>
+                                        <Col span={8} key={index}>
                                             <Form.Item name={item.queryParam} label={item.text}>
-                                                <DatePicker onChange={this.onMonthChange} locale={locale} picker="month" />
-                                                {/* <RangePicker
+                                                {/* <DatePicker onChange={this.onMonthChange} locale={locale} picker="month" /> */}
+                                                <RangePicker
                                                     onChange={this.onPickerChange}
                                                     placement="bottomLeft"
                                                     format={dateFormat}
                                                     value={this.beginTime === undefined || this.endTime === undefined || this.beginTime === "" || this.endTime === "" ? null : [moment(this.beginTime, dateFormat), moment(this.endTime, dateFormat)]}
                                                     placeholder={['开始时间', '结束时间']}
-                                                /> */}
+                                                />
                                             </Form.Item>
                                         </Col>
                                     )
@@ -144,18 +144,18 @@ export default class SearchForm extends React.Component<DataType, any>{
                                 )
                             } else if (item.type === "dateRange") {
                                 return (
-                                    <Col span={5} key={index}>
+                                    <Col span={8} key={index}>
                                         <Form.Item name={item.queryParam} label={item.text}>
-                                            <Space direction="vertical">
+                                            {/* <Space direction="vertical">
                                                 <DatePicker onChange={this.onMonthChange} locale={locale} picker="month" />
-                                            </Space>
-                                            {/* <RangePicker
+                                            </Space> */}
+                                            <RangePicker
                                                 onChange={this.onPickerChange}
                                                 placement="bottomLeft"
                                                 format={dateFormat}
                                                 value={this.beginTime === undefined || this.endTime === undefined || this.beginTime === "" || this.endTime === "" ? null : [moment(this.beginTime, dateFormat), moment(this.endTime, dateFormat)]}
                                                 placeholder={['开始时间', '结束时间']}
-                                            /> */}
+                                            />
                                         </Form.Item>
                                     </Col>
                                 )

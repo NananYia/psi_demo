@@ -37,7 +37,6 @@ export default class MaterialCategoryList extends Component<any, any> {
             console.log(error);
         }
     }
-    
     deleteTreeData = async (values?) => {
         try {
             const result: any = await deleteAction("materialCategory/deleteBatch?" + "ids=" + values.join(),null);
@@ -57,14 +56,8 @@ export default class MaterialCategoryList extends Component<any, any> {
         this.loading = false;
         try {
             const result: any = await api.queryMaterialCategoryTreeList(params);
-            if (result) {
-                for (let i = 0; i < result.length; i++) {
-                    let temp = result[i];
-                    this.categoryTree = [];
-                    this.categoryTree.push(temp);
-                }
-                this.loading = true;
-            }
+            this.categoryTree = result;
+            this.loading = true;
         } catch (error) {
             console.log(error);
         }
