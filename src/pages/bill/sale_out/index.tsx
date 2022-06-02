@@ -137,7 +137,6 @@ export default class SaleOutOut extends Component<any,any> {
             if (result.code === 510) {
                 notification.warning(result.data)
             }
-            this.loading = true;
         } catch (error) {
             console.log(error);
         }
@@ -210,27 +209,6 @@ export default class SaleOutOut extends Component<any,any> {
             this.VoucherData = result.data.rows;
             // this.ipagination.total = result.data.total
         }
-    }
-    /**页面初始化加载的数据 */
-    getList = async () => { 
-        let param = Object.assign({}, this.queryParam, this.isorter);//查询条件
-        param.field = this.getQueryField();
-        param.currentPage = this.ipagination.current;
-        param.pageSize = this.ipagination.pageSize - 1;
-        this.loading = false;
-        const result: any = await getAction("/depotHead/list", param)
-        if (result.code === 200) {
-            this.dataSource = result.data.rows;
-            this.ipagination.total = result.data.total;
-            this.tableAddTotalRow(columns, this.dataSource)
-        }
-        if (result.code === 510) {
-            notification.warning(result.data)
-        }
-        this.loading = true;
-    }
-    parseParam(param) {
-        return param ? param : ""
     }
     /** 整理成formData */
     classifyIntoFormData=(allValues)=> {

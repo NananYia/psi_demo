@@ -82,7 +82,7 @@ export default class PurchaseOrderList extends Component<any,any> {
             { queryParam: "materialParam", text: "商品信息", placeholder: "请输入条码、名称、规格、型号" },
             { queryParam: "createTimeRange", text: "单据日期", type: "dateRange" },
             { queryParam: "organId", text: "选供应商", placeholder: "选择供应商", type: "select", options: this.supplierData},
-            { queryParam: "creator", text: "选操作员", placeholder: "选择操作员", type: "select", options: this.userData},
+            { queryParam: "creator", text: "选操作员", placeholder: "选择操作员", type: "select", options: this.userData },
         ]
     }
     /**拿到供应商列表 */
@@ -296,8 +296,6 @@ export default class PurchaseOrderList extends Component<any,any> {
                         {store.get(USER_ID) !== 150 &&
                             <Button icon={<StopOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(0)} > 反审核 </Button>
                         }
-
-                        
                         <PurchaseOrderTable
                             columns={columns}
                             dataSource={this.dataSource}

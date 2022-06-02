@@ -57,19 +57,22 @@ export default class StockWarningList extends Component<any,any> {
         makeObservable(this);
         this.getDepotData();
         this.getSearchStockWarningList();
+        this.FormitemValue = [
+            { queryParam: "depotId", text: "仓库", placeholder: "请选择仓库", type: "select", options: this.depotData },
+            { queryParam: "materialParam", text: "商品名称", placeholder: "请输入名称" },
+        ]
     }
     /**获取仓库列表 */
     getDepotData = async() => {
         try {
             const result: any = await getAction("/depot/findDepotByCurrentUser");
-            if (result.code === 200) {
-                this.depotData=result?.data.map((item) => { return {id: item.id, value: item.depotName} })
-
-            }
-            if (result.code === 510) {
-                notification.warning(result.data)
-            }
-            this.loading = true;
+            result.data.map((item) => {
+                const dataitem = {
+                    value: item.depotName,
+                    id: item.id
+                }
+                return this.depotData.push(dataitem)
+            })
         } catch (error) {
             console.log(error);
         }
@@ -118,13 +121,7 @@ export default class StockWarningList extends Component<any,any> {
             console.log(error);
         }
     }
-    
     render() {
-        if (!this.loading) return null;
-        this.FormitemValue = [
-            { queryParam: "depotId", text: "仓库", placeholder: "请选择仓库", type: "select", options: this.depotData },
-            { queryParam: "materialParam", text: "商品名称", placeholder: "请输入条码查询" },
-        ]
         return (
             <div className="StockWarning-container">
                 <div className="title">库存预警</div>
@@ -132,7 +129,7 @@ export default class StockWarningList extends Component<any,any> {
                     FormitemValue={this.FormitemValue}
                     getSearchList={this.getSearchStockWarningList.bind(this)}
                 />
-                {/* {this.loading ? */}
+                {this.loading ?
                     <div className="search-result-list">
                         <StockWarningTable
                             columns={columns}
@@ -140,7 +137,7 @@ export default class StockWarningList extends Component<any,any> {
                             rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
                         />
                     </div>
-                    {/* : <MySpin />} */}
+                    : <MySpin />}
             </div>
         );
     }

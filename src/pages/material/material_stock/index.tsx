@@ -25,7 +25,7 @@ export default class MaterialList extends Component<any,any> {
     @observable private queryParam: any = {};
     @observable private searchqueryParam: any = {};
     @observable private loading: boolean=false;
-    @observable private dataSource: any = {};
+    @observable public dataSource: any = {};
     @observable public modalValue: any = {};
     @observable public auditData: any = {};
     @observable private depotData: any = [];
@@ -53,10 +53,15 @@ export default class MaterialList extends Component<any,any> {
     constructor(props) {
         super(props);
         makeObservable(this);
-        this.getDepotData();
-        this.loadTreeData();
         this.getSearchMaterialList();
-        
+        // this.getDepotData();
+        this.loadTreeData();
+        this.FormitemValue = [
+            // { queryParam: "depotId", text: "仓库", placeholder: "请选择仓库", type: "select", options: this.depotData },
+            { queryParam: "categoryId", text: "类别", placeholder: "请选择类别", type: "select", options: this.categoryData },
+            { queryParam: "barCode", text: "条码", placeholder: "请输入条码查询" },
+            { queryParam: "name", text: "名称", placeholder: "请输入名称查询" },
+        ]
     }
     /**获取仓库列表 */
     getDepotData = async () => {
@@ -69,7 +74,6 @@ export default class MaterialList extends Component<any,any> {
             if (result.code === 510) {
                 notification.warning(result.data)
             }
-            this.loading = true;
         } catch (error) {
             console.log(error);
         }
@@ -77,32 +81,22 @@ export default class MaterialList extends Component<any,any> {
     loadTreeData = async () => {
         let params: any = {};
         params.id = '';
-        this.loading = false;
         try {
             const result: any = await api.queryMaterialCategoryTreeList(params);
-            this.categoryData = [];
-            this.categoryData = result.data.map((item) => { return { id: item.id, value: item.depotName } })
-            if (result) {
-                for (let i = 0; i < result.length; i++) {
-                    let temp = {
-                        value: result[i].id, 
-                        title: result[i].title,
-                        key:result[i].id, 
-                    };
-                    this.categoryData.push(temp);
-                    if (result[i].children.length > 0) { 
-                        for (let index = 0; index < result[i].children.length; index++) {
-                            const element = {
-                                value: result[i].children[index].id, 
-                                title: result[i].children[index].title,
-                                key: result[i].children[index].id, 
-                            };
-                            this.categoryData.push(element);
-                        }
-                    }
+            result.map((item) => {
+                let temp = {
+                    id: item.id,
+                    value: item.title,
                 }
-                this.loading = true;
-            }
+                item.children !== [] && item.children?.map((item) => {
+                    let tempchildren = {
+                        id: item.id,
+                        value: item.title,
+                    }
+                    return this.categoryData.push(tempchildren);
+                }) 
+                return this.categoryData.push(temp);
+            })
         } catch (error) {
             console.log(error);
         }
@@ -110,10 +104,12 @@ export default class MaterialList extends Component<any,any> {
     /**拿到搜索的参数 */
     getSearchQueryParams(values) {
         this.searchqueryParam = {
-            categoryId: values?.categoryId ||'',
-            materialParam: values?.materialParam ||'',
-            zeroStock: '0',
-            mpList: ''
+            categoryId: values?.categoryId || "",
+            barCode: values?.barCode || "",
+            name: values?.name || "",
+            standard: values?.standard || "",
+            model: values?.model || "",
+            mpList: ""
         }
         //获取查询条件
         let searchObj = { search: "", }
@@ -157,22 +153,15 @@ export default class MaterialList extends Component<any,any> {
     }
    
     render() {
-        if (!this.loading) return null;
-        this.FormitemValue = [
-            { queryParam: "depotId", text: "仓库", placeholder: "请选择仓库", type: "select", options: this.depotData },
-            { queryParam: "categoryId", text: "类别", placeholder: "请选择类别", type: "select", options: this.categoryData },
-            { queryParam: "barCode", text: "条码", placeholder: "请输入条码查询" },
-            { queryParam: "name", text: "名称", placeholder: "请输入名称查询" },
-        ]
+        
         return (
             <div className="Material-container">
                 <div className="title">库存信息</div>
                 <SearchForm
-                    FormitemValue={this.
-                        FormitemValue}
+                    FormitemValue={this.FormitemValue}
                     getSearchList={this.getSearchMaterialList.bind(this)}
                 />
-                {/* {this.loading ? */}
+                {this.loading ?
                     <div className="search-result-list">
                         <MaterialTable
                             columns={columns}
@@ -180,7 +169,7 @@ export default class MaterialList extends Component<any,any> {
                             rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
                         />
                     </div>
-                    {/* : <MySpin />} */}
+                    : <MySpin />}
             </div>
         );
     }

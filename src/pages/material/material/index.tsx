@@ -12,11 +12,7 @@ import MaterialModalForm from './MaterialModal';
 import api from "../../../api/api";
 import "./index.less";
 
-const FormitemValue = [
-    { queryParam: "categoryId", text: "类别", placeholder: "请选择类别" },
-    { queryParam: "barCode", text: "条码", placeholder: "请输入条码查询" },
-    { queryParam: "name", text: "名称", placeholder: "请输入名称查询" },
-]
+
 const columns =[
     { title: '条码', dataIndex: 'mBarCode', width: '7%', fixed: 'left', align: "center" },
     { title: '名称', dataIndex: 'name', width: '15%', ellipsis: true, fixed: 'left', align: "center"},
@@ -34,6 +30,8 @@ export default class MaterialList extends Component<any,any> {
     @observable public dataSource: any = {};
     @observable public modalValue: any = {};
     @observable public auditData: any = {};
+    @observable private categoryData: any = [];
+    @observable private FormitemValue: any = []
     /* 排序参数 */
     private isorter: any= {
         column: 'createTime',
@@ -57,6 +55,35 @@ export default class MaterialList extends Component<any,any> {
         super(props);
         makeObservable(this);
         this.getSearchMaterialList();
+        this.loadTreeData()
+        this.FormitemValue = [
+            { queryParam: "categoryId", text: "类别", placeholder: "请选择类别", type: "select", options: this.categoryData },
+            { queryParam: "barCode", text: "条码", placeholder: "请输入条码查询" },
+            { queryParam: "name", text: "名称", placeholder: "请输入名称查询" },
+        ]
+    }
+    loadTreeData = async () => {
+        let params: any = {};
+        params.id = '';
+        try {
+            const result: any = await api.queryMaterialCategoryTreeList(params);
+            result.map((item) => {
+                let temp = {
+                    id: item.id,
+                    value: item.title,
+                }
+                item.children !== [] && item.children?.map((item) => {
+                    let tempchildren = {
+                        id: item.id,
+                        value: item.title,
+                    }
+                    return this.categoryData.push(tempchildren);
+                })
+                return this.categoryData.push(temp);
+            })
+        } catch (error) {
+            console.log(error);
+        }
     }
     /**拿到搜索的参数 */
     getSearchQueryParams(values) {
@@ -231,7 +258,7 @@ export default class MaterialList extends Component<any,any> {
             <div className="Material-container">
                 <div className="title">商品信息</div>
                 <SearchForm
-                    FormitemValue={FormitemValue}
+                    FormitemValue={this.FormitemValue}
                     getSearchList={this.getSearchMaterialList.bind(this)}
                 />
                 {this.loading ?

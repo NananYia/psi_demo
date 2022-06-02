@@ -112,7 +112,6 @@ export default class PurchaseIn extends Component<any,any> {
             if (result.code === 510) {
                 notification.warning(result.data)
             }
-            this.loading = true;
         } catch (error) {
             console.log(error);
         }

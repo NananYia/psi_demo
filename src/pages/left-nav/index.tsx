@@ -54,11 +54,7 @@ export default class LeftNav extends Component <any,any>{
 						<SubMenu key={index} icon={HomeIcons(item.meta.icon)} title={item.name}>
 							{
 								item.children.map((item, index) => {
-									if (item.name === "商品库存") {
-										return <Menu.Item icon={HomeIcons(item.meta.icon)} key={item.meta.id}>
-											<MyNavLink topage="/home/material/material_stock">库存信息</MyNavLink>
-										</Menu.Item>
-									} else if (item.name === "采购统计" || item.name === "销售统计" || item.name === "库存预警") {
+									if (item.name === "采购统计" || item.name === "销售统计") {
 										return <Menu.Item icon={HomeIcons(item.meta.icon)} key={item.meta.id}>
 											<MyNavLink topage={`/home${item.meta.url}`}>{item.name}</MyNavLink>
 										</Menu.Item>
@@ -71,7 +67,11 @@ export default class LeftNav extends Component <any,any>{
 				else if (item.name === "基本资料") {
 					return (
 						item.children.map((item, index) => {
-							if (index < 5|| index ===8 || index ===9) {
+							if (item.name === "商品库存") {
+								return <Menu.Item icon={HomeIcons(item.meta.icon)} key={item.meta.id}>
+									<MyNavLink topage="/home/material/material_stock">库存信息</MyNavLink>
+								</Menu.Item>
+							} else if (index < 5|| index ===9) {
 								return <Menu.Item icon={HomeIcons(item.meta.icon)} key={item.meta.id}>
 									<MyNavLink topage={`/home${item.meta.url}`}>{item.name}</MyNavLink>
 								</Menu.Item>

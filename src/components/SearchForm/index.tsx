@@ -2,7 +2,7 @@ import React from 'react';
 import { observer } from 'mobx-react'
 import { FormInstance } from 'antd/es/form';
 import { makeObservable, observable } from 'mobx'
-import { Form, Row, Col, Input, Button, DatePicker, Select, Space } from 'antd';
+import { Form, Row, Col, Input, Button, DatePicker, Select, Space, Cascader } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
@@ -82,7 +82,15 @@ export default class SearchForm extends React.Component<DataType, any>{
                     {this.isShowAll ?
                         this.FormitemValue.map((item, index) => {
                             if (index < 3) { 
-                                if (item.type === "select") {
+                                if (item.type === "cascader") {
+                                    return (
+                                        <Col span={8} key={index}>
+                                            <Form.Item name={item.queryParam} label={item.text}>
+                                                <Cascader style={{ width: '70%' }} options={item.options} placeholder="Select Address" />
+                                            </Form.Item>
+                                        </Col>
+                                    )
+                                } else if (item.type === "select") {
                                     return (
                                         <Col span={8} key={index}>
                                             <Form.Item name={item.queryParam} label={item.text}>
