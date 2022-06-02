@@ -69,7 +69,7 @@ export default class VendorTable extends React.Component<VendorTableProps, any>{
                     bordered
                     dataSource={this.dataSource}
                     columns={this.columns}
-                    // pagination={{ pageSize: 20 }}
+                    pagination={{ pageSize: 6 }}
                     // scroll={{ x: 1500, y: 300 }}
                 />
             </div>

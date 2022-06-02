@@ -18,12 +18,13 @@ import "./index.less";
 const columns = [
     { title: '客户', dataIndex: 'organName', width: '17%', ellipsis: true},
     { title: '单据编号', dataIndex: 'number', width: '17%', ellipsis: true,
-        render:  (text, record, index)=> {
-            if (record.linkNumber) {
-                return text + "[转]";
-            } else {
-                return text;
-            }
+        render: (text, record, index) => {
+            return text;
+            // if (record.linkNumber) {
+            //     return text + "[转]";
+            // } else {
+            //     return text;
+            // }
         }
     },
     { title: '商品信息', dataIndex: 'materialsList', width: '17%', ellipsis: true,
@@ -47,7 +48,7 @@ export default class SaleOutOut extends Component<any,any> {
     @observable public fileList: any = [];
     @observable public model: any = {};
     @observable public auditData: any = {};
-    @observable private customerData: any = [];
+    @observable private CustomerData: any = [];
     @observable private DepotData: any = [];
     @observable private userData: any = [];
     @observable private accountData: any = [];
@@ -87,8 +88,8 @@ export default class SaleOutOut extends Component<any,any> {
             { queryParam: "number", text: "单据编号", placeholder: "请输入单据编号" },
             { queryParam: "materialParam", text: "商品名称", placeholder: "请输入名称" },
             // { queryParam: "createTimeRange", text: "单据日期", type: "dateRange"},
-            { queryParam: "organId", text: "选择客户", placeholder: "选择客户", type: "select", options: this.customerData },
-            // { queryParam: "depotId", text: "仓库名称", placeholder: "请选择仓库", type: "select", options: this.DepotData },
+            { queryParam: "organId", text: "选择客户", placeholder: "选择客户", type: "select", options: this.CustomerData },
+            { queryParam: "depotId", text: "仓库名称", placeholder: "请选择仓库", type: "select", options: this.DepotData },
             // { queryParam: "creator", text: "选操作员", placeholder: "选择操作员", type: "select", options: this.userData },
         ]
     }
@@ -98,10 +99,10 @@ export default class SaleOutOut extends Component<any,any> {
             const result: any = await api.findBySelectCus({});
             result.map((item) => {
                 const dataitem = {
-                    label: item.supplier,
-                    value: item.id
+                    value: item.supplier,
+                    id: item.id
                 }
-                return this.customerData.push(dataitem)
+                return this.CustomerData.push(dataitem)
             })
         } catch (error) {
             console.log(error);
@@ -131,8 +132,13 @@ export default class SaleOutOut extends Component<any,any> {
         try {
             const result: any = await getAction("/depot/findDepotByCurrentUser");
             if (result.code === 200) {
-                this.DepotData = result?.data.map((item) => { return { id: item.id, value: item.depotName } })
-
+                result?.data.map((item) => {
+                    const dataitem = {
+                        value: item.depotName,
+                        id: item.id
+                    }
+                    return this.DepotData.push(dataitem)
+                })
             }
             if (result.code === 510) {
                 notification.warning(result.data)
@@ -313,7 +319,7 @@ export default class SaleOutOut extends Component<any,any> {
                             title="新增销售出库单"
                             getModalValue={this.addList.bind(this)}
                             getAccountData={this.accountData}
-                            getcustomerData={this.customerData}
+                            getcustomerData={this.CustomerData}
                             getVoucherData={this.VoucherData}
                             getMaterialData={this.MaterialData}
                             getDepotData={this.DepotData}

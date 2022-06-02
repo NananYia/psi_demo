@@ -68,6 +68,7 @@ export default class SaleOutTable extends React.Component<VendorTableProps, any>
                     bordered
                     dataSource={this.dataSource}
                     columns={this.columns}
+                    pagination={{ pageSize: 6 }}
                     // pagination={{ pageSize: 50}}
                 />
             </div>

@@ -55,7 +55,7 @@ export default class PurchaseinModelTable extends React.Component<PurchaseinMode
                     rowSelection={{ ...rowSelection }}
                     dataSource={this.dataSource}
                     columns={this.columns}
-                    pagination={{ pageSize: 20 }}
+                    pagination={{ pageSize: 6 }}
                 />
             </div>
         );

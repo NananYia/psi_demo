@@ -149,6 +149,7 @@ export default class RolePushBtnModalForm extends React.Component<RolePushBtnMod
                     {this.loading ?
                         <Table
                             columns={columns}
+                            pagination={{ pageSize: 3 }}
                         />
                         : <MySpin />}
                 </ModalForm>

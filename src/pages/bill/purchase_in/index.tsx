@@ -18,12 +18,13 @@ import "./index.less";
 const columns = [
     { title: '供应商', dataIndex: 'organName', width: '17%', ellipsis: true},
     { title: '单据编号', dataIndex: 'number', width: '17%', ellipsis: true,
-        render:  (text, record, index)=> {
-            if (record.linkNumber) {
-                return text + "[订]";
-            } else {
-                return text;
-            }
+        render: (text, record, index) => {
+            return text;
+            // if (record.linkNumber) {
+            //     return text + "[订]";
+            // } else {
+            //     return text;
+            // }
         }
     },
     { title: '商品信息', dataIndex: 'materialsList', width: '17%', ellipsis: true,
@@ -48,7 +49,7 @@ export default class PurchaseIn extends Component<any,any> {
     @observable public model: any = {};
     @observable public auditData: any = {};
     @observable private supplierData: any = [];
-    @observable private depotData: any = [];
+    @observable private DepotData: any = [];
     @observable private accountData: any = [];
     @observable private VoucherData: [];
     private FormitemValue: any = []
@@ -83,6 +84,7 @@ export default class PurchaseIn extends Component<any,any> {
             { queryParam: "materialParam", text: "商品名称", placeholder: "请输入名称" },
             // { queryParam: "createTimeRange", text: "单据日期", type: "dateRange" },
             { queryParam: "organId", text: "选供应商", placeholder: "选择供应商", type: "select", options: this.supplierData  },
+            { queryParam: "depotId", text: "仓库名称", placeholder: "请选择仓库", type: "select", options: this.DepotData },
         ]
     }
     /**拿到供应商列表 */
@@ -104,14 +106,13 @@ export default class PurchaseIn extends Component<any,any> {
     getDepotData = async () => {
         try {
             const result: any = await getAction("/depot/findDepotByCurrentUser");
-            if (result.code === 200) {
-                runInAction(() => {
-                    this.depotData = result?.data.map((item) => { return { id: item.id, value: item.depotName } })
-                })
-            }
-            if (result.code === 510) {
-                notification.warning(result.data)
-            }
+            result?.data.map((item) => {
+                const dataitem = {
+                    value: item.depotName,
+                    id: item.id
+                }
+                return this.DepotData.push(dataitem)
+            })
         } catch (error) {
             console.log(error);
         }
@@ -296,7 +297,7 @@ export default class PurchaseIn extends Component<any,any> {
                             getAccountData={this.accountData}
                             getsupplierData={this.supplierData}
                             getVoucherData={this.VoucherData}
-                            getDepotData={this.depotData}
+                            getDepotData={this.DepotData}
                         />
                         {store.get(USER_ID) !== 150 &&
                             <Button icon={<CheckOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(1)} > 审核 </Button>

@@ -77,7 +77,7 @@ export default class CustomerTable extends React.Component<CustomerTableProps, a
                     bordered
                     dataSource={this.dataSource}
                     columns={columns}
-                    pagination={{ position: [state.top, state.bottom] }}
+                    pagination={{ position: [state.top, state.bottom], pageSize: 6}}
                     // scroll={{ y: 350 }}
                 />
             </div>

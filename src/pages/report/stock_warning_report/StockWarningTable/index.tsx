@@ -53,6 +53,7 @@ export default class StockWarningTable extends React.Component<VendorTableProps,
                     bordered
                     dataSource={this.dataSource}
                     columns={this.columns}
+                    pagination={{ pageSize: 6 }}
                     // pagination={{ pageSize: 50}}
                 />
             </div>

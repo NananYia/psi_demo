@@ -88,7 +88,7 @@ export default class OtherInTable extends React.Component<OtherInTableProps, any
                     bordered
                     dataSource={this.dataSource}
                     columns={this.columns}
-                    pagination={{ pageSize: 20}}
+                    pagination={{ pageSize: 6}}
                 />
             </div>
         );

@@ -89,7 +89,7 @@ export default class PurchaseOrderTable extends React.Component<VendorTableProps
                     bordered
                     dataSource={this.dataSource}
                     columns={this.columns}
-                    pagination={{ pageSize: 20}}
+                    pagination={{ pageSize: 6}}
                 />
             </div>
         );

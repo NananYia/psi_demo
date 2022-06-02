@@ -74,7 +74,7 @@ export default class UserTable extends React.Component<UserTableProps, any>{
                     bordered
                     dataSource={this.dataSource}
                     columns={this.columns}
-                    pagination={{ pageSize: 50 }}
+                    pagination={{ pageSize: 6 }}
                 />
             </div>
         );
