@@ -59,10 +59,10 @@ export default class SaleOrderTable extends React.Component<VendorTableProps, an
             this.statusText = "已审核";
         } else if (status === "2") {
             this.statusColor = "cyan";
-            this.statusText = "完成采购";
+            this.statusText = "完成销售";
         } else {
             this.statusColor = "blue";
-            this.statusText = "部分采购";
+            this.statusText = "部分销售";
         }
     }
     onSelectChange = selectedRowKeys => {
