@@ -31,6 +31,7 @@ export default class MaterialList extends Component<any,any> {
     @observable public modalValue: any = {};
     @observable public auditData: any = {};
     @observable private categoryData: any = [];
+    @observable private DepotData: any = [];
     @observable private FormitemValue: any = []
     /* 排序参数 */
     private isorter: any= {
@@ -55,12 +56,28 @@ export default class MaterialList extends Component<any,any> {
         super(props);
         makeObservable(this);
         this.getSearchMaterialList();
+        this.getDepotData();
         this.loadTreeData()
         this.FormitemValue = [
             { queryParam: "categoryId", text: "类别", placeholder: "请选择类别", type: "select", options: this.categoryData },
             { queryParam: "barCode", text: "条码", placeholder: "请输入条码查询" },
             { queryParam: "name", text: "名称", placeholder: "请输入名称查询" },
         ]
+    }
+    /**获取仓库列表 */
+    getDepotData = async () => {
+        try {
+            const result: any = await getAction("/depot/findDepotByCurrentUser");
+            result?.data.map((item) => {
+                const dataitem = {
+                    value: item.depotName,
+                    id: item.id
+                }
+                return this.DepotData.push(dataitem)
+            })
+        } catch (error) {
+            console.log(error);
+        }
     }
     loadTreeData = async () => {
         let params: any = {};
@@ -263,7 +280,13 @@ export default class MaterialList extends Component<any,any> {
                 />
                 {this.loading ?
                     <div className="search-result-list">
-                        <MaterialModalForm buttonlabel="新建" title="新增商品" getModalValue={this.addMaterialList.bind(this)} />
+                        <MaterialModalForm
+                            buttonlabel="新建"
+                            title="新增商品"
+                            getModalValue={this.addMaterialList.bind(this)}
+                            getDepotData={this.DepotData}
+                            getcategoryData={this.categoryData}
+                        />
                         <Button icon={<DeleteOutlined />} style={{ marginLeft: 10 }} onClick={() => this.deleteconfirm()} > 删除 </Button>
                         <Button icon={<CheckOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(true)} > 启用 </Button>
                         <Button icon={<StopOutlined />} style={{ marginLeft: 10 }} onClick={() => this.confirm(false)} > 禁用 </Button>
