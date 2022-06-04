@@ -17,15 +17,17 @@ import { PlusOutlined } from '@ant-design/icons';
 import api from "../../../../api/api";
 import { getAction } from '../../../../api/manage';
 import MySpin from '../../../../components/Spin';
-import './index.less'
 import { filterObj, getMpListShort } from '../../../../utils/util';
 import PurchaseinModelTable from '../PurchaseinModelTable';
 import Spin from '../../../../components/Spin';
+import { USER_INFO } from '../../../../store/mutation-types';
+import { getCurrentTime, formateDate } from '../../../../utils/dateUtils';
+import './index.less'
 interface ModalFormButtonProps {
     buttonlabel: string;
     title: string;
     getModalValue: (value: any) => {}
-    initialValues?: {}//穿参为编辑，不传为新增
+    initialValues?: any//穿参为编辑，不传为新增
     getAccountData?: any[]
     getsupplierData?: any[]
     getMaterialData?: any[]
@@ -65,6 +67,7 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
     }
     /**拿到子表格信息 */
     getEditableTable = (values?, data?, row?) => {
+        var myDate = getCurrentTime();
         for (let index = 0; index < this.auditData.split(",").length; index++) {
             this.curMaterialdata = this.props.getMaterialData.find((item) => {
                 return item.mBarCode = this.auditData.split(",")[index]
@@ -80,9 +83,9 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                 stock: this.curMaterialdata.stock || 0,
                 unit: this.curMaterialdata.unit || "",
                 sku: this.curMaterialdata.sku || "",
-                operNumber: values.operNumber || 0,
+                operNumber: values.operNumber as number || 0,
                 unitPrice: this.curMaterialdata.unitPrice || 0,
-                allPrice: values.allPrice || 0,
+                allPrice: values.allPrice as number|| 0,
                 taxRate: this.curMaterialdata.taxRate || 0,
                 taxMoney: this.curMaterialdata.taxMoney || 0,
                 taxLastMoney: this.curMaterialdata.taxLastMoney || 0,
@@ -92,7 +95,29 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
             }
         }
         const allValues = {
-            formValue: {
+            formValue: this.props.initialValues ?
+                {
+                    createTime: this.props.initialValues.createTime,
+                    creator: this.props.initialValues.creator,
+                    defaultNumber: this.props.initialValues.defaultNumber,
+                    deleteFlag: 0,
+                    discount: values.discount || 0,
+                    discountMoney: values.unitId || 0,
+                    discountLastMoney: values?.discountLastMoney || 0,
+                    fileName: "",
+                    id: this.props.initialValues.id,
+                    materialsList: this.props.initialValues.materialsList,
+                    number: values.number || "",
+                    operTime: myDate,
+                    operTimeStr: myDate,
+                    organId: values.organId || "",
+                    organName: this.props.getsupplierData.find(value => value.id === values.organId).value,
+                    payType: "现付",
+                    status: 0, 
+                    tenantId: this.props.initialValues.tenantId,
+                    userName: store.get(USER_INFO).username,
+                }
+            : {
                 organId: values.organId || "",
                 operTime: values.operTime,
                 number: values.number || "",
@@ -102,40 +127,22 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
             },
             tablesValue: {
                 values: this.editabledata,
-            }
+            },
+            id: this.props.initialValues ? values.id:null
         }
-        if (this.props.initialValues) {
-            this.props.getModalValue({ ...allValues, id: values.id })
-        } else {
-            this.props.getModalValue(allValues)
-        }
-    }
-    /** 加载子表数据 */
-    getDetailList = async (initialValues) => {
-        let params = {
-            headerId: initialValues.id,
-            mpList: ""
-        }
-        this.loading = false;
-        try {
-            const result: any = await getAction("/depotItem/getDetailList", params);
-            if (result.code === 200) {
-                this.detailDataSource = result.data.rows;
-                this.loading = true;
-            }
-            if (result.code === 510) {
-                notification.warning(result.data)
-            }
-        } catch (error) {
-            console.log(error);
-        }
+        this.props.getModalValue(allValues)
+
+        // if (this.props.initialValues) {
+        //     this.props.getModalValue({ ...allValues, id: values.id })
+        // } else {
+        //     this.props.getModalValue(allValues)
+        // }
     }
     onClick = () => {
         this.buildNumber(this.prefixNo)
     }
     onClickEdit = (initialValues) => {
         this.number = initialValues.defaultNumber;
-        this.getDetailList(initialValues);
     }
     /**子表的信息mbarCode */
     getauditData = (value) => {
@@ -149,8 +156,9 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                 <ModalForm
                     className="purchasein-content"
                     title={this.props.title}
-                    trigger={initialValues ? <a onClick={() => this.onClickEdit(initialValues)}>编辑</a> :
-                        <Button type="primary" onClick={() => this.onClick()} >
+                    trigger={initialValues ?
+                        <a onClick={() => this.onClickEdit(initialValues)}>编辑</a>
+                        :  <Button type="primary" onClick={() => this.onClick()} >
                             <PlusOutlined /> {this.props.buttonlabel}
                         </Button>
                     }
@@ -180,18 +188,10 @@ export default class ModalFormButton extends React.Component<ModalFormButtonProp
                                 <ProFormTextArea width="sm" name="allPrice" label="金额" placeholder="请输入总金额" style={{ height: 32 }} />
                             </ProForm.Group>
                             <ProForm.Group>
-                                {initialValues ?
-                                    this.detailDataSource === {} ?
-                                        <PurchaseinModelTable
-                                            dataSource={this.detailDataSource}
-                                            rowSelection={false}
-                                        />
-                                        : <Spin />
-                                    : <PurchaseinModelTable
-                                        dataSource={getMaterialData}
-                                        getselectData={this.getauditData.bind(this)}
-                                    />
-                                }
+                                <PurchaseinModelTable
+                                    dataSource={getMaterialData}
+                                    getselectData={this.getauditData.bind(this)}
+                                />
                             </ProForm.Group>
                             <ProForm.Group>
                                 <ProFormUploadButton width="sm" name="debt" label="附件" />

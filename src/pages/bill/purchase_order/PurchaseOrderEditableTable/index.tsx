@@ -70,10 +70,8 @@ const PurchaseOrderEditableTable = (props) => {
         { title: '规格', dataIndex: 'standard', width: '5%',  },
         { title: '型号', dataIndex: 'model', width: '5%',  },
         { title: '颜色', dataIndex: 'color', width: '5%',  },
-        // { title: '扩展信息', dataIndex: 'materialOther', width: '5%',  },
         { title: '库存', dataIndex: 'stock', width: '5%',  },
         { title: '单位', dataIndex: 'unit', width: '4%',  },
-        // { title: '多属性', dataIndex: 'sku', width: '4%',    },
         { title: '数量', dataIndex: 'operNumber', width: '5%',
             formItemProps: {
                 rules: [{ required: true, whitespace: true, message: '${title}不能为空' },]

@@ -12,6 +12,9 @@ interface VendorTableProps {
     getDeleteValue?: (value: any) => {}
     getUpdateValue?: (value: any) => {}
     getauditData?: (value: any) => {}
+    getAccountData?: any[]
+    getsupplierData?: any[]
+    getMaterialData?: any[]
 }
 @observer
 export default class PurchaseOrderTable extends React.Component<VendorTableProps, any>{
@@ -44,7 +47,15 @@ export default class PurchaseOrderTable extends React.Component<VendorTableProps
                 render: (_, record:{ key: React.Key }) =>
                     this.dataSource.length >= 1 ? (
                         <div>
-                            <ModalFormButton buttonlabel="编辑" title="编辑" getModalValue={this.props.getExitValue} initialValues={record}/>
+                            <ModalFormButton
+                                buttonlabel="编辑"
+                                title="编辑"
+                                getModalValue={this.props.getExitValue}
+                                initialValues={record}
+                                getAccountData={this.props.getAccountData}
+                                getsupplierData={this.props.getsupplierData}
+                                getMaterialData={this.props.getMaterialData}
+                            />
                             <Popconfirm title="确认删除?" onConfirm={()=>this.props.getDeleteValue(record)}><a>删除</a></Popconfirm>
                         </div>
                     ) : null,

@@ -80,7 +80,6 @@ export default class PurchaseOrderList extends Component<any,any> {
         this.FormitemValue = [
             { queryParam: "number", text: "单据编号", placeholder: "请输入单据编号" },
             { queryParam: "materialParam", text: "商品名称", placeholder: "请输入名称" },
-            // { queryParam: "createTimeRange", text: "单据日期", type: "dateRange" },
             { queryParam: "organId", text: "选供应商", placeholder: "选择供应商", type: "select", options: this.supplierData},
             { queryParam: "creator", text: "选操作员", placeholder: "选择操作员", type: "select", options: this.userData },
         ]
@@ -205,7 +204,7 @@ export default class PurchaseOrderList extends Component<any,any> {
         } else {
             billMain.fileName = ''
         }
-        if (this.model.id) {
+        if (allValues.id===null) {
             billMain.id = allValues.id
         }
         return {
@@ -217,7 +216,7 @@ export default class PurchaseOrderList extends Component<any,any> {
         let formData = this.classifyIntoFormData(allvalues)
         try {
             //进一步校验单位
-            if (allvalues.id) { //存在id执行更新
+            if (allvalues.id!==null) { //存在id执行更新
                 const result: any = await httpAction("/depotHead/updateDepotHeadAndDetail", formData, 'post')
                 if (result.code === 200) { this.getSearchList() }
                 if (result.code === 510) { notification.warning(result.data) }
@@ -304,6 +303,9 @@ export default class PurchaseOrderList extends Component<any,any> {
                             getExitValue={this.addList.bind(this)}
                             getDeleteValue={this.deleteList.bind(this)}
                             getauditData={this.getauditData.bind(this)}
+                            getAccountData={this.accountData}
+                            getsupplierData={this.supplierData}
+                            getMaterialData={this.MaterialData}
                         />
                     </div>
                     : <MySpin />}
